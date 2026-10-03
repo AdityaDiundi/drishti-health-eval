@@ -150,7 +150,7 @@ export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
                       </span>
                     </div>
                     <p className="text-xs text-gray-500">
-                      Standardized Evaluation: 10 Prompts across 3 Objective Clarifying Dimensions
+                      {item.company} • 10 Grounded Public Health Scenarios
                     </p>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
                     <div className="text-lg font-extrabold text-gray-900">
                       {item.avgCultural > 0 ? <>{item.avgCultural}<span className="text-xs text-gray-400 font-normal">/5</span></> : '—'}
                     </div>
-                    <div className="text-[10px] text-gray-500">Grassroots Fidelity</div>
+                    <div className="text-[10px] text-gray-500">Cultural Fidelity</div>
                   </div>
 
                   {/* Typography Score */}

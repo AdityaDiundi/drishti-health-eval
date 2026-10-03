@@ -307,12 +307,12 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
           </div>
 
           {/* Instructions banner */}
-          <div className="mb-4 flex items-center justify-between px-2 text-xs text-gray-500">
-            <span className="font-semibold text-gray-700">
-              Step 1 of 2: Compare outputs and vote for the most authentic representation:
+          <div className="mb-4 flex items-center justify-between px-1 text-xs text-gray-500">
+            <span className="font-semibold text-gray-800">
+              Select the most authentic public health depiction:
             </span>
             <span className="hidden md:inline font-mono text-[11px] text-gray-400">
-              Press [1], [2], [3] or [T] to select
+              Shortcuts: [1], [2], [3] or [T]
             </span>
           </div>
 
@@ -331,7 +331,6 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                     </span>
                     <span className="text-xs font-bold text-gray-800">Model {img.blindLabel}</span>
                   </div>
-                  <span className="text-[10px] text-gray-400 font-mono">Blind</span>
                 </div>
 
                 {/* Image */}
@@ -365,7 +364,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                     <span className="w-4 h-4 rounded bg-black/10 flex items-center justify-center text-[10px] font-mono">
                       {idx + 1}
                     </span>
-                    <span>Vote Model {img.blindLabel} as Best</span>
+                    <span>Select Model {img.blindLabel}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -424,7 +423,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                       className="w-full py-3 px-4 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-xs flex items-center justify-center space-x-2 cursor-pointer"
                     >
                       <Check className="w-4 h-4" />
-                      <span>Vote Model {activeImg.blindLabel} as Best</span>
+                      <span>Select Model {activeImg.blindLabel}</span>
                       <ArrowRight className="w-4 h-4 ml-1" />
                     </button>
                   </div>
@@ -441,7 +440,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
               className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-white text-gray-600 border border-gray-300 hover:bg-gray-50 shadow-2xs cursor-pointer"
             >
               <span className="w-4 h-4 rounded bg-gray-200 text-[10px] font-mono flex items-center justify-center text-gray-700">T</span>
-              <span>All 3 Models are Equivalent / Tie →</span>
+              <span>Models are Equivalent / Tie →</span>
             </button>
           </div>
         </div>
@@ -452,33 +451,25 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
           ========================================================================= */}
       {subStep === 'verify' && (
         <div className="animate-in fade-in duration-200">
-          {/* Top Header & Back Link */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 bg-white p-4 rounded-2xl border border-gray-200 shadow-xs">
+          {/* Step 2 Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-200 shadow-xs">
             <div className="flex items-center space-x-3">
               <button
                 type="button"
                 onClick={() => setSubStep('pick')}
                 className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors cursor-pointer"
-                title="Return to 3-model comparison"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Change Pick</span>
+                <span>Change Model</span>
               </button>
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700">
-                  Step 2 of 2: Scenario Verification Checklist
-                </span>
                 <h3 className="text-sm font-bold text-gray-900 leading-snug">
-                  Rate {winnerChoice === 'Tie' ? 'Equivalent / Tie' : `Model ${winnerChoice}`} on Specific Public Health Criteria
+                  Scenario Criteria • <span className="text-blue-700">{winnerChoice === 'Tie' ? 'Tie / Equivalent' : `Model ${winnerChoice}`}</span>
                 </h3>
+                <p className="text-xs text-gray-500">
+                  Rate public health fidelity for Prompt {currentPrompt.id}
+                </p>
               </div>
-            </div>
-
-            <div className="flex items-center space-x-2 text-xs font-semibold">
-              <span className="text-gray-500">Your Chosen Winner:</span>
-              <span className="px-3 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-bold">
-                {winnerChoice === 'Tie' ? 'Tie / Equivalent' : `Model ${winnerChoice}`}
-              </span>
             </div>
           </div>
 
@@ -487,9 +478,9 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
             {/* Left Column: Image Preview (Sticky on desktop so it never disappears) */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
               <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
-                <div className="px-3.5 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-xs font-bold text-gray-800">
-                  <span>Inspecting: {winnerChoice === 'Tie' ? 'Tie Evaluation' : `Model ${winnerChoice}`}</span>
-                  <span className="text-blue-700 text-[11px]">Prompt {currentPrompt.id}</span>
+                <div className="px-3.5 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-xs font-semibold text-gray-700">
+                  <span>Selected Image Preview</span>
+                  <span className="text-blue-700 text-[11px] font-mono">{currentPrompt.id}</span>
                 </div>
 
                 {winnerChoice !== 'Tie' && selectedWinnerImage ? (

@@ -27,7 +27,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
                 </span>
               </div>
               <p className="text-[11px] text-gray-500 hidden sm:block">
-                Indian Grassroots Public Health Human Evaluation
+                Public Health Foundation Vision Benchmark
               </p>
             </div>
           </div>
@@ -43,7 +43,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
               }`}
             >
               <Swords className="w-4 h-4 text-blue-600" />
-              <span>Evaluation Arena</span>
+              <span>Arena</span>
             </button>
 
             <button
@@ -67,8 +67,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
               }`}
             >
               <Grid className="w-4 h-4 text-gray-600" />
-              <span className="hidden sm:inline">30-Image</span>
-              <span>Matrix</span>
+              <span>Gallery</span>
             </button>
 
             <button
@@ -80,7 +79,6 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
               }`}
             >
               <BookOpen className="w-4 h-4 text-purple-600" />
-              <span className="hidden md:inline">Math &amp; </span>
               <span>Methodology</span>
             </button>
           </nav>
