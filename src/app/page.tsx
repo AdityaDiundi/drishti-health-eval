@@ -113,7 +113,7 @@ export default function Home() {
             <button onClick={() => setActiveTab('arena')} className="hover:text-emerald-400">Arena</button>
             <button onClick={() => setActiveTab('leaderboard')} className="hover:text-amber-400">Leaderboard</button>
             <button onClick={() => setActiveTab('gallery')} className="hover:text-blue-400">30-Images</button>
-            <button onClick={() => setActiveTab('methodology')} className="hover:text-purple-400">Report</button>
+            <button onClick={() => setActiveTab('methodology')} className="hover:text-purple-400">About</button>
           </div>
         </div>
       </footer>

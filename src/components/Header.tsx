@@ -82,8 +82,8 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
               }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span className="hidden md:inline">Report &</span>
-              <span>Context</span>
+              <span className="hidden md:inline">About & </span>
+              <span>Methodology</span>
             </button>
           </nav>
 
