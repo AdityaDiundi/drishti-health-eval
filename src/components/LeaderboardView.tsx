@@ -191,13 +191,38 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
           2. MODEL RANKINGS (Primary Benchmark Table Rows)
          ─────────────────────────────────────────────────────────── */}
       <section className="space-y-4">
-        <div className="pb-1 border-b border-[#E3E7E2]">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
-            Model Rankings
-          </h2>
-          <p className="text-xs text-[#69716B] mt-1">
-            Models ranked using double-blind pairwise comparisons (Elo).
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#E3E7E2]">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
+              Model Rankings
+            </h2>
+            <p className="text-xs text-[#69716B] mt-1">
+              Models ranked using double-blind pairwise comparisons (Elo).
+            </p>
+          </div>
+
+          {/* Live Telemetry Badges */}
+          <div className="flex items-center space-x-2.5 shrink-0">
+            <div className="bg-white border border-[#E3E7E2] rounded-lg px-3 py-1.5 flex items-center space-x-2 shadow-2xs">
+              <Users className="w-3.5 h-3.5 text-[#4E8F6F]" />
+              <div className="text-left">
+                <div className="text-[9px] uppercase font-bold text-[#69716B] leading-none">Evaluators</div>
+                <div className="font-mono text-xs sm:text-sm font-bold text-[#0F2E24] leading-tight">
+                  {totalParticipants}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border border-[#E3E7E2] rounded-lg px-3 py-1.5 flex items-center space-x-2 shadow-2xs">
+              <BarChart3 className="w-3.5 h-3.5 text-[#4E8F6F]" />
+              <div className="text-left">
+                <div className="text-[9px] uppercase font-bold text-[#69716B] leading-none">Verified Votes</div>
+                <div className="font-mono text-xs sm:text-sm font-bold text-[#0F2E24] leading-tight">
+                  {totalRatings}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Table Container */}
