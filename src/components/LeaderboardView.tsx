@@ -195,32 +195,32 @@ export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
         })}
       </div>
 
-      {/* Key Evaluation Findings Box */}
+      {/* Core Evaluation Dimensions */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8">
         <div className="flex items-center space-x-2 mb-4">
           <Sparkles className="w-5 h-5 text-emerald-400" />
-          <h2 className="text-lg font-bold text-white tracking-tight">Key Empirical Findings for India</h2>
+          <h2 className="text-lg font-bold text-white tracking-tight">Core Evaluation Dimensions Tested</h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300">
           <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-            <h4 className="font-bold text-emerald-400 mb-2">1. The ASHA Uniform Paradox (P01)</h4>
+            <h4 className="font-bold text-emerald-400 mb-2">1. Grassroots Attire & Identity (P01)</h4>
             <p className="leading-relaxed">
-              Google Gemini 3 Pro reliably captures the pastel pink cotton saree with dark blue border. OpenAI GPT Image 1 often enhances saturation, making it resemble festival silk rather than daily cotton workwear.
+              Evaluating whether models accurately render the official pastel pink cotton saree with dark blue border mandated for India&rsquo;s 1M+ ASHA workers, rather than generic wedding sarees or western lab coats.
             </p>
           </div>
 
           <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-            <h4 className="font-bold text-amber-400 mb-2">2. Devanagari Script Hurdle (P03)</h4>
+            <h4 className="font-bold text-amber-400 mb-2">2. Vernacular Hindi Typography (P03)</h4>
             <p className="leading-relaxed">
-              Rendering legible Hindi characters (<span className="text-white font-serif">&lsquo;साफ पानी, स्वस्थ जीवन&rsquo;</span>) remains a critical bottleneck. OpenAI shows stronger character legibility, while faster models occasionally collapse conjunctive ligatures.
+              Assessing non-Latin script generation by testing whether village public health wall murals correctly render legible Devanagari text (<span className="text-white font-serif">&lsquo;साफ पानी, स्वस्थ जीवन&rsquo;</span>) without matra distortion.
             </p>
           </div>
 
           <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
-            <h4 className="font-bold text-blue-400 mb-2">3. Cold-Chain & Diagnostic Tools (P04, P05)</h4>
+            <h4 className="font-bold text-blue-400 mb-2">3. Cold-Chain & PHC Equipment (P02, P04, P05)</h4>
             <p className="leading-relaxed">
-              All models recognized the blue hanging Salter scale and vaccine carrier box, but Gemini 3 Pro showed higher fidelity in depicting rural baramda and PHC clinic environments without defaulting to high-tech western clinics.
+              Testing public clinic realism: blue hanging Salter growth monitoring scales, blue ice-lined vaccine carrier boxes, and PHC green distemper walls versus western clinic tropes.
             </p>
           </div>
         </div>

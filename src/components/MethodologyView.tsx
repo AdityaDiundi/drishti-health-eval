@@ -22,11 +22,17 @@ export function MethodologyView() {
         </p>
       </div>
 
-      {/* Part 1: Executive 1-Page Summary */}
+      {/* Part 1: Executive 1-Page Summary & Study Setup */}
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6 shadow-xl">
-        <div className="flex items-center space-x-2.5 text-emerald-400">
-          <HeartPulse className="w-5 h-5" />
-          <h2 className="text-lg font-bold text-white uppercase tracking-wider">1-Page Executive Summary</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2.5 text-emerald-400">
+            <HeartPulse className="w-5 h-5" />
+            <h2 className="text-lg font-bold text-white uppercase tracking-wider">Evaluation Protocol & Scope</h2>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center space-x-1.5">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>Human Study in Progress</span>
+          </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed">
@@ -46,28 +52,26 @@ export function MethodologyView() {
               <span>2. The Core Setup</span>
             </h3>
             <p className="text-slate-300">
-              We benchmarked 3 frontier foundation models: <strong>Google Gemini 3.1 Flash Image Preview (Nano Banana 2)</strong>, <strong>Google Gemini 3 Pro Image Preview (Nano Banana Pro)</strong>, and <strong>OpenAI GPT Image 1 (DALL-E 3)</strong> across 10 grounded public health scenarios (30 total images). Tested via a blind pairwise rating arena by adult evaluators with mandatory 18+ informed consent.
+              We benchmark 3 frontier foundation models: <strong>Google Gemini 3.1 Flash Image Preview (Nano Banana 2)</strong>, <strong>Google Gemini 3 Pro Image Preview (Nano Banana Pro)</strong>, and <strong>OpenAI GPT Image 1 (DALL-E 3)</strong> across 10 grounded public health scenarios (30 total images). Tested via a blind pairwise rating arena by adult evaluators with mandatory 18+ informed consent.
             </p>
           </div>
 
-          <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80">
-            <h3 className="font-bold text-white text-sm mb-2 flex items-center space-x-1.5">
-              <Sparkles className="w-4 h-4 text-blue-400" />
-              <span>3. Main Findings</span>
-            </h3>
-            <p className="text-slate-300">
-              <strong>Google Gemini 3 Pro</strong> won overall human preference (52% win rate) due to superior environmental physics and restraint in rural textures. <strong>OpenAI GPT Image 1</strong> outperformed on Devanagari Hindi text legibility (P03) but suffered from cinematic saturation bias (rendering cotton sarees as silk). <strong>Gemini 3.1 Flash</strong> proved exceptionally fast and accurate on clinical logistics (P04, P05).
-            </p>
-          </div>
-
-          <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80">
-            <h3 className="font-bold text-white text-sm mb-2 flex items-center space-x-1.5">
-              <CheckCircle className="w-4 h-4 text-teal-400" />
-              <span>4. The Single Most Important Takeaway</span>
-            </h3>
-            <p className="text-slate-300">
-              <strong>Prompt adherence does not equal cultural fidelity.</strong> A model can follow every prompt token while completely missing the cultural semantics of Indian healthcare. Building AI for Bharat requires an independent, continuous benchmark that tests non-Latin scripts, vernacular attire, and public health infrastructure.
-            </p>
+          <div className="bg-slate-950/70 p-5 rounded-2xl border border-slate-800/80 md:col-span-2">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-white text-sm flex items-center space-x-1.5">
+                <Sparkles className="w-4 h-4 text-blue-400" />
+                <span>3. Empirical Findings & 1-Page Summary</span>
+              </h3>
+              <span className="text-[11px] text-slate-500 font-mono">Status: Awaiting Testing Data</span>
+            </div>
+            <div className="p-4 bg-slate-900/90 rounded-xl border border-dashed border-slate-700/80 text-slate-400 space-y-2">
+              <p>
+                🔒 <strong>Empirical Analysis Locked During Active Evaluation:</strong> To preserve scientific integrity, official model win-rates, failure mode breakdowns, and summary rankings will be synthesized once our human evaluators (target: 8–10 participants) complete the blind rating rounds.
+              </p>
+              <p className="text-[11px] text-slate-500">
+                You can monitor live scores in real-time on the <strong>Leaderboard</strong> tab as votes are submitted.
+              </p>
+            </div>
           </div>
         </div>
       </section>
