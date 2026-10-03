@@ -3,6 +3,9 @@ import { getAdminSupabase } from '@/lib/supabase';
 import { PROMPTS_DATA, MODELS_INFO } from '@/data/prompts';
 import staticManifest from '@/data/database_manifest.json';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // In-memory fallback if custom Supabase tables are pending schema creation
 let memoryParticipants: any[] = [];
 let memoryRatings: any[] = [];
@@ -15,15 +18,17 @@ export async function GET() {
   try {
     // Attempt reading from Supabase
     const { data: dbRatings, error: rErr } = await adminSupabase.from('eval_ratings').select('*');
+    if (rErr) console.error('Supabase read ratings error:', rErr.message);
     if (!rErr && dbRatings && dbRatings.length > 0) {
       ratings = dbRatings;
     }
     const { data: dbParticipants, error: pErr } = await adminSupabase.from('eval_participants').select('*');
+    if (pErr) console.error('Supabase read participants error:', pErr.message);
     if (!pErr && dbParticipants && dbParticipants.length > 0) {
       participants = dbParticipants;
     }
-  } catch (err) {
-    console.warn('Using memory ratings store:', err);
+  } catch (err: any) {
+    console.warn('Using memory ratings store fallback:', err.message);
   }
 
   // Calculate Win Rates & Elo
@@ -86,6 +91,12 @@ export async function GET() {
     recentRatings: ratings.slice(-10),
     prompts: PROMPTS_DATA,
     imagesManifest: staticManifest,
+  }, {
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+    }
   });
 }
 
