@@ -83,16 +83,16 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             </button>
           </nav>
 
-          {/* Action Button: Export CSV */}
+          {/* Action Button: Export Benchmark Dataset */}
           <div className="flex items-center space-x-2">
             <a
               href="/api/export?format=csv"
-              download="drishti_health_eval_dataset.csv"
+              download="drishti_health_eval_benchmark_dataset.csv"
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 shadow-2xs transition-colors"
-              title="Download full evaluation dataset as CSV"
+              title="Download public benchmark scenarios & images (anonymized, zero personal data)"
             >
               <Download className="w-3.5 h-3.5 text-gray-500" />
-              <span className="hidden lg:inline">Export CSV</span>
+              <span className="hidden lg:inline">Benchmark CSV</span>
             </a>
           </div>
         </div>

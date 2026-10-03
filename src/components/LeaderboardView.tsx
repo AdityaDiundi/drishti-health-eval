@@ -71,7 +71,7 @@ export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
           </p>
         </div>
 
-        {/* Stats Pills - Material 3 Surface */}
+        {/* Stats Pills & Anonymized Ratings Export */}
         <div className="flex items-center space-x-3">
           <div className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-right shadow-2xs">
             <div className="text-[10px] uppercase font-bold text-gray-500">Evaluators</div>
@@ -87,6 +87,15 @@ export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
               <span>{totalRatings}</span>
             </div>
           </div>
+          <a
+            href="/api/export?type=ratings&format=csv"
+            download="drishti_health_eval_ratings_anonymized.csv"
+            className="hidden sm:flex items-center space-x-1.5 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-xs font-semibold text-gray-700 shadow-2xs transition-colors"
+            title="Download verified ratings (100% anonymized, zero personal data)"
+          >
+            <Download className="w-3.5 h-3.5 text-gray-500" />
+            <span>Ratings CSV</span>
+          </a>
         </div>
       </div>
 
