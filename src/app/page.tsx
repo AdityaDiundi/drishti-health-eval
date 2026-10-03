@@ -9,21 +9,19 @@ import { GalleryView } from '@/components/GalleryView';
 import { MethodologyView } from '@/components/MethodologyView';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'gallery' | 'methodology'>('arena');
+  const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'gallery' | 'methodology'>('leaderboard');
   const [participant, setParticipant] = useState<{ name: string; email: string; age: number } | null>(null);
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check localStorage for existing consent
+    // Check localStorage for existing consent quietly without popping up modal
     const stored = localStorage.getItem('drishti_participant');
     if (stored) {
       try {
         setParticipant(JSON.parse(stored));
       } catch (e) {
-        setShowConsentModal(true);
+        // quiet fallback
       }
-    } else {
-      setShowConsentModal(true);
     }
   }, []);
 
@@ -31,6 +29,7 @@ export default function Home() {
     setParticipant(data);
     localStorage.setItem('drishti_participant', JSON.stringify(data));
     setShowConsentModal(false);
+    setActiveTab('arena');
   };
 
   return (
@@ -68,7 +67,17 @@ export default function Home() {
           )
         )}
 
-        {activeTab === 'leaderboard' && <LeaderboardView />}
+        {activeTab === 'leaderboard' && (
+          <LeaderboardView
+            onStartEvaluation={() => {
+              if (participant) {
+                setActiveTab('arena');
+              } else {
+                setShowConsentModal(true);
+              }
+            }}
+          />
+        )}
         {activeTab === 'gallery' && <GalleryView />}
         {activeTab === 'methodology' && <MethodologyView />}
       </main>
@@ -77,6 +86,7 @@ export default function Home() {
       <ConsentModal
         isOpen={showConsentModal}
         onConsentComplete={handleConsentComplete}
+        onClose={() => setShowConsentModal(false)}
       />
 
       {/* Footer */}

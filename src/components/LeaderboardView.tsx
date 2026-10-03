@@ -18,7 +18,11 @@ interface LeaderboardItem {
   badgeColor: string;
 }
 
-export function LeaderboardView() {
+interface LeaderboardProps {
+  onStartEvaluation?: () => void;
+}
+
+export function LeaderboardView({ onStartEvaluation }: LeaderboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
   const [totalRatings, setTotalRatings] = useState(0);
   const [totalParticipants, setTotalParticipants] = useState(0);
@@ -86,6 +90,29 @@ export function LeaderboardView() {
         </div>
       </div>
 
+      {/* CTA Action Banner */}
+      {onStartEvaluation && (
+        <div className="bg-gradient-to-r from-emerald-950/40 via-slate-900 to-teal-950/40 border border-emerald-500/20 rounded-2xl p-5 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-500/5">
+          <div className="flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-white">Join the Human Evaluation Benchmark</h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Rate 10 rural public health prompts blindly (Model A, B, C) to evaluate cultural authenticity and medical accuracy.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onStartEvaluation}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer whitespace-nowrap"
+          >
+            Start Blind Evaluation →
+          </button>
+        </div>
+      )}
+
       {/* Main Leaderboard Table / Cards */}
       <div className="grid grid-cols-1 gap-4 mb-10">
         {leaderboard.map((item, index) => {
@@ -133,28 +160,32 @@ export function LeaderboardView() {
                   {/* Elo Rating */}
                   <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">Arena Elo</div>
-                    <div className="text-lg font-extrabold text-amber-400">{item.eloRating}</div>
-                    <div className="text-[10px] text-slate-400">Score</div>
+                    <div className="text-lg font-extrabold text-amber-400">{totalRatings > 0 ? item.eloRating : '1200'}</div>
+                    <div className="text-[10px] text-slate-400">{totalRatings > 0 ? 'Live Score' : 'Baseline'}</div>
                   </div>
 
                   {/* Win Rate */}
                   <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">Win Rate</div>
-                    <div className="text-lg font-extrabold text-emerald-400">{item.winRate}%</div>
+                    <div className="text-lg font-extrabold text-emerald-400">{totalRatings > 0 ? `${item.winRate}%` : '—'}</div>
                     <div className="text-[10px] text-slate-400">{item.wins} Wins</div>
                   </div>
 
                   {/* Cultural Score */}
                   <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">Cultural Score</div>
-                    <div className="text-lg font-extrabold text-white">{item.avgCultural}<span className="text-xs text-slate-500">/5</span></div>
+                    <div className="text-lg font-extrabold text-white">
+                      {item.avgCultural > 0 ? <>{item.avgCultural}<span className="text-xs text-slate-500">/5</span></> : '—'}
+                    </div>
                     <div className="text-[10px] text-slate-400">Rural Context</div>
                   </div>
 
                   {/* Typography Score */}
                   <div className="bg-slate-950/70 p-3 rounded-xl border border-slate-800">
                     <div className="text-[10px] text-slate-500 uppercase font-semibold">Typography</div>
-                    <div className="text-lg font-extrabold text-white">{item.avgTypography}<span className="text-xs text-slate-500">/5</span></div>
+                    <div className="text-lg font-extrabold text-white">
+                      {item.avgTypography > 0 ? <>{item.avgTypography}<span className="text-xs text-slate-500">/5</span></> : '—'}
+                    </div>
                     <div className="text-[10px] text-slate-400">Hindi/Devanagari</div>
                   </div>
                 </div>
