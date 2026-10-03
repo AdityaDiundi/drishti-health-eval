@@ -14,13 +14,29 @@ export default function Home() {
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check localStorage for existing consent quietly without popping up modal
+    // Check localStorage for existing consent
     const stored = localStorage.getItem('drishti_participant');
+    let hasConsent = false;
     if (stored) {
       try {
         setParticipant(JSON.parse(stored));
+        hasConsent = true;
       } catch (e) {
-        // quiet fallback
+        // fallback
+      }
+    }
+
+    // Check URL parameters: e.g. ?tab=arena or ?tab=eval
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam === 'arena' || tabParam === 'eval') {
+        setActiveTab('arena');
+        if (!hasConsent) {
+          setShowConsentModal(true);
+        }
+      } else if (tabParam === 'leaderboard' || tabParam === 'gallery' || tabParam === 'methodology') {
+        setActiveTab(tabParam as any);
       }
     }
   }, []);
