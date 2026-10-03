@@ -188,68 +188,16 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       </section>
 
       {/* ───────────────────────────────────────────────────────────
-          2. LIVE BENCHMARK METRICS STRIP (4 Columns, Live Bound)
-         ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white border border-[#E3E7E2] rounded-xl p-5 sm:p-6 shadow-2xs">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-[#E3E7E2]">
-          {/* Metric 1: Live Evaluators */}
-          <div className="text-center sm:text-left md:px-4 first:pl-0">
-            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
-              {totalParticipants}
-            </div>
-            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
-              Independent Evaluators
-            </div>
-          </div>
-
-          {/* Metric 2: Live Verified Blind Votes */}
-          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4">
-            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
-              {totalRatings}
-            </div>
-            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
-              Verified Blind Votes
-            </div>
-          </div>
-
-          {/* Metric 3: Scenarios */}
-          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4">
-            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
-              10
-            </div>
-            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
-              Rural Health Scenarios
-            </div>
-          </div>
-
-          {/* Metric 4: Evaluation Axes */}
-          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4 last:pr-0">
-            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
-              3
-            </div>
-            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
-              Evaluation Axes
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ───────────────────────────────────────────────────────────
-          3. MODEL RANKINGS (Primary Benchmark Table Rows)
+          2. MODEL RANKINGS (Primary Benchmark Table Rows)
          ─────────────────────────────────────────────────────────── */}
       <section className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-1 border-b border-[#E3E7E2]">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
-              Model Rankings
-            </h2>
-            <p className="text-xs text-[#69716B] mt-1">
-              Models ranked using double-blind pairwise comparisons (Elo).
-            </p>
-          </div>
-          <div className="flex items-center space-x-2 text-[11px] text-[#69716B] font-mono">
-            <span>K=32 · BASELINE=1200</span>
-          </div>
+        <div className="pb-1 border-b border-[#E3E7E2]">
+          <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
+            Model Rankings
+          </h2>
+          <p className="text-xs text-[#69716B] mt-1">
+            Models ranked using double-blind pairwise comparisons (Elo).
+          </p>
         </div>
 
         {/* Table Container */}
@@ -355,14 +303,6 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                         <span className="font-mono text-xs font-semibold text-[#171A18]">
                           {item.avgCultural > 0 ? `${item.avgCultural}/5` : '—'}
                         </span>
-                        {item.avgCultural > 0 && (
-                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
-                            <div
-                              className="h-full bg-[#0F2E24] rounded-full"
-                              style={{ width: `${(item.avgCultural / 5) * 100}%` }}
-                            />
-                          </div>
-                        )}
                       </div>
 
                       {/* Infrastructure */}
@@ -370,14 +310,6 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                         <span className="font-mono text-xs font-semibold text-[#171A18]">
                           {item.avgMedical > 0 ? `${item.avgMedical}/5` : '—'}
                         </span>
-                        {item.avgMedical > 0 && (
-                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
-                            <div
-                              className="h-full bg-[#4E8F6F] rounded-full"
-                              style={{ width: `${(item.avgMedical / 5) * 100}%` }}
-                            />
-                          </div>
-                        )}
                       </div>
 
                       {/* Orthography */}
@@ -385,14 +317,6 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                         <span className="font-mono text-xs font-semibold text-[#171A18]">
                           {item.avgTypography > 0 ? `${item.avgTypography}/5` : '—'}
                         </span>
-                        {item.avgTypography > 0 && (
-                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
-                            <div
-                              className="h-full bg-[#0F2E24] rounded-full"
-                              style={{ width: `${(item.avgTypography / 5) * 100}%` }}
-                            />
-                          </div>
-                        )}
                       </div>
 
                       {/* Detail Chevron */}
