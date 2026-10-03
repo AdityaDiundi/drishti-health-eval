@@ -87,7 +87,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             </span>
             <span className="text-[#C6DDD1] font-mono text-[10px] hidden sm:inline">•</span>
             <span className="font-mono text-[10.5px] sm:text-[11px] text-[#69716B] font-medium tracking-tight">
-              {totalRatings} VERIFIED BLIND VOTES · {totalParticipants} EVALUATORS · DOUBLE-BLIND PAIRWISE ELO
+              DOUBLE-BLIND PAIRWISE ELO BENCHMARK
             </span>
           </div>
 
@@ -191,7 +191,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
           2. MODEL RANKINGS (Primary Benchmark Table Rows)
          ─────────────────────────────────────────────────────────── */}
       <section className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#E3E7E2]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
               Model Rankings
