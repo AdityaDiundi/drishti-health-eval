@@ -34,7 +34,7 @@ export async function GET() {
       }
     }
 
-    if (!rErr && dbRatings && dbRatings.length > 0) {
+    if (!rErr && Array.isArray(dbRatings)) {
       ratings = dbRatings;
     }
 
@@ -53,7 +53,7 @@ export async function GET() {
       }
     }
 
-    if (!pErr && dbParticipants && dbParticipants.length > 0) {
+    if (!pErr && Array.isArray(dbParticipants)) {
       participants = dbParticipants;
     }
   } catch (err: any) {
@@ -167,7 +167,6 @@ export async function POST(req: Request) {
       consent_given: true,
       created_at: new Date().toISOString(),
     };
-    memoryParticipants.push(newParticipant);
 
     const formattedRatings = ratings.map((r: any) => ({
       id: `r-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
@@ -182,10 +181,9 @@ export async function POST(req: Request) {
       created_at: new Date().toISOString(),
     }));
 
-    memoryRatings.push(...formattedRatings);
-
-    // Save to Supabase
+    // Save to Supabase (primary store)
     const adminSupabase = getAdminSupabase();
+    let dbSuccess = false;
     try {
       let { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
       if (pErr) {
@@ -202,8 +200,18 @@ export async function POST(req: Request) {
         rErr = fb.error;
       }
       if (rErr) console.error('Supabase ratings write error:', rErr.message);
+
+      if (!pErr && !rErr) {
+        dbSuccess = true;
+      }
     } catch (dbErr: any) {
       console.warn('Supabase DB connection notice:', dbErr.message);
+    }
+
+    // Only fallback to in-memory store if database was unreachable
+    if (!dbSuccess) {
+      memoryParticipants.push(newParticipant);
+      memoryRatings.push(...formattedRatings);
     }
 
     return NextResponse.json({
