@@ -247,24 +247,24 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
 
           <div className="flex items-center space-x-3 self-end sm:self-auto">
             {/* Step 1 / Step 2 Indicator */}
-            <div className="flex items-center space-x-1.5 text-[11px] bg-gray-100 px-2.5 py-1 rounded-lg border border-gray-200">
-              <span className={`px-1.5 py-0.5 rounded font-bold ${subStep === 'pick' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>
-                1. Pick Winner
+            <div className="flex items-center space-x-1.5 text-[11px] bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
+              <span className={`px-1.5 py-0.5 rounded font-bold ${subStep === 'pick' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}>
+                1. Pick Model
               </span>
-              <span className="text-gray-400">→</span>
-              <span className={`px-1.5 py-0.5 rounded font-bold ${subStep === 'verify' ? 'bg-blue-600 text-white' : 'text-gray-500'}`}>
+              <span className="text-slate-400">→</span>
+              <span className={`px-1.5 py-0.5 rounded font-bold ${subStep === 'verify' ? 'bg-slate-900 text-white' : 'text-slate-500'}`}>
                 2. Verify Criteria
               </span>
             </div>
-            <span className="text-blue-700 font-bold">
-              {progressPercent}% Completed
+            <span className="font-mono text-xs text-slate-900 font-bold">
+              {progressPercent}%
             </span>
           </div>
         </div>
 
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-blue-600 transition-all duration-300 rounded-full"
+            className="h-full bg-slate-900 transition-all duration-300 rounded-full"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
@@ -275,31 +275,31 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
           ========================================================================= */}
       {subStep === 'pick' && (
         <div className="animate-in fade-in duration-200">
-          {/* Prompt Context Card (Compact & Readable) */}
-          <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 mb-5 shadow-xs">
+          {/* Prompt Context Card (Disciplined Architectural Layout) */}
+          <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-5 mb-5 shadow-2xs">
             <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
               <div className="flex items-center space-x-2">
-                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="px-2 py-0.5 rounded font-mono text-[11px] font-bold bg-slate-100 text-slate-800 border border-slate-200">
                   {currentPrompt.id}
                 </span>
-                <span className="text-xs font-semibold text-gray-700">{currentPrompt.category}</span>
+                <span className="text-xs font-semibold text-slate-700">{currentPrompt.category}</span>
               </div>
-              <span className="text-xs text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 font-medium">
+              <span className="text-[11px] text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200 font-mono">
                 Focus: {currentPrompt.rubricFocus}
               </span>
             </div>
 
-            <p className="text-sm font-medium text-gray-900 mb-2.5 bg-gray-50 p-3 rounded-xl border border-gray-200 leading-relaxed font-serif">
+            <p className="text-sm font-medium text-slate-900 mb-2.5 bg-slate-50 p-3 rounded-lg border border-slate-200 leading-relaxed font-serif">
               &ldquo;{currentPrompt.prompt}&rdquo;
             </p>
 
-            <div className="flex flex-wrap gap-1.5 items-center text-xs text-gray-600">
-              <span className="font-semibold text-gray-800 flex items-center space-x-1 mr-1">
-                <Info className="w-3.5 h-3.5 text-blue-600" />
+            <div className="flex flex-wrap gap-1.5 items-center text-xs text-slate-600">
+              <span className="font-semibold text-slate-800 flex items-center space-x-1 mr-1">
+                <Info className="w-3.5 h-3.5 text-slate-500" />
                 <span>Inspection Points:</span>
               </span>
               {currentPrompt.keyVisualCheckpoints.map((cp, idx) => (
-                <span key={idx} className="bg-gray-100 px-2 py-0.5 rounded text-[11px] text-gray-700 border border-gray-200">
+                <span key={idx} className="bg-slate-100 px-2 py-0.5 rounded text-[11px] text-slate-700 border border-slate-200">
                   • {cp}
                 </span>
               ))}
@@ -307,11 +307,11 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
           </div>
 
           {/* Instructions banner */}
-          <div className="mb-4 flex items-center justify-between px-1 text-xs text-gray-500">
-            <span className="font-semibold text-gray-800">
+          <div className="mb-4 flex items-center justify-between px-1 text-xs text-slate-500">
+            <span className="font-semibold text-slate-800">
               Select the most authentic public health depiction:
             </span>
-            <span className="hidden md:inline font-mono text-[11px] text-gray-400">
+            <span className="hidden md:inline font-mono text-[11px] text-slate-400">
               Shortcuts: [1], [2], [3] or [T]
             </span>
           </div>
@@ -321,33 +321,33 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
             {currentImages.map((img, idx) => (
               <div
                 key={img.blindLabel}
-                className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:border-blue-400 hover:shadow-md transition-all flex flex-col group"
+                className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-2xs hover:border-slate-400 transition-all flex flex-col group"
               >
                 {/* Header */}
-                <div className="px-3.5 py-2.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+                <div className="px-3.5 py-2.5 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <span className="w-5 h-5 rounded-md bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold font-mono">
+                    <span className="w-5 h-5 rounded bg-slate-200 text-slate-800 flex items-center justify-center text-xs font-bold font-mono">
                       {img.blindLabel}
                     </span>
-                    <span className="text-xs font-bold text-gray-800">Model {img.blindLabel}</span>
+                    <span className="text-xs font-bold text-slate-800">Model {img.blindLabel}</span>
                   </div>
                 </div>
 
                 {/* Image */}
                 <div
-                  className="relative aspect-4/3 w-full bg-gray-100 cursor-pointer overflow-hidden"
+                  className="relative aspect-4/3 w-full bg-slate-100 cursor-pointer overflow-hidden"
                   onClick={() => setZoomImage({ url: img.imageUrl, label: `Model ${img.blindLabel}` })}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={img.imageUrl}
                     alt={`Model ${img.blindLabel}`}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-103"
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-102"
                     loading="eager"
                   />
                   <button
                     type="button"
-                    className="absolute bottom-2 right-2 bg-white/90 text-gray-800 hover:text-blue-600 px-2 py-1 rounded-lg text-[11px] backdrop-blur-xs shadow-xs transition-all flex items-center space-x-1"
+                    className="absolute bottom-2 right-2 bg-white/95 text-slate-800 hover:text-slate-950 px-2 py-1 rounded text-[11px] border border-slate-200 shadow-2xs transition-colors flex items-center space-x-1 cursor-pointer"
                   >
                     <ZoomIn className="w-3.5 h-3.5" />
                     <span className="font-semibold">Inspect</span>
@@ -355,13 +355,13 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                 </div>
 
                 {/* Vote CTA Button */}
-                <div className="p-3 bg-white mt-auto border-t border-gray-100">
+                <div className="p-3 bg-white mt-auto border-t border-slate-100">
                   <button
                     type="button"
                     onClick={() => handleSelectWinner(img.blindLabel)}
-                    className="w-full py-2.5 px-3 rounded-xl text-xs font-bold bg-blue-50 hover:bg-blue-600 text-blue-700 hover:text-white border border-blue-200 hover:border-blue-600 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-2xs"
+                    className="w-full py-2 px-3 rounded-lg text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-2xs"
                   >
-                    <span className="w-4 h-4 rounded bg-black/10 flex items-center justify-center text-[10px] font-mono">
+                    <span className="w-4 h-4 rounded bg-white/20 flex items-center justify-center text-[10px] font-mono">
                       {idx + 1}
                     </span>
                     <span>Select Model {img.blindLabel}</span>
