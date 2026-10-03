@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAdminSupabase } from '@/lib/supabase';
+import { getAdminSupabase, supabase } from '@/lib/supabase';
 import { PROMPTS_DATA, MODELS_INFO } from '@/data/prompts';
 import staticManifest from '@/data/database_manifest.json';
 
@@ -16,20 +16,66 @@ export async function GET() {
   let participants = [...memoryParticipants];
 
   try {
-    // Attempt reading from Supabase
-    const { data: dbRatings, error: rErr } = await adminSupabase.from('eval_ratings').select('*');
-    if (rErr) console.error('Supabase read ratings error:', rErr.message);
+    // Attempt reading from Supabase using admin client first
+    let dbRatings: any[] | null = null;
+    let rErr: any = null;
+
+    const res = await adminSupabase.from('eval_ratings').select('*');
+    dbRatings = res.data;
+    rErr = res.error;
+
+    // If admin failed, try with public client
+    if (rErr) {
+      console.warn('Admin Supabase read error, falling back to anon client:', rErr.message);
+      const fallbackRes = await supabase.from('eval_ratings').select('*');
+      if (!fallbackRes.error && fallbackRes.data) {
+        dbRatings = fallbackRes.data;
+        rErr = null;
+      }
+    }
+
     if (!rErr && dbRatings && dbRatings.length > 0) {
       ratings = dbRatings;
     }
-    const { data: dbParticipants, error: pErr } = await adminSupabase.from('eval_participants').select('*');
-    if (pErr) console.error('Supabase read participants error:', pErr.message);
+
+    let dbParticipants: any[] | null = null;
+    let pErr: any = null;
+
+    const pRes = await adminSupabase.from('eval_participants').select('*');
+    dbParticipants = pRes.data;
+    pErr = pRes.error;
+
+    if (pErr) {
+      const fallbackP = await supabase.from('eval_participants').select('*');
+      if (!fallbackP.error && fallbackP.data) {
+        dbParticipants = fallbackP.data;
+        pErr = null;
+      }
+    }
+
     if (!pErr && dbParticipants && dbParticipants.length > 0) {
       participants = dbParticipants;
     }
   } catch (err: any) {
     console.warn('Using memory ratings store fallback:', err.message);
   }
+
+  // Canonicalize model names so database names (e.g. including codenames) map to MODELS_INFO correctly
+  const canonicalizeModel = (name: string): string => {
+    if (!name) return '';
+    const lower = name.toLowerCase();
+    if (lower.includes('flash') || lower.includes('banana 2')) {
+      return 'Google Gemini 3.1 Flash Image Preview';
+    }
+    if (lower.includes('pro') || lower.includes('banana pro')) {
+      return 'Google Gemini 3 Pro Image Preview';
+    }
+    if (lower.includes('openai') || lower.includes('gpt') || lower.includes('dall')) {
+      return 'OpenAI GPT Image 1';
+    }
+    const matched = MODELS_INFO.find((m) => m.name.toLowerCase() === lower || m.id.toLowerCase() === lower);
+    return matched ? matched.name : name;
+  };
 
   // Calculate Win Rates & Elo
   const modelStats: Record<string, {
@@ -46,20 +92,23 @@ export async function GET() {
   });
 
   ratings.forEach((r) => {
-    if (modelStats[r.winner_model]) {
-      modelStats[r.winner_model].wins += 1;
-    }
-    const countKey = r.winner_model || Object.keys(modelStats)[0];
-    if (modelStats[countKey]) {
-      modelStats[countKey].totalRounds += 1;
-      modelStats[countKey].culturalSum += (r.cultural_fidelity || 4);
-      modelStats[countKey].medicalSum += (r.medical_accuracy || 4);
-      modelStats[countKey].typographySum += (r.typography_fidelity || 4);
-      modelStats[countKey].voteCount += 1;
+    const canonicalKey = canonicalizeModel(r.winner_model);
+    if (modelStats[canonicalKey]) {
+      modelStats[canonicalKey].wins += 1;
+      modelStats[canonicalKey].totalRounds += 1;
+      modelStats[canonicalKey].culturalSum += (r.cultural_fidelity || 4);
+      modelStats[canonicalKey].medicalSum += (r.medical_accuracy || 4);
+      modelStats[canonicalKey].typographySum += (r.typography_fidelity || 4);
+      modelStats[canonicalKey].voteCount += 1;
     }
   });
 
   const totalVotes = ratings.length;
+  const uniqueEvaluatorsFromRatings = new Set(
+    ratings.map((r: any) => r.participant_id || r.participant_name).filter(Boolean)
+  ).size;
+  const totalEvaluators = Math.max(participants.length, uniqueEvaluatorsFromRatings);
+
   const leaderboard = MODELS_INFO.map((m) => {
     const stats = modelStats[m.name] || { wins: 0, totalRounds: 0, culturalSum: 0, medicalSum: 0, typographySum: 0, voteCount: 0 };
     const winRate = totalVotes > 0 ? Number(((stats.wins / totalVotes) * 100).toFixed(1)) : 0;
@@ -87,7 +136,7 @@ export async function GET() {
   return NextResponse.json({
     leaderboard,
     totalRatings: ratings.length,
-    totalParticipants: participants.length,
+    totalParticipants: totalEvaluators,
     recentRatings: ratings.slice(-10),
     prompts: PROMPTS_DATA,
     imagesManifest: staticManifest,
@@ -138,10 +187,20 @@ export async function POST(req: Request) {
     // Save to Supabase
     const adminSupabase = getAdminSupabase();
     try {
-      const { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
+      let { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
+      if (pErr) {
+        console.warn('Admin Supabase participant write error, trying anon client:', pErr.message);
+        const fb = await supabase.from('eval_participants').upsert([newParticipant]);
+        pErr = fb.error;
+      }
       if (pErr) console.error('Supabase participant write error:', pErr.message);
       
-      const { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
+      let { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
+      if (rErr) {
+        console.warn('Admin Supabase ratings write error, trying anon client:', rErr.message);
+        const fb = await supabase.from('eval_ratings').insert(formattedRatings);
+        rErr = fb.error;
+      }
       if (rErr) console.error('Supabase ratings write error:', rErr.message);
     } catch (dbErr: any) {
       console.warn('Supabase DB connection notice:', dbErr.message);
