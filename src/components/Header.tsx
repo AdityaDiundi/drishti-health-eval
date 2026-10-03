@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Eye, Trophy, Swords, Grid, BookOpen, Download } from 'lucide-react';
+import { SevaLogo } from './SevaLogo';
 
 interface HeaderProps {
   activeTab: 'arena' | 'leaderboard' | 'gallery' | 'methodology';
@@ -14,22 +15,9 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-xs">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
-          {/* Logo & Branding */}
-          <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer shrink-0" onClick={() => setActiveTab('leaderboard')}>
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs">
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-1.5">
-                <span className="text-base sm:text-lg font-bold tracking-tight text-gray-900">Drishti-Health</span>
-                <span className="hidden sm:inline-flex text-[11px] px-2 py-0.5 rounded-full font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-                  Visual AI Benchmark
-                </span>
-              </div>
-              <p className="text-[10px] sm:text-[11px] text-gray-500 hidden md:block">
-                Public Health Foundation Vision Benchmark
-              </p>
-            </div>
+          {/* Dynamic Indic Animated Logo: SevaEval */}
+          <div className="shrink-0">
+            <SevaLogo onClick={() => setActiveTab('leaderboard')} />
           </div>
 
           {/* Navigation Tabs - Google M3 Pill Style */}

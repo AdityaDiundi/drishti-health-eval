@@ -55,46 +55,67 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      {/* Sleek, Minimal Hero Section */}
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-8 shadow-xs">
-        {/* Subtle Category Pill */}
-        <div className="inline-flex flex-wrap items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4 max-w-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse shrink-0"></span>
-          <span>Indian Public Health AI Benchmark</span>
-          <span className="text-gray-300 hidden sm:inline">•</span>
-          <span className="text-gray-500 font-normal hidden sm:inline">Blind Pairwise Human Evaluation</span>
+      {/* Editorial Research Masthead & Hero - M3 Surface Container Lowest */}
+      <div className="bg-white border border-gray-200/90 rounded-2xl p-6 sm:p-8 mb-8 shadow-xs">
+        {/* Research Metadata Rail */}
+        <div className="flex flex-wrap items-center gap-2 mb-3.5">
+          <span className="font-mono text-[10px] font-bold tracking-tight px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/80">
+            SEVA-EVAL v1.0
+          </span>
+          <span className="text-gray-300 font-mono text-[10px] hidden sm:inline">•</span>
+          <span className="font-mono text-[10px] sm:text-[11px] text-gray-600 font-semibold">
+            {totalRatings} VERIFIED BLIND VOTES ({totalParticipants} EVALUATORS)
+          </span>
+          <span className="text-gray-300 font-mono text-[10px] hidden sm:inline">•</span>
+          <span className="font-mono text-[10px] sm:text-[11px] text-gray-500">
+            DOUBLE-BLIND PAIRWISE ELO
+          </span>
         </div>
 
-        {/* Clean, Impactful Headline */}
+        {/* Clean, High-Authority Research Headline */}
         <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
-          Evaluating Frontier Vision AI for Indian Public Health
+          Frontier Vision AI Benchmark for Frontline Indian Healthcare
         </h1>
 
-        <p className="text-xs sm:text-sm text-gray-600 mt-2.5 max-w-2xl leading-relaxed">
-          Comparing how OpenAI and Google Gemini models depict rural India — evaluating ASHA worker attire, Primary Health Centre equipment, and Devanagari Hindi typography.
+        <p className="text-xs sm:text-sm text-gray-600 mt-2.5 max-w-3xl leading-relaxed">
+          Comparing frontier image generation models (OpenAI GPT Image 1 vs Google Gemini 3 Pro and Gemini 3.1 Flash) across 10 rural Indian public health scenarios. Evaluated across three domain-specific axes of representation:
         </p>
 
-        {/* 3 Minimalist Focus Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
-          <div className="flex items-start space-x-3 p-3.5 rounded-xl bg-gray-50/70 border border-gray-200/70">
-            <span className="text-base select-none">🩺</span>
-            <div>
-              <div className="text-xs font-bold text-gray-900">ASHA Attire &amp; Identity</div>
-              <div className="text-[11px] text-gray-500 mt-0.5">Government pink cotton saree vs western lab coats</div>
+        {/* 3 Technical Domain Cards - M3 Tonal Containers with Monospace Code Labels */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 my-6">
+          <div className="p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 hover:border-gray-300 transition-colors">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60">
+                AXIS-01 • CULTURAL
+              </span>
+            </div>
+            <div className="text-xs font-bold text-gray-900">ASHA Attire &amp; Context</div>
+            <div className="text-[11px] text-gray-600 mt-1 leading-snug">
+              Official government pink cotton saree, badge &amp; registers vs western clinical lab coats.
             </div>
           </div>
-          <div className="flex items-start space-x-3 p-3.5 rounded-xl bg-gray-50/70 border border-gray-200/70">
-            <span className="text-base select-none">🏥</span>
-            <div>
-              <div className="text-xs font-bold text-gray-900">Rural PHC Realism</div>
-              <div className="text-[11px] text-gray-500 mt-0.5">Ice-lined vaccine carriers &amp; Salter hanging scales</div>
+
+          <div className="p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 hover:border-gray-300 transition-colors">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                AXIS-02 • INFRASTRUCTURE
+              </span>
+            </div>
+            <div className="text-xs font-bold text-gray-900">PHC Cold-Chain &amp; Equipment</div>
+            <div className="text-[11px] text-gray-600 mt-1 leading-snug">
+              WHO-standard blue vaccine carriers, conditioned ice packs &amp; Salter hanging scales.
             </div>
           </div>
-          <div className="flex items-start space-x-3 p-3.5 rounded-xl bg-gray-50/70 border border-gray-200/70">
-            <span className="text-base select-none">✍️</span>
-            <div>
-              <div className="text-xs font-bold text-gray-900">Devanagari Script</div>
-              <div className="text-[11px] text-gray-500 mt-0.5">Legible Hindi wall murals vs distorted matras</div>
+
+          <div className="p-3.5 rounded-xl bg-gray-50/80 border border-gray-200/80 hover:border-gray-300 transition-colors">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="font-mono text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md bg-purple-50 text-purple-700 border border-purple-200/60">
+                AXIS-03 • ORTHOGRAPHY
+              </span>
+            </div>
+            <div className="text-xs font-bold text-gray-900">Devanagari Script Fidelity</div>
+            <div className="text-[11px] text-gray-600 mt-1 leading-snug">
+              Continuous shirorekha line, matra accuracy &amp; legible Hindi public health wall murals.
             </div>
           </div>
         </div>

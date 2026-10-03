@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Drishti-Health | Indian Grassroots Healthcare Visual AI Benchmark",
-  description: "Independent human evaluation benchmark comparing Google Gemini 3.1 Flash, Gemini 3 Pro, and OpenAI GPT Image 1 on rural Indian public health fidelity.",
+  title: "Seva-Eval | Frontline Indian Healthcare Visual AI Benchmark",
+  description: "Independent double-blind human evaluation benchmark comparing Google Gemini 3.1 Flash, Gemini 3 Pro, and OpenAI GPT Image 1 on rural Indian public health fidelity.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

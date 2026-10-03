@@ -71,7 +71,7 @@ export function ConsentModal({ isOpen, onConsentComplete, onClose }: ConsentModa
         </div>
 
         <p className="text-xs text-gray-600 mb-5 leading-relaxed bg-gray-50 p-3.5 rounded-xl border border-gray-200">
-          Welcome to the <strong>Drishti-Health Visual Benchmark</strong>. You will participate in a blind side-by-side human evaluation comparing outputs from 3 advanced vision models across 10 rural Indian public health scenarios.
+          Welcome to the <strong>Seva-Eval Benchmark</strong>. You will participate in a double-blind human evaluation comparing frontier vision AI outputs across 10 frontline Indian public health scenarios.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
