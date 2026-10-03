@@ -7,11 +7,13 @@ import { ArenaView } from '@/components/ArenaView';
 import { LeaderboardView } from '@/components/LeaderboardView';
 import { GalleryView } from '@/components/GalleryView';
 import { MethodologyView } from '@/components/MethodologyView';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'gallery' | 'methodology'>('leaderboard');
   const [participant, setParticipant] = useState<{ name: string; email: string; age: number } | null>(null);
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
+  const [hasCompletedEvaluation, setHasCompletedEvaluation] = useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -22,6 +24,7 @@ export default function Home() {
       if (forceConsent) {
         localStorage.removeItem('drishti_participant');
         setParticipant(null);
+        setHasCompletedEvaluation(false);
         setShowConsentModal(true);
         setActiveTab('arena');
         return;
@@ -52,6 +55,7 @@ export default function Home() {
 
   const handleConsentComplete = (data: { name: string; email: string; age: number }) => {
     setParticipant(data);
+    setHasCompletedEvaluation(false);
     if (typeof window !== 'undefined') {
       localStorage.setItem('drishti_participant', JSON.stringify(data));
     }
@@ -64,7 +68,18 @@ export default function Home() {
       localStorage.removeItem('drishti_participant');
     }
     setParticipant(null);
+    setHasCompletedEvaluation(false);
     setShowConsentModal(true);
+  };
+
+  const handleEvaluationFinished = () => {
+    setHasCompletedEvaluation(true);
+    setActiveTab('leaderboard');
+  };
+
+  const handleStartAnotherEvaluation = () => {
+    setHasCompletedEvaluation(false);
+    handleResetParticipant();
   };
 
   return (
@@ -79,10 +94,39 @@ export default function Home() {
       {/* Main Content Area */}
       <main className="flex-1">
         {activeTab === 'arena' && (
-          participant ? (
+          hasCompletedEvaluation ? (
+            <div className="max-w-xl mx-auto px-4 py-20 text-center animate-in fade-in duration-200">
+              <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+                <div className="w-14 h-14 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 className="w-7 h-7" />
+                </div>
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  Submission Recorded
+                </span>
+                <h3 className="text-xl font-bold text-gray-900 mt-3 mb-2">You Have Completed the Benchmark</h3>
+                <p className="text-xs text-gray-600 mb-6 leading-relaxed">
+                  Thank you, <strong>{participant?.name || 'Evaluator'}</strong>! Your 10 public health pairwise ratings have been recorded in the benchmark database and are reflected in the live Leaderboard.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                  <button
+                    onClick={() => setActiveTab('leaderboard')}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+                  >
+                    View Live Leaderboard →
+                  </button>
+                  <button
+                    onClick={handleStartAnotherEvaluation}
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
+                  >
+                    Start Another Evaluation
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : participant ? (
             <ArenaView
               participant={participant}
-              onEvaluationFinished={() => setActiveTab('leaderboard')}
+              onEvaluationFinished={handleEvaluationFinished}
               onResetParticipant={handleResetParticipant}
             />
           ) : (
@@ -106,7 +150,9 @@ export default function Home() {
         {activeTab === 'leaderboard' && (
           <LeaderboardView
             onStartEvaluation={() => {
-              if (participant) {
+              if (hasCompletedEvaluation) {
+                handleStartAnotherEvaluation();
+              } else if (participant) {
                 setActiveTab('arena');
               } else {
                 setShowConsentModal(true);
@@ -132,7 +178,7 @@ export default function Home() {
           <div className="flex items-center space-x-4 text-gray-600">
             <button onClick={() => setActiveTab('arena')} className="hover:text-blue-600">Arena</button>
             <button onClick={() => setActiveTab('leaderboard')} className="hover:text-amber-600">Leaderboard</button>
-            <button onClick={() => setActiveTab('gallery')} className="hover:text-gray-900">30-Images</button>
+            <button onClick={() => setActiveTab('gallery')} className="hover:text-gray-900">Gallery</button>
             <button onClick={() => setActiveTab('methodology')} className="hover:text-purple-600">Methodology</button>
           </div>
         </div>
