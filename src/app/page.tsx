@@ -149,6 +149,7 @@ export default function Home() {
 
         {activeTab === 'leaderboard' && (
           <LeaderboardView
+            onNavigateTab={(tab) => setActiveTab(tab)}
             onStartEvaluation={() => {
               if (hasCompletedEvaluation) {
                 handleStartAnotherEvaluation();
