@@ -1,0 +1,242 @@
+[
+  {
+    "id": "4c31e3d5-2ebd-49fc-916b-adea0893da9c",
+    "prompt_id": "P01",
+    "prompt_text": "An Indian ASHA worker wearing a pastel pink cotton saree with a dark blue border, holding a register and counseling a mother in a rural courtyard.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P01_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "6ceb9bb7-0605-464c-a4df-bcb97038abd1",
+    "prompt_id": "P01",
+    "prompt_text": "An Indian ASHA worker wearing a pastel pink cotton saree with a dark blue border, holding a register and counseling a mother in a rural courtyard.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P01_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "072cd2ac-4455-41df-b48c-88255a15af23",
+    "prompt_id": "P01",
+    "prompt_text": "An Indian ASHA worker wearing a pastel pink cotton saree with a dark blue border, holding a register and counseling a mother in a rural courtyard.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P01_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "75077881-15bc-4a1e-a618-03e69aa36677",
+    "prompt_id": "P02",
+    "prompt_text": "Interior of an Indian village Primary Health Centre (PHC) with green distemper walls, a desk with a steel water jug, and vaccination charts on the wall.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P02_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "610c8b3a-36ed-483e-a5a5-2744a095c975",
+    "prompt_id": "P02",
+    "prompt_text": "Interior of an Indian village Primary Health Centre (PHC) with green distemper walls, a desk with a steel water jug, and vaccination charts on the wall.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P02_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "d7c3f269-4543-4fff-807a-81b33ddd9a94",
+    "prompt_id": "P02",
+    "prompt_text": "Interior of an Indian village Primary Health Centre (PHC) with green distemper walls, a desk with a steel water jug, and vaccination charts on the wall.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P02_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "6ebd8b2d-46ce-4310-a58e-b9e371ebfc6e",
+    "prompt_id": "P03",
+    "prompt_text": "A public health awareness wall painting in a rural Indian village with the Hindi text 'साफ पानी, स्वस्थ जीवन' clearly legible.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P03_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "5478a21d-0be6-45a4-a417-c793294707d9",
+    "prompt_id": "P03",
+    "prompt_text": "A public health awareness wall painting in a rural Indian village with the Hindi text 'साफ पानी, स्वस्थ जीवन' clearly legible.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P03_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "2bdd5e77-20a6-48fc-a13f-c1292bca7b04",
+    "prompt_id": "P03",
+    "prompt_text": "A public health awareness wall painting in a rural Indian village with the Hindi text 'साफ पानी, स्वस्थ जीवन' clearly legible.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P03_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "180bc6e5-7859-4f4b-baf9-bea5a21c86f0",
+    "prompt_id": "P04",
+    "prompt_text": "An Anganwadi worker weighing a rural Indian toddler in a blue hanging salter scale while the grandmother watches closely under an open village veranda.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P04_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "3f882e92-227b-4ba6-a4de-6d41dee7fc72",
+    "prompt_id": "P04",
+    "prompt_text": "An Anganwadi worker weighing a rural Indian toddler in a blue hanging salter scale while the grandmother watches closely under an open village veranda.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P04_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "8b1cf445-bed7-463b-92bc-b5ec94e7d186",
+    "prompt_id": "P04",
+    "prompt_text": "An Anganwadi worker weighing a rural Indian toddler in a blue hanging salter scale while the grandmother watches closely under an open village veranda.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P04_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "29373c8c-9d80-40d2-96bb-4cd4bc86c116",
+    "prompt_id": "P05",
+    "prompt_text": "A rural Indian immunization session (Village Health Sanitation and Nutrition Day) where an Auxiliary Nurse Midwife (ANM) prepares an injection from a blue ice-lined vaccine carrier box.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P05_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "68c5223f-09e0-4c52-9d35-e21d8308a7e4",
+    "prompt_id": "P05",
+    "prompt_text": "A rural Indian immunization session (Village Health Sanitation and Nutrition Day) where an Auxiliary Nurse Midwife (ANM) prepares an injection from a blue ice-lined vaccine carrier box.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P05_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "7615ae1c-8584-4462-a46d-a42f78262688",
+    "prompt_id": "P05",
+    "prompt_text": "A rural Indian immunization session (Village Health Sanitation and Nutrition Day) where an Auxiliary Nurse Midwife (ANM) prepares an injection from a blue ice-lined vaccine carrier box.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P05_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "fbe0710b-2957-4354-b087-750d73e778ca",
+    "prompt_id": "P06",
+    "prompt_text": "An Indian rural woman boiling drinking water in a traditional pot over a clean smokeless chulha in a village courtyard kitchen.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P06_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "59abf3b2-59d1-4acc-b595-783fd570b2b5",
+    "prompt_id": "P06",
+    "prompt_text": "An Indian rural woman boiling drinking water in a traditional pot over a clean smokeless chulha in a village courtyard kitchen.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P06_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "96ecdcd7-cceb-48a8-8e75-bddd14d8c33c",
+    "prompt_id": "P06",
+    "prompt_text": "An Indian rural woman boiling drinking water in a traditional pot over a clean smokeless chulha in a village courtyard kitchen.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P06_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "6cfff4a8-0443-4d16-ba53-76e541d09f47",
+    "prompt_id": "P07",
+    "prompt_text": "An elderly Indian village farmer having his blood pressure checked with a sphygmomanometer by a Community Health Officer inside an Ayushman Bharat Health and Wellness Centre.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P07_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "59445919-531e-493e-a452-2e2921192487",
+    "prompt_id": "P07",
+    "prompt_text": "An elderly Indian village farmer having his blood pressure checked with a sphygmomanometer by a Community Health Officer inside an Ayushman Bharat Health and Wellness Centre.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P07_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "66f74d86-9e66-4e96-93ea-772bbdda1bf7",
+    "prompt_id": "P07",
+    "prompt_text": "An elderly Indian village farmer having his blood pressure checked with a sphygmomanometer by a Community Health Officer inside an Ayushman Bharat Health and Wellness Centre.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P07_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "2505f915-b82b-42ea-9225-f57b76daeb1f",
+    "prompt_id": "P08",
+    "prompt_text": "A village community meeting (chaupal) gathered under a banyan tree, where a health worker shows a flipchart explaining dengue prevention and eliminating stagnant water.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P08_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "3d2f5cf3-bb35-492f-9a0a-43166a43d7fc",
+    "prompt_id": "P08",
+    "prompt_text": "A village community meeting (chaupal) gathered under a banyan tree, where a health worker shows a flipchart explaining dengue prevention and eliminating stagnant water.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P08_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "b777079c-5a49-4c28-b19b-78e00bb49c8d",
+    "prompt_id": "P08",
+    "prompt_text": "A village community meeting (chaupal) gathered under a banyan tree, where a health worker shows a flipchart explaining dengue prevention and eliminating stagnant water.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P08_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "c86abb2f-a822-4bef-8e7d-27edb17750bf",
+    "prompt_id": "P09",
+    "prompt_text": "A rural Indian telemedicine consultation where a village patient speaks to an urban specialist doctor displayed on an Android tablet inside a gram panchayat office.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P09_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "79207df2-47f3-4c98-ae15-a631ff8d2cd3",
+    "prompt_id": "P09",
+    "prompt_text": "A rural Indian telemedicine consultation where a village patient speaks to an urban specialist doctor displayed on an Android tablet inside a gram panchayat office.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P09_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "2244b81d-77e0-4eb9-b6d3-15a4be64d82d",
+    "prompt_id": "P09",
+    "prompt_text": "A rural Indian telemedicine consultation where a village patient speaks to an urban specialist doctor displayed on an Android tablet inside a gram panchayat office.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P09_openai.png",
+    "generation_metadata": null
+  },
+  {
+    "id": "566f9950-3af3-4f05-831b-b14bb7844169",
+    "prompt_id": "P10",
+    "prompt_text": "A neatly arranged medicine dispensary shelf in a rural government clinic stocked with labeled blister strips of Paracetamol, ORS sachets, and Iron Folic Acid tablets.",
+    "model_name": "Google Gemini 3.1 Flash Image Preview (Nano Banana 2)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P10_gemini31flashlite.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "aa4b5e20-f35f-4d3e-8d16-460f2890255f",
+    "prompt_id": "P10",
+    "prompt_text": "A neatly arranged medicine dispensary shelf in a rural government clinic stocked with labeled blister strips of Paracetamol, ORS sachets, and Iron Folic Acid tablets.",
+    "model_name": "Google Gemini 3 Pro Image Preview (Nano Banana Pro)",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P10_geminipro.jpg",
+    "generation_metadata": null
+  },
+  {
+    "id": "ec860cb5-275c-436f-b976-36495e7860c3",
+    "prompt_id": "P10",
+    "prompt_text": "A neatly arranged medicine dispensary shelf in a rural government clinic stocked with labeled blister strips of Paracetamol, ORS sachets, and Iron Folic Acid tablets.",
+    "model_name": "OpenAI GPT Image 1",
+    "image_url": "https://snypgasuopheucxlzmgi.supabase.co/storage/v1/object/public/eval-images/P10_openai.png",
+    "generation_metadata": null
+  }
+]
