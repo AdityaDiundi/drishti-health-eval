@@ -19,9 +19,10 @@ import confetti from 'canvas-confetti';
 interface ArenaViewProps {
   participant: { name: string; email: string; age: number };
   onEvaluationFinished: () => void;
+  onResetParticipant?: () => void;
 }
 
-export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps) {
+export function ArenaView({ participant, onEvaluationFinished, onResetParticipant }: ArenaViewProps) {
   const [currentPromptIndex, setCurrentPromptIndex] = useState(0);
   const [winnerChoice, setWinnerChoice] = useState<'A' | 'B' | 'C' | 'Tie' | null>(null);
   
@@ -147,6 +148,9 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
             ratings: newCompleted,
           }),
         });
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('drishti_participant');
+        }
         confetti({
           particleCount: 100,
           spread: 70,
@@ -210,23 +214,40 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
     );
   }
 
+  const progressPercent = Math.round((completedRatings.length / PROMPTS_DATA.length) * 100);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Top Progress & Header */}
       <div className="mb-6">
-        <div className="flex items-center justify-between text-xs font-semibold text-gray-600 mb-2">
-          <span>
-            Scenario {currentPromptIndex + 1} of {PROMPTS_DATA.length}:{' '}
-            <strong className="text-gray-900">{currentPrompt.title}</strong>
-          </span>
-          <span className="text-blue-700 font-bold">
-            {Math.round(((currentPromptIndex + 1) / PROMPTS_DATA.length) * 100)}% Completed
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-semibold text-gray-600 gap-2 mb-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span>
+              Scenario {currentPromptIndex + 1} of {PROMPTS_DATA.length}:{' '}
+              <strong className="text-gray-900">{currentPrompt.title}</strong>
+            </span>
+            <span className="text-gray-300">•</span>
+            <span className="text-gray-500 font-normal">
+              Evaluator: <strong className="text-gray-900">{participant.name}</strong>
+            </span>
+            {onResetParticipant && (
+              <button
+                type="button"
+                onClick={onResetParticipant}
+                className="text-blue-600 hover:text-blue-800 text-[11px] font-medium underline cursor-pointer"
+              >
+                (Change)
+              </button>
+            )}
+          </div>
+          <span className="text-blue-700 font-bold self-end sm:self-auto">
+            {progressPercent}% Completed
           </span>
         </div>
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
             className="h-full bg-blue-600 transition-all duration-300 rounded-full"
-            style={{ width: `${((currentPromptIndex + 1) / PROMPTS_DATA.length) * 100}%` }}
+            style={{ width: `${progressPercent}%` }}
           />
         </div>
       </div>

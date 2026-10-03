@@ -14,25 +14,34 @@ export default function Home() {
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check localStorage for existing consent
-    const stored = localStorage.getItem('drishti_participant');
-    let hasConsent = false;
-    if (stored) {
-      try {
-        setParticipant(JSON.parse(stored));
-        hasConsent = true;
-      } catch (e) {
-        // fallback
-      }
-    }
-
-    // Check URL parameters: e.g. ?tab=arena or ?tab=eval
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get('tab');
+      const forceConsent = params.get('forceConsent') === 'true';
+
+      if (forceConsent) {
+        localStorage.removeItem('drishti_participant');
+        setParticipant(null);
+        setShowConsentModal(true);
+        setActiveTab('arena');
+        return;
+      }
+
+      // Check localStorage for existing consent
+      const stored = localStorage.getItem('drishti_participant');
+      let currentPart = null;
+      if (stored) {
+        try {
+          currentPart = JSON.parse(stored);
+          setParticipant(currentPart);
+        } catch (e) {
+          // fallback
+        }
+      }
+
       if (tabParam === 'arena' || tabParam === 'eval') {
         setActiveTab('arena');
-        if (!hasConsent) {
+        if (!currentPart) {
           setShowConsentModal(true);
         }
       } else if (tabParam === 'leaderboard' || tabParam === 'gallery' || tabParam === 'methodology') {
@@ -43,9 +52,19 @@ export default function Home() {
 
   const handleConsentComplete = (data: { name: string; email: string; age: number }) => {
     setParticipant(data);
-    localStorage.setItem('drishti_participant', JSON.stringify(data));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('drishti_participant', JSON.stringify(data));
+    }
     setShowConsentModal(false);
     setActiveTab('arena');
+  };
+
+  const handleResetParticipant = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('drishti_participant');
+    }
+    setParticipant(null);
+    setShowConsentModal(true);
   };
 
   return (
@@ -64,6 +83,7 @@ export default function Home() {
             <ArenaView
               participant={participant}
               onEvaluationFinished={() => setActiveTab('leaderboard')}
+              onResetParticipant={handleResetParticipant}
             />
           ) : (
             <div className="max-w-xl mx-auto px-4 py-24 text-center">
