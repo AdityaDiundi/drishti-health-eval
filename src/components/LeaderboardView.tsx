@@ -60,7 +60,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
         {/* Research Metadata Rail */}
         <div className="flex flex-wrap items-center gap-2 mb-3.5">
           <span className="font-mono text-[10px] font-bold tracking-tight px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 border border-slate-200">
-            SEVA-EVAL v1.0
+            JANCHITRA v1.0
           </span>
           <span className="text-slate-300 font-mono text-[10px] hidden sm:inline">•</span>
           <span className="font-mono text-[10px] sm:text-[11px] text-slate-600 font-medium">
@@ -168,7 +168,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             </div>
             <a
               href="/api/export?type=ratings&format=csv"
-              download="seva_eval_ratings_anonymized.csv"
+              download="janchitra_ratings_anonymized.csv"
               className="flex items-center justify-center space-x-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 shadow-2xs transition-colors"
               title="Download verified ratings (100% anonymized, zero personal data)"
             >

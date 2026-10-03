@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Seva-Eval | Frontline Indian Healthcare Visual AI Benchmark",
+  title: "JanChitra | Frontline Indian Healthcare Visual AI Benchmark",
   description: "Independent double-blind human evaluation benchmark comparing Google Gemini 3.1 Flash, Gemini 3 Pro, and OpenAI GPT Image 1 on rural Indian public health fidelity.",
 };
 

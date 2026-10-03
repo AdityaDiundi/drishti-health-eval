@@ -78,7 +78,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
           <div className="hidden md:flex items-center space-x-2">
             <a
               href="/api/export?format=csv"
-              download="seva_eval_benchmark_dataset.csv"
+              download="janchitra_benchmark_dataset.csv"
               className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition-colors"
               title="Download public benchmark scenarios & images (anonymized, zero personal data)"
             >

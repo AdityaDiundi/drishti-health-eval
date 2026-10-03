@@ -71,7 +71,7 @@ export function ConsentModal({ isOpen, onConsentComplete, onClose }: ConsentModa
         </div>
 
         <p className="text-xs text-slate-600 mb-5 leading-relaxed bg-slate-50 p-3.5 rounded-lg border border-slate-200">
-          Welcome to the <strong>Seva-Eval Benchmark</strong>. You will participate in a double-blind human evaluation comparing frontier vision AI outputs across 10 frontline Indian public health scenarios.
+          Welcome to the <strong>JanChitra Benchmark</strong>. You will participate in a double-blind human evaluation comparing frontier vision AI outputs across 10 frontline Indian public health scenarios.
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
