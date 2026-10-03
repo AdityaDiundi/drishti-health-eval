@@ -53,6 +53,50 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
     }));
   }, [currentPromptIndex]);
 
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Helper for human-readable anchor labels
+  const getScoreDesc = (val: number) => {
+    switch (val) {
+      case 1: return 'Critical Errors / Distorted';
+      case 2: return 'Below Average / Westernized';
+      case 3: return 'Moderate / Acceptable';
+      case 4: return 'Authentic & Accurate';
+      case 5: return 'Gold Standard';
+      default: return '';
+    }
+  };
+
+  // Keyboard navigation for fast evaluation flow
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      if (e.key === '1' && currentImages[0]) {
+        setWinnerChoice(currentImages[0].blindLabel);
+        setValidationError(null);
+      }
+      if (e.key === '2' && currentImages[1]) {
+        setWinnerChoice(currentImages[1].blindLabel);
+        setValidationError(null);
+      }
+      if (e.key === '3' && currentImages[2]) {
+        setWinnerChoice(currentImages[2].blindLabel);
+        setValidationError(null);
+      }
+      if (e.key.toLowerCase() === 't') {
+        setWinnerChoice('Tie');
+        setValidationError(null);
+      }
+      if (e.key === 'Enter') {
+        handleNext();
+      }
+      if (e.key === 'Escape' && zoomImage) setZoomImage(null);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentImages, zoomImage, winnerChoice, culturalRating, medicalRating, typographyRating, feedback, currentPromptIndex]);
+
   // Reset local form when moving to a new prompt
   useEffect(() => {
     setWinnerChoice(null);
@@ -60,13 +104,15 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
     setMedicalRating(4);
     setTypographyRating(4);
     setFeedback('');
+    setValidationError(null);
   }, [currentPromptIndex]);
 
   const handleNext = async () => {
     if (!winnerChoice) {
-      alert('Please select your preferred model (or choose Tie) for this prompt before proceeding.');
+      setValidationError('Please select your preferred model (Model A, B, C) or choose "Tie / Equivalent" before proceeding.');
       return;
     }
+    setValidationError(null);
 
     const selectedWinner = currentImages.find((img) => img.blindLabel === winnerChoice)?.modelRealName || 'Tie / Equivalent';
 
@@ -210,7 +256,7 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
 
       {/* Blind 3-Model Comparison Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {currentImages.map((img) => {
+        {currentImages.map((img, idx) => {
           const isSelected = winnerChoice === img.blindLabel;
           return (
             <div
@@ -256,13 +302,16 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
                       : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white border border-slate-700'
                   }`}
                 >
+                  <span className="w-5 h-5 rounded-md bg-black/20 flex items-center justify-center text-[10px] font-mono">
+                    {idx + 1}
+                  </span>
                   {isSelected ? (
                     <>
                       <Check className="w-4 h-4 text-slate-950" />
                       <span>Selected as Best</span>
                     </>
                   ) : (
-                    <span>Vote {img.blindLabel} as Best</span>
+                    <span>Vote {img.blindLabel}</span>
                   )}
                 </button>
               </div>
@@ -276,27 +325,31 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
         <button
           type="button"
           onClick={() => setWinnerChoice('Tie')}
-          className={`px-5 py-2 rounded-xl text-xs font-semibold transition-all border ${
+          className={`flex items-center space-x-2 px-5 py-2 rounded-xl text-xs font-semibold transition-all border ${
             winnerChoice === 'Tie'
               ? 'bg-amber-500/20 text-amber-400 border-amber-500/40 shadow-sm'
               : 'bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700'
           }`}
         >
-          {winnerChoice === 'Tie' ? '✓ Marked as a Tie / Equivalent' : 'Models are Equivalent / Tie'}
+          <span className="w-4 h-4 rounded bg-slate-800 text-[10px] font-mono flex items-center justify-center text-slate-400">T</span>
+          <span>{winnerChoice === 'Tie' ? '✓ Marked as a Tie / Equivalent' : 'Models are Equivalent / Tie'}</span>
         </button>
       </div>
 
       {/* Scoring Rubric & Feedback Bar */}
       <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 mb-8">
-        <h4 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center space-x-2">
-          <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Detailed Rubric Ratings (1–5)</span>
-        </h4>
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Detailed Rubric Ratings (1–5)</span>
+          </h4>
+          <span className="text-[11px] text-slate-500 hidden sm:inline">Use keyboard numbers [1], [2], [3] or [T] to vote</span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-4">
           {/* Cultural Fidelity */}
           <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
-            <div className="flex justify-between items-center mb-1.5">
+            <div className="flex justify-between items-center mb-1">
               <span className="text-xs font-medium text-slate-300">Cultural Fidelity</span>
               <span className="text-xs font-bold text-emerald-400">{culturalRating}/5</span>
             </div>
@@ -308,12 +361,13 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
               onChange={(e) => setCulturalRating(Number(e.target.value))}
               className="w-full accent-emerald-500 cursor-pointer"
             />
-            <p className="text-[10px] text-slate-500 mt-1">Saree, village context, Indian nuance</p>
+            <p className="text-[11px] text-emerald-400/90 font-medium mt-1">{getScoreDesc(culturalRating)}</p>
+            <p className="text-[10px] text-slate-500">Saree, village context, Indian nuance</p>
           </div>
 
           {/* Medical Accuracy */}
           <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
-            <div className="flex justify-between items-center mb-1.5">
+            <div className="flex justify-between items-center mb-1">
               <span className="text-xs font-medium text-slate-300">Domain / Equipment</span>
               <span className="text-xs font-bold text-emerald-400">{medicalRating}/5</span>
             </div>
@@ -325,12 +379,13 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
               onChange={(e) => setMedicalRating(Number(e.target.value))}
               className="w-full accent-emerald-500 cursor-pointer"
             />
-            <p className="text-[10px] text-slate-500 mt-1">Vaccine box, PHC interior, register</p>
+            <p className="text-[11px] text-emerald-400/90 font-medium mt-1">{getScoreDesc(medicalRating)}</p>
+            <p className="text-[10px] text-slate-500">Vaccine box, PHC interior, register</p>
           </div>
 
           {/* Typography */}
           <div className="bg-slate-950/60 p-3.5 rounded-xl border border-slate-800/80">
-            <div className="flex justify-between items-center mb-1.5">
+            <div className="flex justify-between items-center mb-1">
               <span className="text-xs font-medium text-slate-300">Typography / Clarity</span>
               <span className="text-xs font-bold text-emerald-400">{typographyRating}/5</span>
             </div>
@@ -342,7 +397,8 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
               onChange={(e) => setTypographyRating(Number(e.target.value))}
               className="w-full accent-emerald-500 cursor-pointer"
             />
-            <p className="text-[10px] text-slate-500 mt-1">Devanagari text, charts, clarity</p>
+            <p className="text-[11px] text-emerald-400/90 font-medium mt-1">{getScoreDesc(typographyRating)}</p>
+            <p className="text-[10px] text-slate-500">Devanagari text, charts, clarity</p>
           </div>
         </div>
 
@@ -357,6 +413,17 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
           />
         </div>
       </div>
+
+      {/* Validation Banner */}
+      {validationError && (
+        <div className="mb-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-medium flex items-center justify-between animate-in fade-in duration-200">
+          <div className="flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-amber-400" />
+            <span>{validationError}</span>
+          </div>
+          <span className="text-[10px] text-amber-400/80 font-mono hidden sm:inline">Press [1], [2], [3] or [T]</span>
+        </div>
+      )}
 
       {/* Navigation Buttons */}
       <div className="flex items-center justify-between">
@@ -377,6 +444,7 @@ export function ArenaView({ participant, onEvaluationFinished }: ArenaViewProps)
           className="flex items-center space-x-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
         >
           <span>{currentPromptIndex === PROMPTS_DATA.length - 1 ? (isSubmitting ? 'Submitting...' : 'Submit Evaluation') : 'Next Prompt'}</span>
+          <span className="text-[10px] opacity-75 font-mono hidden sm:inline">[Enter ↵]</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>

@@ -124,13 +124,16 @@ export async function POST(req: Request) {
 
     memoryRatings.push(...formattedRatings);
 
-    // Also attempt saving to Supabase if tables exist
+    // Save to Supabase
     const adminSupabase = getAdminSupabase();
     try {
-      await adminSupabase.from('eval_participants').insert([newParticipant]);
-      await adminSupabase.from('eval_ratings').insert(formattedRatings);
-    } catch (dbErr) {
-      console.warn('Note: Stored in memory backend. Supabase table write notice:', dbErr);
+      const { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
+      if (pErr) console.error('Supabase participant write error:', pErr.message);
+      
+      const { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
+      if (rErr) console.error('Supabase ratings write error:', rErr.message);
+    } catch (dbErr: any) {
+      console.warn('Supabase DB connection notice:', dbErr.message);
     }
 
     return NextResponse.json({
