@@ -58,11 +58,11 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       {/* Sleek, Minimal Hero Section */}
       <div className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 mb-8 shadow-xs">
         {/* Subtle Category Pill */}
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse"></span>
-          <span>Indian Public Health Visual AI Benchmark</span>
-          <span className="text-gray-300">•</span>
-          <span className="text-gray-500 font-normal">Blind Pairwise Human Evaluation</span>
+        <div className="inline-flex flex-wrap items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4 max-w-full">
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse shrink-0"></span>
+          <span>Indian Public Health AI Benchmark</span>
+          <span className="text-gray-300 hidden sm:inline">•</span>
+          <span className="text-gray-500 font-normal hidden sm:inline">Blind Pairwise Human Evaluation</span>
         </div>
 
         {/* Clean, Impactful Headline */}
@@ -101,46 +101,46 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
         {/* Action CTAs & Telemetry Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 border-t border-gray-100">
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
             {onStartEvaluation && (
               <button
                 onClick={onStartEvaluation}
-                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center space-x-1.5"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer flex items-center space-x-1.5"
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Start Evaluation →</span>
               </button>
             )}
             {onNavigateTab && (
-              <>
+              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-2.5">
                 <button
                   onClick={() => onNavigateTab('gallery')}
-                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
+                  className="px-3.5 py-2 text-center rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
                 >
-                  Gallery (30 Images)
+                  Gallery (30)
                 </button>
                 <button
                   onClick={() => onNavigateTab('methodology')}
-                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
+                  className="px-3.5 py-2 text-center rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
                 >
                   Methodology
                 </button>
-              </>
+              </div>
             )}
           </div>
 
           {/* Right: Live Telemetry Badges */}
-          <div className="flex items-center space-x-2.5 self-start sm:self-auto">
-            <div className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-right">
+          <div className="grid grid-cols-3 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:space-x-2.5">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl px-2.5 sm:px-3 py-1.5 text-center sm:text-right">
               <div className="text-[10px] uppercase font-bold text-gray-400">Evaluators</div>
-              <div className="text-sm font-extrabold text-gray-900 flex items-center justify-end space-x-1">
+              <div className="text-sm font-extrabold text-gray-900 flex items-center justify-center sm:justify-end space-x-1">
                 <Users className="w-3.5 h-3.5 text-blue-600" />
                 <span>{totalParticipants}</span>
               </div>
             </div>
-            <div className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-1.5 text-right">
+            <div className="bg-gray-50 border border-gray-200 rounded-xl px-2.5 sm:px-3 py-1.5 text-center sm:text-right">
               <div className="text-[10px] uppercase font-bold text-gray-400">Total Votes</div>
-              <div className="text-sm font-extrabold text-gray-900 flex items-center justify-end space-x-1">
+              <div className="text-sm font-extrabold text-gray-900 flex items-center justify-center sm:justify-end space-x-1">
                 <BarChart3 className="w-3.5 h-3.5 text-amber-600" />
                 <span>{totalRatings}</span>
               </div>
@@ -148,11 +148,11 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             <a
               href="/api/export?type=ratings&format=csv"
               download="drishti_health_eval_ratings_anonymized.csv"
-              className="flex items-center space-x-1 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold text-gray-700 shadow-2xs transition-colors"
+              className="flex items-center justify-center space-x-1 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-gray-700 shadow-2xs transition-colors"
               title="Download verified ratings (100% anonymized, zero personal data)"
             >
-              <Download className="w-3.5 h-3.5 text-gray-500" />
-              <span>Ratings CSV</span>
+              <Download className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+              <span className="truncate">Ratings CSV</span>
             </a>
           </div>
         </div>

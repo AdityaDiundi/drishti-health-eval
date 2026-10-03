@@ -218,8 +218,12 @@ export async function POST(req: Request) {
       created_at: new Date().toISOString(),
     }));
 
-    if (formattedRatings.length === 0) {
-      return NextResponse.json({ error: 'No valid ratings found in payload' }, { status: 400 });
+    // Strict Data Sanity Guardrail: Reject abandoned or partial submissions.
+    // Every evaluator must complete all 10 scenarios to maintain unbiased Elo & Bradley-Terry rankings.
+    if (formattedRatings.length < 10) {
+      return NextResponse.json({
+        error: `Incomplete evaluation (${formattedRatings.length}/10 scenarios completed). All 10 scenarios must be evaluated to ensure unbiased model ratings.`,
+      }, { status: 400 });
     }
 
     // Save to Supabase (primary store)
@@ -232,6 +236,13 @@ export async function POST(req: Request) {
         pErr = fb.error;
       }
       if (pErr) console.error('Supabase participant write error:', pErr.message);
+
+      // Data Sanity: Clear prior ratings if this participant previously completed to prevent vote duplication
+      try {
+        await adminSupabase.from('eval_ratings').delete().eq('participant_id', participantId);
+      } catch (delErr) {
+        // Continue if delete fails or is empty
+      }
       
       let { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
       if (rErr) {

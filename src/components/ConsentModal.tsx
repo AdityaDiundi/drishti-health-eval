@@ -60,13 +60,13 @@ export function ConsentModal({ isOpen, onConsentComplete, onClose }: ConsentModa
         )}
 
         {/* Modal Badge - Google M3 Header */}
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+        <div className="flex items-center space-x-3 mb-4 pr-8">
+          <div className="w-10 h-10 shrink-0 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
             <ShieldCheck className="w-5 h-5" />
           </div>
-          <div>
-            <h2 className="text-lg font-bold text-gray-900 tracking-tight">Participant Consent &amp; Onboarding</h2>
-            <p className="text-xs text-gray-500">Drishti-Health • Human Evaluation Protocol</p>
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 tracking-tight truncate sm:whitespace-normal">Participant Consent</h2>
+            <p className="text-xs text-gray-500 truncate">Human Evaluation Protocol (18+)</p>
           </div>
         </div>
 
