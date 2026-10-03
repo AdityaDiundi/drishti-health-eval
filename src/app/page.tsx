@@ -83,7 +83,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] text-gray-900 flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen bg-[#F7F8F5] text-[#171A18] flex flex-col font-sans selection:bg-[#DDEBE3] selection:text-[#0F2E24]">
       {/* Header Navigation */}
       <Header
         activeTab={activeTab}
@@ -96,27 +96,27 @@ export default function Home() {
         {activeTab === 'arena' && (
           hasCompletedEvaluation ? (
             <div className="max-w-xl mx-auto px-4 py-20 text-center animate-in fade-in duration-200">
-              <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
-                <div className="w-14 h-14 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle2 className="w-7 h-7" />
+              <div className="bg-white border border-[#E3E7E2] rounded-xl p-8 shadow-xs">
+                <div className="w-12 h-12 bg-[#DDEBE3] text-[#0F2E24] border border-[#C6DDD1] rounded-xl flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle2 className="w-6 h-6" />
                 </div>
-                <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#DDEBE3]/60 text-[#0F2E24] border border-[#C6DDD1]">
                   Submission Recorded
                 </span>
-                <h3 className="text-xl font-bold text-gray-900 mt-3 mb-2">You Have Completed the Benchmark</h3>
-                <p className="text-xs text-gray-600 mb-6 leading-relaxed">
+                <h3 className="text-xl font-bold text-[#0F2E24] mt-3 mb-2">You Have Completed the Benchmark</h3>
+                <p className="text-xs text-[#69716B] mb-6 leading-relaxed">
                   Thank you, <strong>{participant?.name || 'Evaluator'}</strong>! Your 10 public health pairwise ratings have been recorded in the benchmark database and are reflected in the live Leaderboard.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                   <button
                     onClick={() => setActiveTab('leaderboard')}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer"
                   >
                     View Live Leaderboard →
                   </button>
                   <button
                     onClick={handleStartAnotherEvaluation}
-                    className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold text-xs shadow-2xs transition-all cursor-pointer"
+                    className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-all cursor-pointer"
                   >
                     Start Another Evaluation
                   </button>
@@ -131,14 +131,14 @@ export default function Home() {
             />
           ) : (
             <div className="max-w-xl mx-auto px-4 py-24 text-center">
-              <div className="p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">Participant Onboarding Required</h3>
-                <p className="text-xs text-gray-600 mb-6 leading-relaxed">
+              <div className="p-8 rounded-xl bg-white border border-[#E3E7E2] shadow-xs">
+                <h3 className="text-xl font-bold text-[#0F2E24] mb-2">Evaluator Onboarding Required</h3>
+                <p className="text-xs text-[#69716B] mb-6 leading-relaxed">
                   To participate in the blind pairwise evaluation study as mandated by the study protocol, please complete the 18+ consent verification.
                 </p>
                 <button
                   onClick={() => setShowConsentModal(true)}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-xs hover:bg-blue-700 transition-colors cursor-pointer shadow-xs"
+                  className="px-6 py-2.5 rounded-lg bg-[#0F2E24] text-white font-semibold text-xs hover:bg-[#163d30] transition-colors cursor-pointer shadow-xs"
                 >
                   Complete Consent &amp; Start
                 </button>
@@ -173,14 +173,16 @@ export default function Home() {
       />
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white py-6 text-center text-xs text-gray-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>Drishti-Health Visual Benchmark • Built for Josh Talks AI Product Evaluation</span>
-          <div className="flex items-center space-x-4 text-gray-600">
-            <button onClick={() => setActiveTab('arena')} className="hover:text-blue-600">Arena</button>
-            <button onClick={() => setActiveTab('leaderboard')} className="hover:text-amber-600">Leaderboard</button>
-            <button onClick={() => setActiveTab('gallery')} className="hover:text-gray-900">Gallery</button>
-            <button onClick={() => setActiveTab('methodology')} className="hover:text-purple-600">Methodology</button>
+      <footer className="border-t border-[#E3E7E2] bg-white py-6 text-center text-xs text-[#69716B]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="font-medium text-[#171A18]">
+            JANEVAL v1.0 • Frontier Vision AI Benchmark for Indian Public-Health Representation
+          </span>
+          <div className="flex items-center space-x-4 text-[#69716B]">
+            <button onClick={() => setActiveTab('arena')} className="hover:text-[#0F2E24] cursor-pointer">Arena</button>
+            <button onClick={() => setActiveTab('leaderboard')} className="hover:text-[#0F2E24] cursor-pointer">Rankings</button>
+            <button onClick={() => setActiveTab('gallery')} className="hover:text-[#0F2E24] cursor-pointer">Gallery</button>
+            <button onClick={() => setActiveTab('methodology')} className="hover:text-[#0F2E24] cursor-pointer">Methodology</button>
           </div>
         </div>
       </footer>

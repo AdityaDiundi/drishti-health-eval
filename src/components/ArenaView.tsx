@@ -172,33 +172,33 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
   if (isFinished) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-        <div className="w-16 h-16 bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-6 text-blue-600 shadow-sm">
+        <div className="w-16 h-16 bg-[#DDEBE3] border border-[#C6DDD1] rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#0F2E24] shadow-sm">
           <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight mb-2">
           Evaluation Completed!
         </h2>
-        <p className="text-gray-600 text-sm max-w-lg mx-auto mb-8">
+        <p className="text-[#69716B] text-sm max-w-lg mx-auto mb-8">
           Thank you, <strong>{participant.name}</strong>. Your blind ratings across all 10 Indian public health prompts have been successfully recorded.
         </p>
 
         {/* Model Reveal Table */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 text-left mb-8 shadow-sm">
-          <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider mb-4 flex items-center space-x-2">
+        <div className="bg-white border border-[#E3E7E2] rounded-xl p-6 text-left mb-8 shadow-sm">
+          <h3 className="text-xs font-bold text-[#0F2E24] uppercase tracking-wider mb-4 flex items-center space-x-2">
             <Award className="w-4 h-4 text-amber-500" />
             <span>Blind Identity Reveal &amp; Your Picks</span>
           </h3>
 
           <div className="space-y-3">
             {completedRatings.map((r, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs">
+              <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-[#FAFBF9] border border-[#E3E7E2] text-xs">
                 <div>
-                  <span className="font-bold text-blue-700 mr-2">{r.prompt_id}</span>
-                  <span className="text-gray-800 font-medium">{r.prompt_title}</span>
+                  <span className="font-bold text-[#0F2E24] mr-2">{r.prompt_id}</span>
+                  <span className="text-[#171A18] font-medium">{r.prompt_title}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-gray-500">Your Pick:</span>
-                  <span className="px-2.5 py-1 rounded-md font-semibold bg-white text-gray-900 border border-gray-300 shadow-2xs">
+                  <span className="text-[#69716B]">Your Pick:</span>
+                  <span className="px-2.5 py-1 rounded-md font-semibold bg-white text-[#171A18] border border-[#E3E7E2] shadow-2xs">
                     {r.winner_model}
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
 
         <button
           onClick={onEvaluationFinished}
-          className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-sm transition-all cursor-pointer"
+          className="px-6 py-3 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-sm shadow-xs transition-all cursor-pointer"
         >
           View Updated Leaderboard →
         </button>
@@ -381,10 +381,10 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                   key={tab}
                   type="button"
                   onClick={() => setMobileActiveTab(tab)}
-                  className={`flex-1 py-2 rounded-xl text-xs font-bold transition-all ${
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
                     mobileActiveTab === tab
-                      ? 'bg-white text-blue-700 shadow-xs border border-gray-200'
-                      : 'text-gray-500 hover:text-gray-800'
+                      ? 'bg-white text-[#0F2E24] shadow-xs border border-[#E3E7E2]'
+                      : 'text-[#69716B] hover:text-[#171A18]'
                   }`}
                 >
                   Model {tab}
@@ -416,11 +416,11 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                     </button>
                   </div>
 
-                  <div className="p-4 bg-white border-t border-gray-100">
+                  <div className="p-4 bg-white border-t border-[#E3E7E2]">
                     <button
                       type="button"
                       onClick={() => handleSelectWinner(activeImg.blindLabel)}
-                      className="w-full py-3 px-4 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-xs flex items-center justify-center space-x-2 cursor-pointer"
+                      className="w-full py-3 px-4 rounded-lg text-xs font-semibold bg-[#0F2E24] hover:bg-[#163d30] text-white shadow-xs flex items-center justify-center space-x-2 cursor-pointer"
                     >
                       <Check className="w-4 h-4" />
                       <span>Select Model {activeImg.blindLabel}</span>
@@ -463,10 +463,10 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                 <span>Change Model</span>
               </button>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 leading-snug">
-                  Scenario Criteria • <span className="text-blue-700">{winnerChoice === 'Tie' ? 'Tie / Equivalent' : `Model ${winnerChoice}`}</span>
+                <h3 className="text-sm font-bold text-[#171A18] leading-snug">
+                  Scenario Criteria • <span className="text-[#0F2E24] font-mono">{winnerChoice === 'Tie' ? 'Tie / Equivalent' : `Model ${winnerChoice}`}</span>
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-[#69716B]">
                   Rate public health fidelity for Prompt {currentPrompt.id}
                 </p>
               </div>
@@ -477,10 +477,10 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6 items-start">
             {/* Left Column: Image Preview (Sticky on desktop so it never disappears) */}
             <div className="lg:col-span-5 lg:sticky lg:top-24">
-              <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
-                <div className="px-3.5 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-xs font-semibold text-gray-700">
+              <div className="bg-white border border-[#E3E7E2] rounded-xl overflow-hidden shadow-xs">
+                <div className="px-3.5 py-2 bg-[#FAFBF9] border-b border-[#E3E7E2] flex items-center justify-between text-xs font-semibold text-[#171A18]">
                   <span>Selected Image Preview</span>
-                  <span className="text-blue-700 text-[11px] font-mono">{currentPrompt.id}</span>
+                  <span className="text-[#0F2E24] text-[11px] font-mono">{currentPrompt.id}</span>
                 </div>
 
                 {winnerChoice !== 'Tie' && selectedWinnerImage ? (
@@ -513,8 +513,8 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                   </div>
                 )}
 
-                <div className="p-3 bg-gray-50 border-t border-gray-200 text-xs text-gray-600">
-                  <p className="line-clamp-2 font-serif italic text-gray-700">
+                <div className="p-3 bg-[#FAFBF9] border-t border-[#E3E7E2] text-xs text-[#69716B]">
+                  <p className="line-clamp-2 font-serif italic text-[#171A18]">
                     &ldquo;{currentPrompt.prompt}&rdquo;
                   </p>
                 </div>
@@ -527,17 +527,17 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                 const currentScore = selectedAnswers[q.id] || 5;
 
                 return (
-                  <div key={q.id} className="p-4 rounded-2xl bg-white border border-gray-200 shadow-xs">
+                  <div key={q.id} className="p-4 rounded-xl bg-white border border-[#E3E7E2] shadow-xs">
                     <div className="flex items-start justify-between gap-3 mb-2.5">
                       <div>
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F2E24] bg-[#DDEBE3]/60 px-2 py-0.5 rounded border border-[#C6DDD1]">
                           {q.dimensionTitle}
                         </span>
-                        <h4 className="text-xs sm:text-sm font-semibold text-gray-900 mt-1 leading-snug">
+                        <h4 className="text-xs sm:text-sm font-semibold text-[#171A18] mt-1 leading-snug">
                           {qIdx + 1}. {q.question}
                         </h4>
                       </div>
-                      <span className="text-xs font-bold text-gray-700 shrink-0 bg-gray-100 px-2 py-1 rounded-md border border-gray-200">
+                      <span className="text-xs font-bold text-[#0F2E24] shrink-0 bg-[#FAFBF9] px-2 py-1 rounded-md border border-[#E3E7E2] font-mono">
                         {currentScore}/5 pts
                       </span>
                     </div>
@@ -551,19 +551,19 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                             key={opt.score}
                             type="button"
                             onClick={() => setSelectedAnswers((prev) => ({ ...prev, [q.id]: opt.score }))}
-                            className={`text-left p-3 rounded-xl border text-xs transition-all cursor-pointer ${
+                            className={`text-left p-3 rounded-lg border text-xs transition-all cursor-pointer ${
                               isPicked
-                                ? 'bg-blue-50/70 border-blue-600 ring-2 ring-blue-100 shadow-xs'
-                                : 'bg-gray-50 border-gray-200 hover:border-gray-300 text-gray-700 hover:bg-white'
+                                ? 'bg-[#DDEBE3]/40 border-[#0F2E24] ring-1 ring-[#0F2E24] shadow-xs'
+                                : 'bg-[#FAFBF9] border-[#E3E7E2] hover:border-[#69716B] text-[#171A18] hover:bg-white'
                             }`}
                           >
                             <div className="flex items-center justify-between mb-1">
-                              <span className={`font-bold text-xs ${isPicked ? 'text-blue-700' : 'text-gray-900'}`}>
+                              <span className={`font-bold text-xs ${isPicked ? 'text-[#0F2E24]' : 'text-[#171A18]'}`}>
                                 {opt.label}
                               </span>
                               <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
                                 opt.score === 5
-                                  ? 'bg-emerald-100 text-emerald-800'
+                                  ? 'bg-[#DDEBE3] text-[#0F2E24]'
                                   : opt.score === 3
                                   ? 'bg-amber-100 text-amber-800'
                                   : 'bg-red-100 text-red-800'
@@ -571,7 +571,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                                 {opt.score}p
                               </span>
                             </div>
-                            <p className="text-[11px] text-gray-500 leading-tight">
+                            <p className="text-[11px] text-[#69716B] leading-tight">
                               {opt.description}
                             </p>
                           </button>
@@ -583,13 +583,13 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
               })}
 
               {/* Optional Evaluator Qualitative Note */}
-              <div className="bg-white border border-gray-200 rounded-2xl p-3.5 shadow-xs">
+              <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 shadow-xs">
                 <input
                   type="text"
                   value={feedback}
                   onChange={(e) => setFeedback(e.target.value)}
                   placeholder="Optional evaluator observation (e.g. 'ASHA border is spot-on, courtyard looks genuine')"
-                  className="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:outline-hidden focus:border-blue-600 focus:bg-white transition-colors"
+                  className="w-full bg-[#FAFBF9] border border-[#E3E7E2] rounded-lg px-3.5 py-2 text-xs text-[#171A18] placeholder-[#69716B] focus:outline-hidden focus:border-[#0F2E24] focus:bg-white transition-colors"
                 />
               </div>
 
@@ -598,7 +598,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                 <button
                   type="button"
                   onClick={() => setSubStep('pick')}
-                  className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 shadow-2xs transition-all cursor-pointer"
+                  className="flex items-center space-x-1.5 px-4 py-2.5 rounded-lg text-xs font-semibold text-[#171A18] bg-white border border-[#E3E7E2] hover:bg-[#FAFBF9] shadow-2xs transition-all cursor-pointer"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back to Models</span>
@@ -608,7 +608,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
                   type="button"
                   onClick={handleNextPrompt}
                   disabled={isSubmitting}
-                  className="flex items-center space-x-2 px-6 py-2.5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-all cursor-pointer"
+                  className="flex items-center space-x-2 px-6 py-2.5 rounded-lg text-xs font-semibold text-white bg-[#0F2E24] hover:bg-[#163d30] shadow-sm transition-all cursor-pointer"
                 >
                   <span>
                     {currentPromptIndex === PROMPTS_DATA.length - 1

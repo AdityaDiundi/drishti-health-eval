@@ -1,7 +1,21 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Trophy, Medal, Award, TrendingUp, Download, Users, CheckCircle, BarChart3, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import {
+  Trophy,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Users,
+  BarChart3,
+  Sparkles,
+  ExternalLink,
+  Shield,
+  Layers,
+  CheckCircle2,
+} from 'lucide-react';
 
 interface LeaderboardItem {
   modelId: string;
@@ -28,6 +42,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
   const [totalRatings, setTotalRatings] = useState(0);
   const [totalParticipants, setTotalParticipants] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch('/api/ratings')
@@ -44,313 +59,634 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       });
   }, []);
 
+  const toggleExpand = (modelId: string) => {
+    setExpandedModelId((prev) => (prev === modelId ? null : modelId));
+  };
+
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-gray-500 text-sm">
-        <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-        Loading live Drishti-Health benchmark data...
+      <div className="max-w-7xl mx-auto px-4 py-24 text-center text-[#69716B] text-sm">
+        <div className="w-8 h-8 border-2 border-[#0F2E24] border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        Loading live JANEVAL benchmark data...
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-      {/* JANEVAL v1.0 Research Masthead & Hero Container */}
-      <div className="bg-white border border-slate-200 rounded-xl p-6 sm:p-8 mb-8 shadow-2xs">
-        {/* Research Metadata Rail */}
-        <div className="flex flex-wrap items-center gap-2 mb-3.5">
-          <span className="font-mono text-[10px] font-bold tracking-tight px-2 py-0.5 rounded bg-slate-900 text-white">
-            JANEVAL v1.0
-          </span>
-          <span className="text-slate-300 font-mono text-[10px] hidden sm:inline">•</span>
-          <span className="font-mono text-[10px] sm:text-[11px] text-slate-600 font-medium">
-            {totalRatings} VERIFIED BLIND VOTES · {totalParticipants} EVALUATORS · DOUBLE-BLIND PAIRWISE ELO
-          </span>
-        </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10">
+      {/* ───────────────────────────────────────────────────────────
+          1. WIDE EDITORIAL HERO SECTION (Matching Reference 1)
+         ─────────────────────────────────────────────────────────── */}
+      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        {/* Left Column (Editorial Headline, Copy, 3 Axis Pills, CTAs) */}
+        <div className="lg:col-span-7 space-y-5">
+          {/* Metadata Rail */}
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-[#0F2E24] text-white tracking-wider uppercase">
+              JANEVAL v1.0
+            </span>
+            <span className="text-[#C6DDD1] font-mono text-[10px] hidden sm:inline">•</span>
+            <span className="font-mono text-[10.5px] sm:text-[11px] text-[#69716B] font-medium tracking-tight">
+              {totalRatings} VERIFIED BLIND VOTES · {totalParticipants} EVALUATORS · DOUBLE-BLIND PAIRWISE ELO
+            </span>
+          </div>
 
-        {/* Clean, High-Authority Research Headline */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Frontier Vision AI Benchmark for Indian Public-Health Representation
-        </h1>
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0F2E24] tracking-tight leading-[1.15]">
+            Frontier Vision AI Benchmark for Indian Public-Health Representation
+          </h1>
 
-        {/* Core Research Framing */}
-        <div className="mt-3 space-y-2 max-w-3xl text-xs sm:text-sm text-slate-600 leading-relaxed">
-          <p className="font-semibold text-slate-900 text-sm sm:text-base">
+          {/* Subtitle / Core Research Question */}
+          <p className="text-base sm:text-lg font-medium text-[#171A18] leading-snug">
             How accurately do frontier vision models represent real-world Indian public-health contexts?
           </p>
-          <p>
+
+          {/* Supporting Description */}
+          <p className="text-xs sm:text-sm text-[#69716B] leading-relaxed max-w-2xl">
             JANEVAL evaluates AI-generated images across 10 frontline healthcare scenarios, testing whether models can reproduce the cultural, infrastructural, and visual details that make these environments recognizably and authentically Indian.
+          </p>
+
+          {/* 3 Compact Evaluation-Axis Indicators */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
+                CULTURAL FIDELITY
+              </span>
+              <span className="text-[11px] text-[#69716B] mt-0.5 block">
+                People, settings, practices
+              </span>
+            </div>
+
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
+                INFRASTRUCTURAL FIDELITY
+              </span>
+              <span className="text-[11px] text-[#69716B] mt-0.5 block">
+                Systems, equipment, spaces
+              </span>
+            </div>
+
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
+                ORTHOGRAPHIC FIDELITY
+              </span>
+              <span className="text-[11px] text-[#69716B] mt-0.5 block">
+                Devanagari &amp; public-health text
+              </span>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            {onStartEvaluation && (
+              <button
+                onClick={onStartEvaluation}
+                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+              >
+                <span>Explore the Arena</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
+
+            {onNavigateTab && (
+              <>
+                <button
+                  onClick={() => onNavigateTab('gallery')}
+                  className="px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                >
+                  View Gallery
+                </button>
+                <button
+                  onClick={() => onNavigateTab('methodology')}
+                  className="px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                >
+                  Methodology
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column (Authentic Documentary Photograph) */}
+        <div className="lg:col-span-5">
+          <div className="relative rounded-xl border border-[#E3E7E2] overflow-hidden bg-white shadow-xs group">
+            <div className="relative aspect-4/3 w-full overflow-hidden">
+              <img
+                src="/hero-phc.jpg"
+                alt="Authentic rural Indian public health context with ASHA worker, village mother, infant, and vaccine cold-box"
+                className="w-full h-full object-cover object-center group-hover:scale-[1.01] transition-transform duration-300"
+              />
+            </div>
+            <div className="p-3 bg-white border-t border-[#E3E7E2] flex items-center justify-between text-[11px] text-[#69716B]">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#0F2E24]">
+                GROUND TRUTH BENCHMARK CONTEXT
+              </span>
+              <span>Primary Health Sub-Centre, Rural India</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────
+          2. LIVE BENCHMARK METRICS STRIP (4 Columns, Live Bound)
+         ─────────────────────────────────────────────────────────── */}
+      <section className="bg-white border border-[#E3E7E2] rounded-xl p-5 sm:p-6 shadow-2xs">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 divide-y md:divide-y-0 md:divide-x divide-[#E3E7E2]">
+          {/* Metric 1: Live Evaluators */}
+          <div className="text-center sm:text-left md:px-4 first:pl-0">
+            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
+              {totalParticipants}
+            </div>
+            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
+              Independent Evaluators
+            </div>
+          </div>
+
+          {/* Metric 2: Live Verified Blind Votes */}
+          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4">
+            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
+              {totalRatings}
+            </div>
+            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
+              Verified Blind Votes
+            </div>
+          </div>
+
+          {/* Metric 3: Scenarios */}
+          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4">
+            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
+              10
+            </div>
+            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
+              Rural Health Scenarios
+            </div>
+          </div>
+
+          {/* Metric 4: Evaluation Axes */}
+          <div className="text-center sm:text-left pt-4 md:pt-0 md:px-4 last:pr-0">
+            <div className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] tracking-tight">
+              3
+            </div>
+            <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#69716B] mt-1">
+              Evaluation Axes
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────
+          3. MODEL RANKINGS (Primary Benchmark Table Rows)
+         ─────────────────────────────────────────────────────────── */}
+      <section className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pb-1 border-b border-[#E3E7E2]">
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
+              Model Rankings
+            </h2>
+            <p className="text-xs text-[#69716B] mt-1">
+              Models ranked using double-blind pairwise comparisons (Elo).
+            </p>
+          </div>
+          <div className="flex items-center space-x-2 text-[11px] text-[#69716B] font-mono">
+            <span>K=32 · BASELINE=1200</span>
+          </div>
+        </div>
+
+        {/* Table Container */}
+        <div className="bg-white border border-[#E3E7E2] rounded-xl overflow-hidden shadow-2xs">
+          {/* Table Header (Desktop) */}
+          <div className="hidden lg:grid grid-cols-12 gap-4 px-6 py-3 bg-[#FAFBF9] border-b border-[#E3E7E2] text-[10px] font-mono uppercase font-bold text-[#69716B] tracking-wider">
+            <div className="col-span-1">Rank</div>
+            <div className="col-span-4">Model / Provider</div>
+            <div className="col-span-1 text-right">Elo Rating</div>
+            <div className="col-span-1 text-right">Win Rate</div>
+            <div className="col-span-1 text-center">Cultural</div>
+            <div className="col-span-1 text-center">Infrastr.</div>
+            <div className="col-span-1 text-center">Orthogr.</div>
+            <div className="col-span-2 text-right">Detail</div>
+          </div>
+
+          {/* Model Rows */}
+          <div className="divide-y divide-[#E3E7E2]">
+            {leaderboard.map((item, index) => {
+              const isFirst = index === 0 && totalRatings > 0;
+              const isExpanded = expandedModelId === item.modelId;
+              const rankStr = `0${index + 1}`.slice(-2);
+
+              const isGoogle = item.company.toLowerCase().includes('google');
+              const isOpenAI = item.company.toLowerCase().includes('openai');
+
+              return (
+                <div
+                  key={item.modelId}
+                  className={`transition-colors hover:bg-[#FAFBF9] ${
+                    isExpanded ? 'bg-[#F7F8F5]' : ''
+                  }`}
+                >
+                  {/* Row Summary */}
+                  <div
+                    onClick={() => toggleExpand(item.modelId)}
+                    className="p-4 sm:p-5 lg:px-6 cursor-pointer"
+                  >
+                    {/* Desktop Layout */}
+                    <div className="hidden lg:grid grid-cols-12 gap-4 items-center">
+                      {/* Rank */}
+                      <div className="col-span-1 flex items-center space-x-1.5">
+                        <span className="font-mono text-sm font-bold text-[#0F2E24] bg-[#F7F8F5] border border-[#E3E7E2] px-2 py-0.5 rounded">
+                          {rankStr}
+                        </span>
+                        {isFirst && (
+                          <Trophy className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        )}
+                      </div>
+
+                      {/* Model / Provider */}
+                      <div className="col-span-4 flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg border border-[#E3E7E2] bg-white flex items-center justify-center shrink-0">
+                          {isOpenAI ? (
+                            <svg className="w-4 h-4 text-[#0F2E24]" viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M22.28 9.87a6.22 6.22 0 0 0-.52-4.99 6.26 6.26 0 0 0-6.73-3.08 6.22 6.22 0 0 0-4.66-2.07 6.27 6.27 0 0 0-5.95 4.33 6.22 6.22 0 0 0-4.04 2.92 6.27 6.27 0 0 0 .76 7.37 6.22 6.22 0 0 0 .52 4.99 6.26 6.26 0 0 0 6.73 3.08 6.22 6.22 0 0 0 4.66 2.07 6.27 6.27 0 0 0 5.95-4.33 6.22 6.22 0 0 0 4.04-2.92 6.27 6.27 0 0 0-.76-7.37z" />
+                            </svg>
+                          ) : isGoogle ? (
+                            <svg className="w-4 h-4" viewBox="0 0 24 24">
+                              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+                              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.27 21.41 7.33 24 12 24z"/>
+                              <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.27 2.59 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                            </svg>
+                          ) : (
+                            <span className="font-mono text-xs font-bold text-[#0F2E24]">{item.shortName[0]}</span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-bold text-sm text-[#171A18] tracking-tight">
+                            {item.name}
+                          </div>
+                          <div className="flex items-center space-x-1.5 mt-0.5">
+                            <span className="text-[10px] font-mono text-[#69716B]">
+                              {item.company} · {item.codename}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Elo Rating */}
+                      <div className="col-span-1 text-right">
+                        <div className="font-mono text-sm font-bold text-[#0F2E24]">
+                          {totalRatings > 0 ? item.eloRating : '1200'}
+                        </div>
+                        <div className="text-[9px] font-mono text-[#69716B] uppercase">
+                          {totalRatings > 0 ? 'Elo' : 'Base'}
+                        </div>
+                      </div>
+
+                      {/* Win Rate */}
+                      <div className="col-span-1 text-right">
+                        <div className="font-mono text-sm font-bold text-[#171A18]">
+                          {totalRatings > 0 ? `${item.winRate}%` : '—'}
+                        </div>
+                        <div className="text-[9px] font-mono text-[#69716B]">
+                          {item.wins} wins
+                        </div>
+                      </div>
+
+                      {/* Cultural */}
+                      <div className="col-span-1 text-center">
+                        <span className="font-mono text-xs font-semibold text-[#171A18]">
+                          {item.avgCultural > 0 ? `${item.avgCultural}/5` : '—'}
+                        </span>
+                        {item.avgCultural > 0 && (
+                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
+                            <div
+                              className="h-full bg-[#0F2E24] rounded-full"
+                              style={{ width: `${(item.avgCultural / 5) * 100}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Infrastructure */}
+                      <div className="col-span-1 text-center">
+                        <span className="font-mono text-xs font-semibold text-[#171A18]">
+                          {item.avgMedical > 0 ? `${item.avgMedical}/5` : '—'}
+                        </span>
+                        {item.avgMedical > 0 && (
+                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
+                            <div
+                              className="h-full bg-[#4E8F6F] rounded-full"
+                              style={{ width: `${(item.avgMedical / 5) * 100}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Orthography */}
+                      <div className="col-span-1 text-center">
+                        <span className="font-mono text-xs font-semibold text-[#171A18]">
+                          {item.avgTypography > 0 ? `${item.avgTypography}/5` : '—'}
+                        </span>
+                        {item.avgTypography > 0 && (
+                          <div className="w-12 h-1 bg-[#E3E7E2] rounded-full mx-auto mt-1 overflow-hidden">
+                            <div
+                              className="h-full bg-[#0F2E24] rounded-full"
+                              style={{ width: `${(item.avgTypography / 5) * 100}%` }}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Detail Chevron */}
+                      <div className="col-span-2 flex items-center justify-end space-x-1.5 text-xs text-[#69716B]">
+                        <span className="text-[11px] font-medium hidden xl:inline">
+                          {isExpanded ? 'Close' : 'Inspect'}
+                        </span>
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-[#0F2E24]" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-[#69716B]" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Mobile / Tablet View (< lg screens) */}
+                    <div className="lg:hidden space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <span className="font-mono text-xs font-bold text-[#0F2E24] bg-[#F7F8F5] border border-[#E3E7E2] px-2 py-0.5 rounded">
+                            {rankStr}
+                          </span>
+                          <div>
+                            <div className="font-bold text-sm text-[#171A18]">
+                              {item.name}
+                            </div>
+                            <div className="text-[10px] font-mono text-[#69716B]">
+                              {item.company} · {item.codename}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-mono text-sm font-bold text-[#0F2E24]">
+                            {totalRatings > 0 ? item.eloRating : '1200'} ELO
+                          </div>
+                          <div className="text-[10px] font-mono text-[#69716B]">
+                            {totalRatings > 0 ? `${item.winRate}% win rate` : 'Baseline'}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Mobile Scores Grid */}
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#E3E7E2] text-center">
+                        <div className="bg-[#FAFBF9] p-1.5 rounded border border-[#E3E7E2]">
+                          <div className="text-[9px] uppercase font-bold text-[#69716B]">Cultural</div>
+                          <div className="font-mono text-xs font-bold text-[#0F2E24]">
+                            {item.avgCultural > 0 ? `${item.avgCultural}/5` : '—'}
+                          </div>
+                        </div>
+                        <div className="bg-[#FAFBF9] p-1.5 rounded border border-[#E3E7E2]">
+                          <div className="text-[9px] uppercase font-bold text-[#69716B]">Infrastr.</div>
+                          <div className="font-mono text-xs font-bold text-[#0F2E24]">
+                            {item.avgMedical > 0 ? `${item.avgMedical}/5` : '—'}
+                          </div>
+                        </div>
+                        <div className="bg-[#FAFBF9] p-1.5 rounded border border-[#E3E7E2]">
+                          <div className="text-[9px] uppercase font-bold text-[#69716B]">Orthogr.</div>
+                          <div className="font-mono text-xs font-bold text-[#0F2E24]">
+                            {item.avgTypography > 0 ? `${item.avgTypography}/5` : '—'}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Detail Panel (Section 8) */}
+                  {isExpanded && (
+                    <div className="px-6 py-5 bg-[#F7F8F5] border-t border-[#E3E7E2] space-y-4 animate-in fade-in duration-150">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-white p-3.5 rounded-lg border border-[#E3E7E2]">
+                          <div className="text-[10px] font-mono font-bold uppercase text-[#69716B]">
+                            PAIRWISE PERFORMANCE
+                          </div>
+                          <div className="mt-2 space-y-1 text-xs">
+                            <div className="flex justify-between">
+                              <span className="text-[#69716B]">Total Wins:</span>
+                              <span className="font-mono font-bold text-[#171A18]">{item.wins}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#69716B]">Win Rate:</span>
+                              <span className="font-mono font-bold text-[#171A18]">{item.winRate}%</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#69716B]">Elo Standing:</span>
+                              <span className="font-mono font-bold text-[#0F2E24]">{item.eloRating}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-3.5 rounded-lg border border-[#E3E7E2]">
+                          <div className="text-[10px] font-mono font-bold uppercase text-[#69716B]">
+                            AXIS PERFORMANCE BREAKDOWN
+                          </div>
+                          <div className="mt-2 space-y-1.5 text-xs">
+                            <div className="flex justify-between items-center">
+                              <span className="text-[#69716B]">Cultural Context:</span>
+                              <span className="font-mono font-bold">{item.avgCultural}/5</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[#69716B]">Equipment / Cold-Chain:</span>
+                              <span className="font-mono font-bold">{item.avgMedical}/5</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-[#69716B]">Devanagari Orthography:</span>
+                              <span className="font-mono font-bold">{item.avgTypography}/5</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-3.5 rounded-lg border border-[#E3E7E2] flex flex-col justify-between">
+                          <div>
+                            <div className="text-[10px] font-mono font-bold uppercase text-[#69716B]">
+                              SCENARIO GALLERY
+                            </div>
+                            <p className="text-xs text-[#69716B] mt-1">
+                              Inspect all 10 public-health test scenarios generated by {item.name}.
+                            </p>
+                          </div>
+                          {onNavigateTab && (
+                            <button
+                              onClick={() => onNavigateTab('gallery')}
+                              className="mt-3 inline-flex items-center space-x-1.5 text-xs font-semibold text-[#0F2E24] hover:text-[#4E8F6F]"
+                            >
+                              <span>Inspect in Gallery</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────────────────────────────────────────────────────
+          4. EVALUATION AXES (Section 12: 3 Clean Architectural Cards)
+         ─────────────────────────────────────────────────────────── */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[#0F2E24] tracking-tight">
+            Evaluation Dimensions
+          </h2>
+          <p className="text-xs text-[#69716B] mt-1">
+            Three domain-specific axes designed to measure public-health representational authenticity.
           </p>
         </div>
 
-        {/* 2 Crisp Meta Chips */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 my-5 pt-4 border-t border-slate-100">
-          <div className="bg-slate-50 border border-slate-200/80 rounded-lg p-3">
-            <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-              03 EVALUATION AXES
-            </span>
-            <span className="font-semibold text-xs text-slate-800 mt-1 block">
-              CULTURAL · INFRASTRUCTURAL · ORTHOGRAPHY
-            </span>
-          </div>
-          <div className="bg-slate-50 border border-slate-200/80 rounded-lg p-3">
-            <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
-              03 FRONTIER MODELS
-            </span>
-            <span className="font-semibold text-xs text-slate-800 mt-1 block font-mono">
-              OpenAI GPT Image 1 · Google Gemini 3 Pro · Google Gemini 3.1 Flash
-            </span>
-          </div>
-        </div>
-
-        {/* 3 Domain-Specific Evaluation Axes Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 my-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* AXIS 01 */}
-          <div className="p-4 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors shadow-2xs flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#FAFBF9] text-[#0F2E24] border border-[#E3E7E2]">
                   AXIS 01 · CULTURAL FIDELITY
                 </span>
               </div>
-              <h3 className="text-sm font-bold text-slate-900">Frontline Healthcare in Context</h3>
-              <p className="text-xs text-slate-600 font-medium italic mt-1 mb-2.5">
+              <h3 className="text-sm font-bold text-[#171A18]">
+                Frontline Healthcare in Context
+              </h3>
+              <p className="text-xs text-[#69716B] italic leading-snug">
                 Can the model represent who, where, and how healthcare happens in rural India?
               </p>
-              <div className="text-[11px] text-slate-600 space-y-1">
-                <div className="font-semibold text-slate-800 text-[10px] uppercase tracking-wider font-mono text-slate-400">Evaluated against:</div>
-                <p>• ASHA &amp; frontline worker appearance, identity &amp; role</p>
-                <p>• Appropriate clothing, cotton sarees &amp; government ID badges</p>
-                <p>• Working registers, field kits &amp; physical record books</p>
-                <p>• Patient–worker interactions &amp; grounded social body language</p>
-                <p>• Rural household &amp; community triage settings</p>
+              <div className="text-[11.5px] text-[#69716B] space-y-1.5 pt-2 border-t border-[#E3E7E2]">
+                <div className="font-mono text-[10px] font-bold text-[#171A18] uppercase">
+                  Evaluated Against:
+                </div>
+                <p>• ASHA worker role, presence, and authentic community placement</p>
+                <p>• Official cotton sarees, identification badges &amp; physical registers</p>
+                <p>• Grounded social body language in rural household triage settings</p>
               </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 text-[11px]">
-              <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block">Failure mode:</span>
-              <p className="text-slate-500 mt-0.5 leading-snug">
-                Westernized clinical representation, doctor lab coats, generic uniforms &amp; distorted social dynamics.
+            <div className="mt-4 pt-3 border-t border-[#E3E7E2] text-[11px]">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#69716B] block">
+                Primary Failure Mode:
+              </span>
+              <p className="text-[#69716B] mt-0.5 leading-snug">
+                Westernized clinical representation, doctor lab coats, generic uniforms, and distorted social hierarchies.
               </p>
             </div>
           </div>
 
           {/* AXIS 02 */}
-          <div className="p-4 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors shadow-2xs flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#FAFBF9] text-[#0F2E24] border border-[#E3E7E2]">
                   AXIS 02 · INFRASTRUCTURAL FIDELITY
                 </span>
               </div>
-              <h3 className="text-sm font-bold text-slate-900">Public-Health Systems &amp; Equipment</h3>
-              <p className="text-xs text-slate-600 font-medium italic mt-1 mb-2.5">
-                Can the model accurately represent the equipment and infrastructure used in frontline public healthcare?
+              <h3 className="text-sm font-bold text-[#171A18]">
+                Public-Health Systems &amp; Equipment
+              </h3>
+              <p className="text-xs text-[#69716B] italic leading-snug">
+                Can the model accurately represent the equipment and spaces of rural frontline healthcare?
               </p>
-              <div className="text-[11px] text-slate-600 space-y-1">
-                <div className="font-semibold text-slate-800 text-[10px] uppercase tracking-wider font-mono text-slate-400">Evaluated against:</div>
+              <div className="text-[11.5px] text-[#69716B] space-y-1.5 pt-2 border-t border-[#E3E7E2]">
+                <div className="font-mono text-[10px] font-bold text-[#171A18] uppercase">
+                  Evaluated Against:
+                </div>
                 <p>• WHO-standard blue vaccine cold-chain carriers</p>
                 <p>• Conditioned hard ice packs &amp; dial temperature monitors</p>
-                <p>• Salter spring hanging baby weighing scales &amp; slings</p>
-                <p>• Rural Primary Health Centre architecture &amp; non-electric storage</p>
+                <p>• Salter spring hanging baby weighing scales &amp; fabric slings</p>
               </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 text-[11px]">
-              <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block">Failure mode:</span>
-              <p className="text-slate-500 mt-0.5 leading-snug">
-                Generic hospital apparatus, incorrect cold-chain equipment &amp; unrealistic high-tech clinical environments.
+            <div className="mt-4 pt-3 border-t border-[#E3E7E2] text-[11px]">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#69716B] block">
+                Primary Failure Mode:
+              </span>
+              <p className="text-[#69716B] mt-0.5 leading-snug">
+                Generic hospital apparatus, incorrect cold-chain hardware, and unrealistic high-tech clinical environments.
               </p>
             </div>
           </div>
 
           {/* AXIS 03 */}
-          <div className="p-4 rounded-lg bg-white border border-slate-200 hover:border-slate-300 transition-colors shadow-2xs flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-5 shadow-2xs flex flex-col justify-between">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[9px] uppercase font-bold px-2 py-0.5 rounded bg-[#FAFBF9] text-[#0F2E24] border border-[#E3E7E2]">
                   AXIS 03 · ORTHOGRAPHIC FIDELITY
                 </span>
               </div>
-              <h3 className="text-sm font-bold text-slate-900">Devanagari &amp; Public-Health Text</h3>
-              <p className="text-xs text-slate-600 font-medium italic mt-1 mb-2.5">
+              <h3 className="text-sm font-bold text-[#171A18]">
+                Devanagari &amp; Public-Health Text
+              </h3>
+              <p className="text-xs text-[#69716B] italic leading-snug">
                 Can the model generate accurate, legible Hindi in real-world public-health environments?
               </p>
-              <div className="text-[11px] text-slate-600 space-y-1">
-                <div className="font-semibold text-slate-800 text-[10px] uppercase tracking-wider font-mono text-slate-400">Evaluated against:</div>
+              <div className="text-[11.5px] text-[#69716B] space-y-1.5 pt-2 border-t border-[#E3E7E2]">
+                <div className="font-mono text-[10px] font-bold text-[#171A18] uppercase">
+                  Evaluated Against:
+                </div>
                 <p>• Continuous unbroken shirorekha (top horizontal line)</p>
-                <p>• Accurate matras &amp; correct character conjunct formation</p>
+                <p>• Accurate matras &amp; character conjunct formation</p>
                 <p>• Legible Hindi public-health messaging on clinic wall murals</p>
-                <p>• Authentic awareness messaging without Latin glyph bleeding</p>
               </div>
             </div>
-            <div className="mt-3 pt-2.5 border-t border-slate-100 text-[11px]">
-              <span className="font-mono text-[10px] uppercase font-bold text-slate-400 block">Failure mode:</span>
-              <p className="text-slate-500 mt-0.5 leading-snug">
-                Gibberish pseudo-script, broken characters, misplaced matras &amp; fragmented shirorekha.
+            <div className="mt-4 pt-3 border-t border-[#E3E7E2] text-[11px]">
+              <span className="font-mono text-[10px] uppercase font-bold text-[#69716B] block">
+                Primary Failure Mode:
+              </span>
+              <p className="text-[#69716B] mt-0.5 leading-snug">
+                Gibberish pseudo-script, Latin character bleeding, broken conjuncts, and fragmented shirorekha.
               </p>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Action CTAs & Telemetry Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 border-t border-slate-100">
-          <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
-            {onStartEvaluation && (
-              <button
-                onClick={onStartEvaluation}
-                className="w-full sm:w-auto justify-center px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer flex items-center space-x-1.5"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-slate-300" />
-                <span>Start Evaluation</span>
-              </button>
-            )}
-            {onNavigateTab && (
-              <div className="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-2.5">
-                <button
-                  onClick={() => onNavigateTab('gallery')}
-                  className="px-3.5 py-2 text-center rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
-                >
-                  Gallery (30)
-                </button>
-                <button
-                  onClick={() => onNavigateTab('methodology')}
-                  className="px-3.5 py-2 text-center rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
-                >
-                  Methodology
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Right: Live Telemetry Badges */}
-          <div className="grid grid-cols-3 gap-2 w-full sm:w-auto sm:flex sm:items-center sm:space-x-2.5">
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 sm:px-3 py-1.5 text-center sm:text-right">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Evaluators</div>
-              <div className="font-mono text-sm font-bold text-slate-900 flex items-center justify-center sm:justify-end space-x-1">
-                <Users className="w-3.5 h-3.5 text-slate-500" />
-                <span>{totalParticipants}</span>
-              </div>
-            </div>
-            <div className="bg-slate-50 border border-slate-200 rounded-lg px-2.5 sm:px-3 py-1.5 text-center sm:text-right">
-              <div className="text-[10px] uppercase font-bold text-slate-400">Total Votes</div>
-              <div className="font-mono text-sm font-bold text-slate-900 flex items-center justify-center sm:justify-end space-x-1">
-                <BarChart3 className="w-3.5 h-3.5 text-slate-500" />
-                <span>{totalRatings}</span>
-              </div>
-            </div>
-            <a
-              href="/api/export?type=ratings&format=csv"
-              download="janeval_ratings_anonymized.csv"
-              className="flex items-center justify-center space-x-1 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs font-semibold text-slate-700 shadow-2xs transition-colors"
-              title="Download verified ratings (100% anonymized, zero personal data)"
-            >
-              <Download className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-              <span className="truncate font-mono text-[11px]">Ratings CSV</span>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Leaderboard Cards - Disciplined Architectural Geometry */}
-      <div className="grid grid-cols-1 gap-4 mb-10">
-        {leaderboard.map((item, index) => {
-          const isFirst = index === 0 && totalRatings > 0;
-          return (
-            <div
-              key={item.modelId}
-              className={`bg-white border rounded-xl p-5 sm:p-6 transition-all duration-200 shadow-2xs ${
-                isFirst
-                  ? 'border-slate-300 ring-1 ring-slate-200'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                {/* Left: Rank & Model Info */}
-                <div className="flex items-start sm:items-center space-x-4">
-                  <div className={`w-11 h-11 rounded-lg flex items-center justify-center font-extrabold text-sm shrink-0 border ${
-                    index === 0
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : index === 1
-                      ? 'bg-slate-100 text-slate-800 border-slate-300'
-                      : 'bg-slate-50 text-slate-600 border-slate-200'
-                  }`}>
-                    {index === 0 ? <Trophy className="w-5 h-5 text-amber-400" /> : `#${index + 1}`}
-                  </div>
-
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2 mb-1">
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">{item.name}</h3>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200 font-semibold">
-                        {item.company}
-                      </span>
-                      <span className="text-[10px] text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200 font-mono">
-                        {item.codename}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-500">
-                      Frontier Generative Vision • 10 Rural Health Scenarios
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right: Metrics Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center shrink-0">
-                  {/* Elo Rating */}
-                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80 min-w-[90px]">
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Elo Rating</div>
-                    <div className="font-mono text-base font-bold text-slate-900">{totalRatings > 0 ? item.eloRating : '1200'}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{totalRatings > 0 ? 'Live Score' : 'Baseline'}</div>
-                  </div>
-
-                  {/* Win Rate */}
-                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80 min-w-[90px]">
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Win Rate</div>
-                    <div className="font-mono text-base font-bold text-slate-900">{totalRatings > 0 ? `${item.winRate}%` : '—'}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{item.wins} Wins</div>
-                  </div>
-
-                  {/* Cultural Score */}
-                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80 min-w-[90px]">
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Attire Fidelity</div>
-                    <div className="font-mono text-base font-bold text-slate-900">
-                      {item.avgCultural > 0 ? <>{item.avgCultural}<span className="text-xs text-slate-400 font-normal">/5</span></> : '—'}
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">ASHA Context</div>
-                  </div>
-
-                  {/* Typography Score */}
-                  <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200/80 min-w-[90px]">
-                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Devanagari</div>
-                    <div className="font-mono text-base font-bold text-slate-900">
-                      {item.avgTypography > 0 ? <>{item.avgTypography}<span className="text-xs text-slate-400 font-normal">/5</span></> : '—'}
-                    </div>
-                    <div className="text-[10px] text-slate-400 font-mono">Hindi Script</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Evaluation Method & Manifesto - Disciplined Architectural Container */}
-      <div className="bg-slate-900 border border-slate-800 text-white rounded-xl p-6 sm:p-8 shadow-sm mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-slate-800">
+      {/* ───────────────────────────────────────────────────────────
+          5. METHODOLOGICAL MANIFESTO (Section 11: Dark Brand Container)
+         ─────────────────────────────────────────────────────────── */}
+      <section className="bg-[#0F2E24] text-white rounded-xl p-6 sm:p-8 border border-[#163d30] shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-white/10">
           <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-[#DDEBE3]">
               EVALUATION METHODOLOGY
             </span>
             <h2 className="text-base sm:text-lg font-bold tracking-tight text-white mt-1">
               THE BENCHMARK MEASURES REPRESENTATION FIDELITY — NOT AESTHETIC PREFERENCE.
             </h2>
           </div>
-          <span className="shrink-0 font-mono text-[11px] font-semibold px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">
+          <span className="shrink-0 font-mono text-[10px] sm:text-[11px] font-semibold px-2.5 py-1 rounded bg-white/10 text-[#DDEBE3] border border-white/15">
             BLIND · PAIRWISE · HUMAN-EVALUATED
           </span>
         </div>
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-3xl">
-          Each image is evaluated through blinded pairwise comparisons by independent evaluators. Results are aggregated using an Elo-based ranking system. The benchmark asks a singular, foundational question: <span className="text-white font-medium">Can AI generate an image of India that is actually faithful to the India it is depicting?</span>
+        <p className="text-xs sm:text-sm text-[#DDEBE3]/90 leading-relaxed max-w-3xl">
+          Each image is evaluated through blinded pairwise comparisons by independent evaluators. Results are aggregated using an Elo-based ranking system. The benchmark asks a singular, foundational question: <span className="text-white font-semibold">Can AI generate an image of India that is actually faithful to the India it is depicting?</span>
         </p>
-      </div>
+
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <a
+            href="/api/export?format=csv"
+            download="janeval_benchmark_dataset.csv"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-[#0F2E24] bg-white hover:bg-[#FAFBF9] transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Benchmark Dataset CSV</span>
+          </a>
+          <a
+            href="/api/export?type=ratings&format=csv"
+            download="janeval_ratings_anonymized.csv"
+            className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-white/10 hover:bg-white/15 border border-white/20 transition-colors"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Ratings CSV ({totalRatings} votes)</span>
+          </a>
+        </div>
+      </section>
     </div>
   );
 }

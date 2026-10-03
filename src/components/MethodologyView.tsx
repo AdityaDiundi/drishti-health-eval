@@ -1,169 +1,232 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, BookOpen, Calculator, Layers, FileText, CheckCircle2, Sparkles, Scale } from 'lucide-react';
+import { Download, ExternalLink } from 'lucide-react';
 
 export function MethodologyView() {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-gray-800">
-      {/* Header */}
-      <div className="mb-8 border-b border-gray-200 pb-6">
-        <div className="flex items-center space-x-2 mb-2">
-          <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-            Study Protocol &amp; Scientific Methodology
-          </span>
-          <span className="text-xs text-gray-500">• Version 2.0 (Criteria-Grounded Evaluation)</span>
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-[#171A18] font-sans">
+      {/* Publication Masthead */}
+      <header className="mb-10 pb-8 border-b border-[#E3E7E2]">
+        <div className="flex items-center space-x-2 text-[10px] font-mono uppercase font-bold text-[#69716B] tracking-wider mb-2">
+          <span>BENCHMARK SPECIFICATION &amp; STUDY PROTOCOL</span>
+          <span>·</span>
+          <span className="text-[#0F2E24]">JANEVAL v1.0</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-tight">
           Benchmark Methodology &amp; Mathematical Formulation
         </h1>
-        <p className="text-xs sm:text-sm text-gray-600 mt-2 max-w-3xl leading-relaxed">
-          The Drishti-Health Visual Benchmark establishes an empirical, reproducible human preference framework for evaluating foundation vision models on rural Indian public health scenarios.
+
+        <p className="text-sm sm:text-base text-[#69716B] mt-3 leading-relaxed">
+          An empirical framework for evaluating representation fidelity of frontier image foundation models across Indian public-health realities.
         </p>
-      </div>
 
-      <div className="space-y-10">
-        {/* Section 1: Core Mathematical Formulation */}
-        <section className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <Calculator className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-900">1. Mathematical Rating Model (Bradley-Terry &amp; Elo System)</h2>
+        {/* Key Methodological Manifesto */}
+        <div className="mt-6 p-5 rounded-xl bg-[#0F2E24] text-white">
+          <div className="text-[10px] font-mono uppercase font-bold tracking-widest text-[#DDEBE3]">
+            CORE BENCHMARK PRINCIPLE
           </div>
+          <p className="text-base sm:text-lg font-bold tracking-tight text-white mt-1">
+            &ldquo;JANEVAL measures representation fidelity — not aesthetic preference.&rdquo;
+          </p>
+          <p className="text-xs text-[#DDEBE3]/90 mt-2 leading-relaxed">
+            The benchmark rejects surface-level image polish and photorealism when detached from ground-truth cultural, infrastructural, and orthographic realities.
+          </p>
+        </div>
+      </header>
 
-          <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-4">
-            To rank models without human subjective score inflation or scale calibration drift, Drishti-Health employs the <strong>Bradley-Terry (1952) paired comparison model</strong>, operationalized through the <strong>Elo (1978) rating system</strong> with logistic win probability distribution, following the methodology popularized by LMSYS Chatbot Arena.
+      {/* Main Research Sections (Typography, Dividers, Whitespace) */}
+      <div className="space-y-12 leading-relaxed text-sm text-[#171A18]">
+        {/* 1. Benchmark Overview */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            1. Benchmark Overview
+          </h2>
+          <p className="text-[#69716B]">
+            Generative vision foundation models are increasingly deployed in global south communication, education, and health awareness pipelines. However, typical evaluation suites benchmark on Western benchmarks (ImageNet, COCO) or open-domain aesthetic preferences. JANEVAL establishes an empirical, reproducible testbed testing whether frontier models can authentically depict rural Indian frontline public-health contexts without falling into colonial stereotyping, westernized clinical tropes, or orthographic hallucination.
+          </p>
+          <div className="bg-white border border-[#E3E7E2] rounded-lg p-4 font-mono text-xs text-[#0F2E24] space-y-1">
+            <div>• Target Domain: Frontline Indian Public Healthcare (ASHA, PHC/Sub-Centres, UIP)</div>
+            <div>• Models Evaluated: OpenAI GPT Image 1, Google Gemini 3 Pro, Google Gemini 3.1 Flash</div>
+            <div>• Dataset Size: 10 Standardized Scenarios × 3 Foundation Models = 30 Images</div>
+          </div>
+        </section>
+
+        <hr className="border-[#E3E7E2]" />
+
+        {/* 2. Evaluation Design */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            2. Evaluation Design
+          </h2>
+          <p className="text-[#69716B]">
+            Rather than asking annotators for subjective 1–5 aesthetic ratings, JANEVAL employs a double-blind pairwise comparison protocol coupled with criteria-grounded verification. Human evaluators are presented with blinded model outputs for a given standardized prompt and asked to judge representational fidelity against physical reference guidelines.
+          </p>
+        </section>
+
+        <hr className="border-[#E3E7E2]" />
+
+        {/* 3. Evaluation Axes */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            3. Evaluation Axes
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-4">
+              <span className="font-mono text-[10px] font-bold text-[#0F2E24] block uppercase">
+                AXIS 01 · CULTURAL FIDELITY
+              </span>
+              <p className="font-medium text-xs text-[#171A18] mt-1">People, settings, practices</p>
+              <p className="text-xs text-[#69716B] mt-2 leading-relaxed">
+                ASHA worker attire (official pink cotton saree with border), identification badges, village registers, maternal postures, and authentic rural domestic triage contexts.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-4">
+              <span className="font-mono text-[10px] font-bold text-[#0F2E24] block uppercase">
+                AXIS 02 · INFRASTRUCTURAL FIDELITY
+              </span>
+              <p className="font-medium text-xs text-[#171A18] mt-1">Systems, equipment, spaces</p>
+              <p className="text-xs text-[#69716B] mt-2 leading-relaxed">
+                WHO-standard blue vaccine cold-chain carriers, conditioned hard ice-packs, dial temperature gauges, Salter hanging scales, and Primary Health Sub-Centre architecture.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E3E7E2] rounded-lg p-4">
+              <span className="font-mono text-[10px] font-bold text-[#0F2E24] block uppercase">
+                AXIS 03 · ORTHOGRAPHIC FIDELITY
+              </span>
+              <p className="font-medium text-xs text-[#171A18] mt-1">Devanagari &amp; public-health text</p>
+              <p className="text-xs text-[#69716B] mt-2 leading-relaxed">
+                Continuous unbroken shirorekha (horizontal top line), accurate matras, correct character conjuncts, and legible Hindi awareness messages on clinic murals.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <hr className="border-[#E3E7E2]" />
+
+        {/* 4. Scenarios */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            4. Scenario Specification
+          </h2>
+          <p className="text-[#69716B]">
+            The 10 benchmark scenarios were designed in consultation with public-health field workers and vernacular AI practitioners. Each scenario targets specific systemic blind spots of frontier foundation vision models:
+          </p>
+          <div className="bg-white border border-[#E3E7E2] rounded-lg divide-y divide-[#E3E7E2] text-xs">
+            <div className="p-3 flex justify-between">
+              <span className="font-mono font-semibold">P01–P03</span>
+              <span className="text-[#69716B]">Frontline Community Healthcare (ASHA home triage, village register check, maternity counselling)</span>
+            </div>
+            <div className="p-3 flex justify-between">
+              <span className="font-mono font-semibold">P04–P06</span>
+              <span className="text-[#69716B]">Cold Chain &amp; Immunization Hardware (Universal Immunization Day, blue cold-boxes, infant weighing)</span>
+            </div>
+            <div className="p-3 flex justify-between">
+              <span className="font-mono font-semibold">P07–P10</span>
+              <span className="text-[#69716B]">Infrastructure, Telemedicine &amp; Devanagari Signage (PHC triage, Hindi wall murals, digital tablet records)</span>
+            </div>
+          </div>
+        </section>
+
+        <hr className="border-[#E3E7E2]" />
+
+        {/* 5. Pairwise Evaluation & Elo Formulation */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            5. Mathematical Model: Bradley-Terry &amp; Elo System
+          </h2>
+          <p className="text-[#69716B]">
+            To eliminate score inflation and subjective calibration shifts across evaluators, JANEVAL operationalizes the <strong>Bradley-Terry (1952)</strong> paired comparison formulation via the <strong>Elo (1978)</strong> rating system with logistic win probabilities.
           </p>
 
-          {/* Formula Card */}
-          <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-5 font-mono text-xs space-y-4">
+          <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-lg p-5 font-mono text-xs space-y-4">
             <div>
-              <div className="text-gray-500 text-[11px] mb-1 font-sans font-semibold">1. Expected Score Formulation:</div>
-              <div className="bg-white p-3 rounded-lg border border-gray-200 text-gray-900 overflow-x-auto">
+              <div className="text-[#69716B] text-[11px] mb-1 font-sans font-semibold">
+                1. Expected Score Formulation:
+              </div>
+              <div className="bg-white p-2.5 rounded border border-[#E3E7E2] text-[#0F2E24]">
                 E_A = 1 / (1 + 10^((R_B - R_A) / 400))
               </div>
-              <p className="text-[11px] text-gray-500 mt-1 font-sans">
-                Where <code>R_A</code> and <code>R_B</code> represent the prior ratings of Model A and Model B, and <code>E_A</code> represents the expected probability of Model A winning.
+              <p className="text-[11px] text-[#69716B] mt-1 font-sans">
+                Where <code>R_A</code> and <code>R_B</code> represent prior ratings, and <code>E_A</code> is the logistic win expectancy for Model A.
               </p>
             </div>
 
             <div>
-              <div className="text-gray-500 text-[11px] mb-1 font-sans font-semibold">2. Elo Rating Update Rule:</div>
-              <div className="bg-white p-3 rounded-lg border border-gray-200 text-gray-900 overflow-x-auto">
+              <div className="text-[#69716B] text-[11px] mb-1 font-sans font-semibold">
+                2. Rating Update Rule:
+              </div>
+              <div className="bg-white p-2.5 rounded border border-[#E3E7E2] text-[#0F2E24]">
                 R_A(new) = R_A(old) + K * (S_A - E_A)
               </div>
-              <p className="text-[11px] text-gray-500 mt-1 font-sans">
-                Where <code>K = 32</code> (update sensitivity coefficient), initial baseline <code>R_0 = 1200</code>, and actual outcome <code>S_A ∈ &#123;1.0 (Win), 0.5 (Tie), 0.0 (Loss)&#125;</code>.
+              <p className="text-[11px] text-[#69716B] mt-1 font-sans">
+                Sensitivity coefficient <code>K = 32</code>, baseline initial score <code>R_0 = 1200</code>, with outcome <code>S_A ∈ &#123;1.0 (Win), 0.5 (Tie), 0.0 (Loss)&#125;</code>.
               </p>
             </div>
 
             <div>
-              <div className="text-gray-500 text-[11px] mb-1 font-sans font-semibold">3. Multi-Model Decomposition:</div>
-              <p className="text-[11px] text-gray-600 font-sans leading-relaxed">
-                When an evaluator evaluates 3 models (A, B, C) and chooses Model A, the match decomposes into two independent head-to-head pairwise contests: <strong>(A &gt; B)</strong> and <strong>(A &gt; C)</strong>. If a tie is selected, all three pairwise combinations resolve with <code>S = 0.5</code>.
+              <div className="text-[#69716B] text-[11px] mb-1 font-sans font-semibold">
+                3. Multi-Model Decomposition:
+              </div>
+              <p className="text-[11px] text-[#69716B] font-sans">
+                When an evaluator compares models A, B, and C and selects A, the vote decomposes into two independent pairwise outcomes: (A &gt; B) and (A &gt; C). Ties distribute 0.5 across all pairs.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Section 2: Updated Evaluation Logic (Prompt-Specific Clarifying Criteria) */}
-        <section className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <Scale className="w-5 h-5 text-emerald-600" />
-            <h2 className="text-lg font-bold text-gray-900">2. Evaluation Logic Update: Prompt-Specific Clarifying Criteria</h2>
-          </div>
+        <hr className="border-[#E3E7E2]" />
 
-          <div className="p-4 rounded-xl bg-blue-50 border border-blue-200 mb-5">
-            <div className="flex items-center space-x-2 text-blue-900 font-bold text-xs mb-1">
-              <Sparkles className="w-4 h-4 text-blue-600" />
-              <span>Methodology Evolution: From Generic Sliders to Scenario-Specific Verification</span>
-            </div>
-            <p className="text-xs text-blue-800 leading-relaxed">
-              Standard 1–5 generic Likert sliders suffer from severe evaluator variance (different evaluators define &quot;4/5&quot; inconsistently). Drishti-Health v2.0 replaces arbitrary generic sliders with <strong>3 prompt-specific clarifying verification questions</strong> for each scenario.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs text-gray-600 mb-4">
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <span className="font-bold text-gray-900 block mb-1">Cultural &amp; Uniform Fidelity (5 / 3 / 1 pts)</span>
-              <p className="leading-relaxed">
-                Evaluates compliance with government uniforms (mandated ASHA pastel pink saree with dark blue border), authentic regional attire (farmer gamchha/kurta), and village domestic architecture.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <span className="font-bold text-gray-900 block mb-1">Clinical &amp; Equipment Realism (5 / 3 / 1 pts)</span>
-              <p className="leading-relaxed">
-                Assesses accurate grassroots medical devices: blue ice-lined vaccine carriers, spring Salter weighing scales, and blister medicine strips, penalizing Western hospital tropes.
-              </p>
-            </div>
-
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <span className="font-bold text-gray-900 block mb-1">Devanagari Script &amp; Dignity (5 / 3 / 1 pts)</span>
-              <p className="leading-relaxed">
-                Directly scores non-Latin typography for Hindi wall paintings (<span className="font-serif font-bold text-gray-900">&lsquo;साफ पानी, स्वस्थ जीवन&rsquo;</span>) and ensures dignified human representation without poverty caricature.
-              </p>
-            </div>
-          </div>
+        {/* 6. Evaluator Protocol & Experimental Controls */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            6. Evaluator Protocol &amp; Controls
+          </h2>
+          <ul className="space-y-2 text-[#69716B] text-xs sm:text-sm list-disc list-inside">
+            <li>
+              <strong className="text-[#171A18]">Double-Blind Randomization:</strong> Model names are fully masked (Model A, B, C) and display order is randomized per prompt to eliminate positional bias.
+            </li>
+            <li>
+              <strong className="text-[#171A18]">18+ Voluntary Protocol:</strong> Evaluators undergo explicit consent verification prior to rating.
+            </li>
+            <li>
+              <strong className="text-[#171A18]">Zero-Abandonment Data Sanity:</strong> Only sessions where an evaluator completes all 10 scenario evaluations are committed into the live leaderboard to prevent incomplete voter bias.
+            </li>
+          </ul>
         </section>
 
-        {/* Section 3: Study Protocol & Controls */}
-        <section className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <ShieldCheck className="w-5 h-5 text-blue-600" />
-            <h2 className="text-lg font-bold text-gray-900">3. Experimental Controls &amp; Bias Mitigation</h2>
+        <hr className="border-[#E3E7E2]" />
+
+        {/* 7. Limitations & Reproducibility */}
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
+            7. Limitations &amp; Open Reproducibility
+          </h2>
+          <p className="text-[#69716B]">
+            JANEVAL evaluates synthetic generation quality in public health contexts. It does not certify medical diagnosis or therapeutic safety. All prompt scenarios, generated assets, and anonymized pairwise records are openly downloadable for scientific audit and public research.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <a
+              href="/api/export?format=csv"
+              download="janeval_benchmark_dataset.csv"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0F2E24] bg-white border border-[#E3E7E2] hover:bg-[#FAFBF9] transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download Benchmark Scenarios (CSV)</span>
+            </a>
+            <a
+              href="/api/export?type=ratings&format=csv"
+              download="janeval_ratings_anonymized.csv"
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-[#0F2E24] bg-white border border-[#E3E7E2] hover:bg-[#FAFBF9] transition-colors"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download Anonymized Ratings (CSV)</span>
+            </a>
           </div>
-
-          <div className="space-y-3 text-xs sm:text-sm text-gray-600 leading-relaxed">
-            <div className="flex items-start space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-gray-900">Double-Blind Randomization:</strong> Model identities (Google Gemini 3.1 Flash, Gemini 3 Pro, OpenAI GPT Image 1) are masked as Model A, B, and C. Positions are dynamically shuffled to eliminate left-to-right positional selection bias.
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-gray-900">18+ Informed Consent:</strong> All evaluators verify eligibility and voluntary participation under academic evaluation standards before receiving an arena token.
-              </div>
-            </div>
-
-            <div className="flex items-start space-x-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-gray-900">Zero-Mock Empirical Integrity:</strong> The platform maintains zero artificial pilot votes. Rankings, win rates, and Elo points are calculated dynamically in real-time from human evaluator submissions.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 4: Academic & Institutional References */}
-        <section className="bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-xs">
-          <div className="flex items-center space-x-2.5 mb-4">
-            <BookOpen className="w-5 h-5 text-purple-600" />
-            <h2 className="text-lg font-bold text-gray-900">4. Academic References &amp; Standards</h2>
-          </div>
-
-          <ol className="list-decimal list-inside space-y-3 text-xs text-gray-600 leading-relaxed font-sans">
-            <li>
-              <strong>Zheng, L., Chiang, W. L., Sheng, Y., et al. (2023).</strong> <em>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.</em> Large Model Systems Organization (LMSYS). arXiv:2306.05685.
-            </li>
-            <li>
-              <strong>Bradley, R. A., &amp; Terry, M. E. (1952).</strong> <em>Rank Analysis of Incomplete Block Designs: I. The Method of Paired Comparisons.</em> Biometrika, 39(3/4), 324–345.
-            </li>
-            <li>
-              <strong>Elo, A. E. (1978).</strong> <em>The Rating of Chess Players, Past and Present.</em> Arco Publishing, New York.
-            </li>
-            <li>
-              <strong>Ministry of Health and Family Welfare (MoHFW), Government of India (2019).</strong> <em>Operational Guidelines on National ASHA Mentoring Group: Uniformity Standards and Grassroots Communication Norms.</em> New Delhi.
-            </li>
-            <li>
-              <strong>National Health Mission (NHM), Govt. of India (2021).</strong> <em>Cold Chain Logistics &amp; Universal Immunization Programme (UIP) Vaccine Management Protocols.</em> Nirman Bhawan, New Delhi.
-            </li>
-            <li>
-              <strong>Josh Talks AI (2025–2026).</strong> <em>Voice of India Benchmark for Vernacular and Grassroots AI Evaluation.</em> Gurgaon, India.
-            </li>
-          </ol>
         </section>
       </div>
     </div>

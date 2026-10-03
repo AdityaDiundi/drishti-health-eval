@@ -12,8 +12,8 @@ export default function EvalRedirect() {
   }, [router]);
 
   return (
-    <div className="min-h-screen bg-[#F8F9FA] flex items-center justify-center text-gray-500 text-xs">
-      Initializing Drishti-Health Evaluation Arena...
+    <div className="min-h-screen bg-[#F7F8F5] flex items-center justify-center text-[#69716B] text-xs font-mono">
+      Initializing JANEVAL Evaluation Arena...
     </div>
   );
 }
