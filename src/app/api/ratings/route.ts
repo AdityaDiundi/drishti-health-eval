@@ -104,10 +104,13 @@ export async function GET() {
   });
 
   const totalVotes = ratings.length;
+  const uniqueEmails = new Set(
+    participants.map((p: any) => (p.email || '').trim().toLowerCase()).filter(Boolean)
+  );
   const uniqueEvaluatorsFromRatings = new Set(
     ratings.map((r: any) => r.participant_id || r.participant_name).filter(Boolean)
   ).size;
-  const totalEvaluators = Math.max(participants.length, uniqueEvaluatorsFromRatings);
+  const totalEvaluators = Math.max(uniqueEmails.size, uniqueEvaluatorsFromRatings);
 
   const leaderboard = MODELS_INFO.map((m) => {
     const stats = modelStats[m.name] || { wins: 0, totalRounds: 0, culturalSum: 0, medicalSum: 0, typographySum: 0, voteCount: 0 };
@@ -158,31 +161,68 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required participant or ratings payload' }, { status: 400 });
     }
 
-    const participantId = `p-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+    // 1. Sanitize & Normalize Participant Identifiers
+    const cleanEmail = (participant.email || '').trim().toLowerCase();
+    const cleanName = (participant.name || '').trim();
+    if (!cleanEmail.includes('@') || cleanName.length < 2) {
+      return NextResponse.json({ error: 'Invalid participant name or email format' }, { status: 400 });
+    }
+
+    // Deterministic or looked-up participant ID to prevent duplicate user fragmentation
+    const adminSupabase = getAdminSupabase();
+    let participantId = `p-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
+    
+    try {
+      const { data: existingUser } = await adminSupabase
+        .from('eval_participants')
+        .select('id')
+        .eq('email', cleanEmail)
+        .maybeSingle();
+
+      if (existingUser?.id) {
+        participantId = existingUser.id;
+      }
+    } catch (e) {
+      // Continue with generated ID if lookup fails
+    }
+
     const newParticipant = {
       id: participantId,
-      name: participant.name,
-      email: participant.email,
-      age: Number(participant.age) || 25,
+      name: cleanName,
+      email: cleanEmail,
+      age: Math.min(100, Math.max(12, Number(participant.age) || 25)),
       consent_given: true,
       created_at: new Date().toISOString(),
     };
 
-    const formattedRatings = ratings.map((r: any) => ({
+    // 2. Deduplicate prompt ratings within the payload (at most 1 vote per prompt per submission)
+    const uniqueByPrompt = new Map<string, any>();
+    ratings.forEach((r: any) => {
+      if (r && r.prompt_id && r.winner_model) {
+        uniqueByPrompt.set(r.prompt_id, r);
+      }
+    });
+
+    const clampScore = (v: any) => Math.min(5, Math.max(1, Number(v) || 4));
+
+    const formattedRatings = Array.from(uniqueByPrompt.values()).map((r: any) => ({
       id: `r-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
       participant_id: participantId,
-      participant_name: participant.name,
+      participant_name: cleanName,
       prompt_id: r.prompt_id,
       winner_model: r.winner_model,
-      cultural_fidelity: Number(r.cultural_fidelity) || 4,
-      medical_accuracy: Number(r.medical_accuracy) || 4,
-      typography_fidelity: Number(r.typography_fidelity) || 4,
-      feedback: r.feedback || '',
+      cultural_fidelity: clampScore(r.cultural_fidelity),
+      medical_accuracy: clampScore(r.medical_accuracy),
+      typography_fidelity: clampScore(r.typography_fidelity),
+      feedback: (r.feedback || '').slice(0, 1000).trim(),
       created_at: new Date().toISOString(),
     }));
 
+    if (formattedRatings.length === 0) {
+      return NextResponse.json({ error: 'No valid ratings found in payload' }, { status: 400 });
+    }
+
     // Save to Supabase (primary store)
-    const adminSupabase = getAdminSupabase();
     let dbSuccess = false;
     try {
       let { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
