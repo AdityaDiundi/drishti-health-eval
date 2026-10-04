@@ -251,18 +251,15 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
         </div>
 
         {/* Right: Methodological Indicator (10 scenarios) */}
-        <div className="flex items-center justify-between md:justify-end space-x-4 pt-3 md:pt-0 border-t md:border-t-0 border-[#E3E7E2]">
+        <div className="flex items-center justify-between md:justify-end space-x-3.5 pt-3 md:pt-0 border-t md:border-t-0 border-[#E3E7E2]">
           <div className="text-right">
-            <div className="text-[11px] text-[#69716B]">Each evaluator completes</div>
-            <div className="text-xs font-semibold text-[#171A18]">10 scenarios.</div>
+            <div className="text-[11px] text-[#69716B] leading-tight">Each evaluator completes</div>
+            <div className="text-xs font-semibold text-[#171A18] leading-tight mt-0.5">10 scenarios</div>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <div className="grid grid-cols-5 gap-1">
-              {[...Array(10)].map((_, i) => (
-                <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#4E8F6F]"></span>
-              ))}
-            </div>
-            <span className="font-mono text-[9px] text-[#69716B]">10 scenarios</span>
+          <div className="grid grid-cols-5 gap-1.5" title="10 evaluation scenarios per participant">
+            {[...Array(10)].map((_, i) => (
+              <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#4E8F6F]"></span>
+            ))}
           </div>
         </div>
       </section>
