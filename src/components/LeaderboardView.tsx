@@ -42,6 +42,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
   const [totalRatings, setTotalRatings] = useState(0);
   const [totalParticipants, setTotalParticipants] = useState(0);
+  const [scenarioStats, setScenarioStats] = useState<any[]>([]);
+  const [pairwiseBattles, setPairwiseBattles] = useState<any>({});
+  const [confidenceIntervals, setConfidenceIntervals] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [expandedModelId, setExpandedModelId] = useState<string | null>(null);
 
@@ -52,6 +55,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
         if (data.leaderboard) setLeaderboard(data.leaderboard);
         if (data.totalRatings !== undefined) setTotalRatings(data.totalRatings);
         if (data.totalParticipants !== undefined) setTotalParticipants(data.totalParticipants);
+        if (data.scenarioStats) setScenarioStats(data.scenarioStats);
+        if (data.pairwiseBattles) setPairwiseBattles(data.pairwiseBattles);
+        if (data.confidenceIntervals) setConfidenceIntervals(data.confidenceIntervals);
         setLoading(false);
       })
       .catch((err) => {
@@ -62,6 +68,13 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
   const toggleExpand = (modelId: string) => {
     setExpandedModelId((prev) => (prev === modelId ? null : modelId));
+  };
+
+  const scrollToCompare = () => {
+    const el = document.getElementById('compare-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   if (loading) {
@@ -76,113 +89,220 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10">
       {/* ───────────────────────────────────────────────────────────
-          1. WIDE EDITORIAL HERO SECTION (Matching Reference 1)
+          1. EDITORIAL HERO SECTION (Matching Artificial Analysis Reference)
          ─────────────────────────────────────────────────────────── */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-        {/* Left Column (Editorial Headline, Copy, 3 Axis Pills, CTAs) */}
-        <div className="lg:col-span-7 space-y-5">
-          {/* Metadata Rail */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-[#0F2E24] text-white tracking-wider uppercase">
-              JANEVAL v1.0
-            </span>
-            <span className="text-[#C6DDD1] font-mono text-[10px] hidden sm:inline">•</span>
-            <span className="font-mono text-[10.5px] sm:text-[11px] text-[#69716B] font-medium tracking-tight">
-              DOUBLE-BLIND PAIRWISE ELO BENCHMARK
-            </span>
-          </div>
-
-          {/* Main Title */}
-          <h1 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0F2E24] tracking-tight leading-[1.15]">
-            Frontier Vision AI Benchmark for Indian Public-Health Representation
-          </h1>
-
-          {/* Subtitle / Core Research Question */}
-          <p className="text-base sm:text-lg font-medium text-[#171A18] leading-snug">
-            How accurately do frontier vision models represent real-world Indian public-health contexts?
-          </p>
-
-          {/* Supporting Description */}
-          <p className="text-xs sm:text-sm text-[#69716B] leading-relaxed max-w-2xl">
-            JANEVAL evaluates AI-generated images across 10 frontline healthcare scenarios, testing whether models can reproduce the cultural, infrastructural, and visual details that make these environments recognizably and authentically Indian.
-          </p>
-
-          {/* 3 Compact Evaluation-Axis Indicators */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
-                CULTURAL FIDELITY
+      <section className="space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left Column: Heading, Subtitle, Actions */}
+          <div className="lg:col-span-7 space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-[#0F2E24] text-white tracking-wider uppercase">
+                JANEVAL v1.0
               </span>
-              <span className="text-[11px] text-[#69716B] mt-0.5 block">
-                People, settings, practices
+              <span className="text-[#A4AEA7] font-mono text-[10px] hidden sm:inline">•</span>
+              <span className="font-mono text-[11px] text-[#69716B] font-medium tracking-tight">
+                DOUBLE-BLIND PAIRWISE ELO BENCHMARK
               </span>
             </div>
 
-            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
-                INFRASTRUCTURAL FIDELITY
-              </span>
-              <span className="text-[11px] text-[#69716B] mt-0.5 block">
-                Systems, equipment, spaces
-              </span>
-            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F2E24] tracking-tight leading-[1.12]">
+              Independent analysis of vision AI
+            </h1>
 
-            <div className="bg-white border border-[#E3E7E2] rounded-lg p-2.5 shadow-2xs">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#0F2E24] block tracking-wider">
-                ORTHOGRAPHIC FIDELITY
-              </span>
-              <span className="text-[11px] text-[#69716B] mt-0.5 block">
-                Devanagari &amp; public-health text
-              </span>
-            </div>
-          </div>
+            <p className="text-base sm:text-lg font-medium text-[#171A18] leading-snug">
+              Evaluate frontier image-generation models on their ability to represent rural Indian public-health realities accurately and authentically.
+            </p>
 
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            {onStartEvaluation && (
+            <p className="text-xs sm:text-sm text-[#69716B] leading-relaxed max-w-2xl">
+              10 standardized frontline scenarios testing ASHA worker uniform fidelity, WHO cold-chain vaccine carriers, and Devanagari health register orthography across double-blind human evaluations.
+            </p>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               <button
-                onClick={onStartEvaluation}
+                onClick={scrollToCompare}
                 className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
               >
-                <span>Explore the Arena</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>Compare Models</span>
               </button>
-            )}
 
-            {onNavigateTab && (
-              <>
+              {onStartEvaluation && (
                 <button
-                  onClick={() => onNavigateTab('gallery')}
-                  className="px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                  onClick={onStartEvaluation}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
                 >
-                  View Gallery
+                  <span>Explore Arena</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
+              )}
+
+              {onNavigateTab && (
                 <button
                   onClick={() => onNavigateTab('methodology')}
                   className="px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
                 >
                   Methodology
                 </button>
-              </>
-            )}
+              )}
+            </div>
+          </div>
+
+          {/* Right Column: Editorial Highlight Cards (Matching Reference 2) */}
+          <div className="lg:col-span-5 space-y-3.5">
+            <div
+              onClick={() => onNavigateTab && onNavigateTab('gallery')}
+              className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-4 sm:p-5 shadow-2xs hover:border-[#4E8F6F] transition-all cursor-pointer group"
+            >
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#69716B] uppercase tracking-wider">
+                <span className="text-[#0F2E24] flex items-center space-x-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  <span>EMPIRICAL FINDING</span>
+                </span>
+                <ExternalLink className="w-3.5 h-3.5 text-[#69716B] group-hover:text-[#0F2E24] transition-colors" />
+              </div>
+              <h4 className="font-bold text-sm text-[#171A18] mt-2 group-hover:text-[#0F2E24] transition-colors">
+                Frontline Context &amp; Script Deficit
+              </h4>
+              <p className="text-xs text-[#69716B] mt-1 leading-relaxed">
+                Frontier vision models exhibit systematic failure in Devanagari register orthography and rural cold-chain hardware, despite high photorealism.
+              </p>
+            </div>
+
+            <div
+              onClick={() => onNavigateTab && onNavigateTab('methodology')}
+              className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-4 sm:p-5 shadow-2xs hover:border-[#4E8F6F] transition-all cursor-pointer group"
+            >
+              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#69716B] uppercase tracking-wider">
+                <span className="text-[#0F2E24] flex items-center space-x-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                  <span>EVALUATION FRAMEWORK</span>
+                </span>
+                <ExternalLink className="w-3.5 h-3.5 text-[#69716B] group-hover:text-[#0F2E24] transition-colors" />
+              </div>
+              <h4 className="font-bold text-sm text-[#171A18] mt-2 group-hover:text-[#0F2E24] transition-colors">
+                Double-Blind Pairwise Elo
+              </h4>
+              <p className="text-xs text-[#69716B] mt-1 leading-relaxed">
+                {totalRatings}+ verified blind comparisons by frontline public-health evaluators across 3 clinical &amp; cultural dimensions.
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Right Column (Subtle Malgudi Days Pencil Art illustration) */}
-        <div className="lg:col-span-5 flex justify-center">
-          <div className="w-full max-w-md bg-white border border-[#E3E7E2] rounded-xl overflow-hidden shadow-2xs">
-            <div className="relative aspect-4/3 w-full bg-[#FAFBF9] overflow-hidden border-b border-[#E3E7E2]">
-              <img
-                src="/malgudi-asha.jpg"
-                alt="Fine pencil & ink sketch of an ASHA worker outside a rural Indian health sub-centre in the Malgudi Days tradition"
-                className="w-full h-full object-cover object-center"
-              />
+        {/* 3 Interactive Dimension Overview Cards (Matching Bottom of Artificial Analysis Hero) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          {/* Dimension 1: Cultural Fidelity */}
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-4 shadow-2xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#0F2E24]"></span>
+                <h3 className="font-bold text-xs uppercase font-mono tracking-wider text-[#0F2E24]">
+                  Cultural Fidelity
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[#69716B]">1-5 scale</span>
             </div>
-            <div className="p-3 bg-[#FAFBF9] flex items-center justify-between text-[11px] text-[#69716B]">
-              <span className="font-mono text-[9.5px] uppercase font-bold text-[#0F2E24] tracking-wider">
-                FIELD REALITY STUDY
-              </span>
-              <span className="text-[10.5px]">Frontline health worker · Fine pen &amp; ink sketch</span>
+            <p className="text-[11px] text-[#69716B] leading-tight">
+              ASHA uniform, saree border authenticity, village counseling posture
+            </p>
+
+            {/* Mini Bar Chart */}
+            <div className="pt-2 space-y-2">
+              {leaderboard.map((item) => (
+                <div key={`cul-${item.modelId}`} className="space-y-1">
+                  <div className="flex justify-between text-[10.5px]">
+                    <span className="font-medium text-[#171A18] truncate max-w-[150px]">
+                      {item.shortName}
+                    </span>
+                    <span className="font-mono font-bold text-[#0F2E24]">
+                      {item.avgCultural > 0 ? item.avgCultural : '—'}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2]">
+                    <div
+                      className="bg-[#0F2E24] h-full rounded-full transition-all"
+                      style={{ width: `${Math.min(100, ((item.avgCultural || 4) / 5) * 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Dimension 2: Infrastructural Fidelity */}
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-4 shadow-2xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#4E8F6F]"></span>
+                <h3 className="font-bold text-xs uppercase font-mono tracking-wider text-[#0F2E24]">
+                  Infrastructural Fidelity
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[#69716B]">1-5 scale</span>
+            </div>
+            <p className="text-[11px] text-[#69716B] leading-tight">
+              WHO blue cold-carrier box, Salter hanging scale, sub-centre equipment
+            </p>
+
+            {/* Mini Bar Chart */}
+            <div className="pt-2 space-y-2">
+              {leaderboard.map((item) => (
+                <div key={`med-${item.modelId}`} className="space-y-1">
+                  <div className="flex justify-between text-[10.5px]">
+                    <span className="font-medium text-[#171A18] truncate max-w-[150px]">
+                      {item.shortName}
+                    </span>
+                    <span className="font-mono font-bold text-[#4E8F6F]">
+                      {item.avgMedical > 0 ? item.avgMedical : '—'}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2]">
+                    <div
+                      className="bg-[#4E8F6F] h-full rounded-full transition-all"
+                      style={{ width: `${Math.min(100, ((item.avgMedical || 4) / 5) * 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Dimension 3: Orthographic Fidelity */}
+          <div className="bg-white border border-[#E3E7E2] rounded-xl p-4 shadow-2xs space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="w-2.5 h-2.5 rounded-sm bg-[#C05621]"></span>
+                <h3 className="font-bold text-xs uppercase font-mono tracking-wider text-[#0F2E24]">
+                  Orthographic Fidelity
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[#69716B]">1-5 scale</span>
+            </div>
+            <p className="text-[11px] text-[#69716B] leading-tight">
+              Devanagari register text, Hindi clinical signage, zero pseudo-Sanskrit
+            </p>
+
+            {/* Mini Bar Chart */}
+            <div className="pt-2 space-y-2">
+              {leaderboard.map((item) => (
+                <div key={`typ-${item.modelId}`} className="space-y-1">
+                  <div className="flex justify-between text-[10.5px]">
+                    <span className="font-medium text-[#171A18] truncate max-w-[150px]">
+                      {item.shortName}
+                    </span>
+                    <span className="font-mono font-bold text-[#C05621]">
+                      {item.avgTypography > 0 ? item.avgTypography : '—'}
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2]">
+                    <div
+                      className="bg-[#C05621] h-full rounded-full transition-all"
+                      style={{ width: `${Math.min(100, ((item.avgTypography || 4) / 5) * 100)}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -489,6 +609,11 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
         leaderboard={leaderboard}
         totalRatings={totalRatings}
         totalParticipants={totalParticipants}
+        scenarioStats={scenarioStats}
+        pairwiseBattles={pairwiseBattles}
+        confidenceIntervals={confidenceIntervals}
+        onStartEvaluation={onStartEvaluation}
+        onNavigateTab={onNavigateTab}
       />
 
       {/* ───────────────────────────────────────────────────────────

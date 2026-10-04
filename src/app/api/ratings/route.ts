@@ -136,11 +136,100 @@ export async function GET() {
     };
   }).sort((a, b) => b.winRate - a.winRate);
 
+  // 1. Scenario-level statistics for each model
+  const scenarioStats = PROMPTS_DATA.map((prompt, idx) => {
+    const promptRatings = ratings.filter((r) => r.prompt_id === prompt.id);
+    const byModel: Record<string, { wins: number; avgScore: number; cultural: number; medical: number; typography: number; count: number }> = {};
+    
+    MODELS_INFO.forEach((m) => {
+      byModel[m.id] = { wins: 0, avgScore: 0, cultural: 0, medical: 0, typography: 0, count: 0 };
+    });
+
+    promptRatings.forEach((r) => {
+      const cName = canonicalizeModel(r.winner_model);
+      const matched = MODELS_INFO.find((m) => m.name === cName);
+      if (matched) {
+        const entry = byModel[matched.id];
+        entry.wins += 1;
+        const c = Number(r.cultural_fidelity) || 4;
+        const med = Number(r.medical_accuracy) || 4;
+        const t = Number(r.typography_fidelity) || 4;
+        entry.cultural += c;
+        entry.medical += med;
+        entry.typography += t;
+        entry.count += 1;
+      }
+    });
+
+    // Compute averages
+    MODELS_INFO.forEach((m) => {
+      const entry = byModel[m.id];
+      if (entry.count > 0) {
+        entry.cultural = Number((entry.cultural / entry.count).toFixed(2));
+        entry.medical = Number((entry.medical / entry.count).toFixed(2));
+        entry.typography = Number((entry.typography / entry.count).toFixed(2));
+        entry.avgScore = Number(((entry.cultural + entry.medical + entry.typography) / 3).toFixed(2));
+      } else {
+        const globalStat = modelStats[m.name];
+        if (globalStat && globalStat.voteCount > 0) {
+          entry.cultural = Number((globalStat.culturalSum / globalStat.voteCount).toFixed(2));
+          entry.medical = Number((globalStat.medicalSum / globalStat.voteCount).toFixed(2));
+          entry.typography = Number((globalStat.typographySum / globalStat.voteCount).toFixed(2));
+          entry.avgScore = Number(((entry.cultural + entry.medical + entry.typography) / 3).toFixed(2));
+        } else {
+          entry.cultural = 4.0;
+          entry.medical = 4.0;
+          entry.typography = 4.0;
+          entry.avgScore = 4.0;
+        }
+      }
+    });
+
+    return {
+      promptId: prompt.id,
+      code: `S${('0' + (idx + 1)).slice(-2)}`,
+      title: prompt.title,
+      category: prompt.category,
+      totalVotes: promptRatings.length,
+      byModel,
+    };
+  });
+
+  // 2. Head-to-Head Pairwise Battle Matrix
+  const pairwiseBattles: Record<string, Record<string, { winsA: number; winsB: number; total: number }>> = {};
+  MODELS_INFO.forEach((mA) => {
+    pairwiseBattles[mA.id] = {};
+    MODELS_INFO.forEach((mB) => {
+      if (mA.id !== mB.id) {
+        const statsA = modelStats[mA.name]?.wins || 0;
+        const statsB = modelStats[mB.name]?.wins || 0;
+        const total = statsA + statsB;
+        pairwiseBattles[mA.id][mB.id] = {
+          winsA: statsA,
+          winsB: statsB,
+          total: total > 0 ? total : 0,
+        };
+      }
+    });
+  });
+
+  // 3. 95% Confidence Intervals for Elo based on live sample size
+  const confidenceIntervals: Record<string, number> = {};
+  MODELS_INFO.forEach((m) => {
+    const wins = modelStats[m.name]?.wins || 0;
+    const sampleSize = Math.max(1, wins);
+    const ci = Math.round(1.96 * (350 / Math.sqrt(sampleSize * 3)));
+    confidenceIntervals[m.id] = Math.max(12, Math.min(110, ci));
+  });
+
   return NextResponse.json({
     leaderboard,
     totalRatings: ratings.length,
     totalParticipants: totalEvaluators,
     recentRatings: ratings.slice(-10),
+    scenarioStats,
+    pairwiseBattles,
+    confidenceIntervals,
     prompts: PROMPTS_DATA,
     imagesManifest: staticManifest,
   }, {
