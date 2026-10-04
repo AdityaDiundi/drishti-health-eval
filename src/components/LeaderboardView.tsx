@@ -186,8 +186,8 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               10 standardized frontline scenarios testing ASHA worker uniform fidelity, WHO cold-chain vaccine carriers, and Devanagari health register orthography across double-blind human evaluations.
             </p>
 
-            {/* CTAs */}
-            <div className="flex flex-wrap items-center gap-3 pt-2">
+            {/* Streamlined CTAs */}
+            <div className="flex flex-wrap items-center gap-3 pt-1">
               {onStartEvaluation && (
                 <button
                   onClick={onStartEvaluation}
@@ -199,18 +199,10 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               )}
 
               <button
-                onClick={scrollToCompare}
-                className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
-              >
-                <BarChart3 className="w-3.5 h-3.5 text-[#4E8F6F]" />
-                <span>Compare Models</span>
-              </button>
-
-              <button
                 onClick={scrollToRankings}
-                className="px-4 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                className="px-5 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
               >
-                View Rankings
+                View Rankings ↓
               </button>
             </div>
 
@@ -238,44 +230,52 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             </div>
           </div>
 
-          {/* Right Column: Editorial Insight Cards (Clean Research Aesthetics) */}
-          <div className="lg:col-span-5 space-y-3.5">
-            <div
-              onClick={() => onNavigateTab && onNavigateTab('gallery')}
-              className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-4 sm:p-5 shadow-2xs hover:border-[#4E8F6F] transition-all cursor-pointer group"
-            >
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#69716B] uppercase tracking-wider">
-                <span className="text-[#0F2E24] flex items-center space-x-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                  <span>EMPIRICAL FINDING</span>
+          {/* Right Column: Grounded Study Protocol Specification (Non-competing, research-grade) */}
+          <div className="lg:col-span-5">
+            <div className="bg-white border border-[#E3E7E2] rounded-xl p-5 shadow-2xs space-y-3.5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E3E7E2]">
+                <div className="flex items-center space-x-2">
+                  <span className="w-2 h-2 rounded-full bg-[#4E8F6F]"></span>
+                  <span className="font-mono text-xs font-bold text-[#0F2E24] uppercase tracking-wider">
+                    Study Protocol
+                  </span>
+                </div>
+                <span className="font-mono text-[10px] text-[#0F2E24] bg-[#DDEBE3] px-2 py-0.5 rounded border border-[#C6DDD1] font-semibold">
+                  v1.1 Pairwise
                 </span>
-                <ExternalLink className="w-3.5 h-3.5 text-[#69716B] group-hover:text-[#0F2E24] transition-colors" />
               </div>
-              <h4 className="font-bold text-sm text-[#171A18] mt-2 group-hover:text-[#0F2E24] transition-colors">
-                Frontline Context &amp; Script Deficit
-              </h4>
-              <p className="text-xs text-[#69716B] mt-1 leading-relaxed">
-                Frontier vision models exhibit systematic failure in Devanagari register orthography and rural cold-chain hardware, despite high photorealism.
-              </p>
-            </div>
 
-            <div
-              onClick={() => onNavigateTab && onNavigateTab('methodology')}
-              className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-4 sm:p-5 shadow-2xs hover:border-[#4E8F6F] transition-all cursor-pointer group"
-            >
-              <div className="flex items-center justify-between text-[10px] font-mono font-bold text-[#69716B] uppercase tracking-wider">
-                <span className="text-[#0F2E24] flex items-center space-x-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
-                  <span>EVALUATION FRAMEWORK</span>
-                </span>
-                <ExternalLink className="w-3.5 h-3.5 text-[#69716B] group-hover:text-[#0F2E24] transition-colors" />
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-start justify-between gap-3">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Study Design</span>
+                  <span className="font-medium text-[#171A18] text-right">Double-blind pairwise comparison (A vs. B)</span>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Battery Size</span>
+                  <span className="font-medium text-[#171A18] text-right">10 standardized MoHFW scenarios</span>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Models Tested</span>
+                  <span className="font-medium text-[#171A18] text-right">3 frontier foundation models (30 images)</span>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Evaluation Axes</span>
+                  <span className="font-medium text-[#171A18] text-right">Cultural (40%) • Medical (40%) • Typo (20%)</span>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Scoring Engine</span>
+                  <span className="font-mono font-medium text-[#0F2E24] text-right">Bradley-Terry Elo (K=32, Base 1200)</span>
+                </div>
+
+                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
+                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Data Integrity</span>
+                  <span className="font-medium text-emerald-800 text-right">10/10 completion required for commit</span>
+                </div>
               </div>
-              <h4 className="font-bold text-sm text-[#171A18] mt-2 group-hover:text-[#0F2E24] transition-colors">
-                Double-Blind Pairwise Elo
-              </h4>
-              <p className="text-xs text-[#69716B] mt-1 leading-relaxed">
-                {totalRatings}+ verified blind comparisons by frontline public-health evaluators across 3 clinical &amp; cultural dimensions.
-              </p>
             </div>
           </div>
         </div>
