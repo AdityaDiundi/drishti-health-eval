@@ -21,22 +21,11 @@ interface ArenaViewProps {
   onResetParticipant?: () => void;
 }
 
-// Perfectly balanced pairwise schedule for the 10 scenarios across the 3 benchmark models:
-// 1. OpenAI GPT Image 1
-// 2. Google Gemini 3.1 Flash Image Preview (Nano Banana 2)
-// 3. Google Gemini 3 Pro Image Preview (Nano Banana Pro)
-// Alternates A vs B positioning to eliminate position bias.
-const PAIRWISE_SCHEDULE: [string, string][] = [
-  ['OpenAI GPT Image 1', 'Google Gemini 3.1 Flash Image Preview (Nano Banana 2)'], // P01: OpenAI (A) vs Flash (B)
-  ['Google Gemini 3 Pro Image Preview (Nano Banana Pro)', 'OpenAI GPT Image 1'], // P02: Pro (A) vs OpenAI (B)
-  ['Google Gemini 3.1 Flash Image Preview (Nano Banana 2)', 'Google Gemini 3 Pro Image Preview (Nano Banana Pro)'], // P03: Flash (A) vs Pro (B)
-  ['Google Gemini 3.1 Flash Image Preview (Nano Banana 2)', 'OpenAI GPT Image 1'], // P04: Flash (A) vs OpenAI (B)
-  ['OpenAI GPT Image 1', 'Google Gemini 3 Pro Image Preview (Nano Banana Pro)'], // P05: OpenAI (A) vs Pro (B)
-  ['Google Gemini 3 Pro Image Preview (Nano Banana Pro)', 'Google Gemini 3.1 Flash Image Preview (Nano Banana 2)'], // P06: Pro (A) vs Flash (B)
-  ['OpenAI GPT Image 1', 'Google Gemini 3.1 Flash Image Preview (Nano Banana 2)'], // P07: OpenAI (A) vs Flash (B)
-  ['Google Gemini 3 Pro Image Preview (Nano Banana Pro)', 'OpenAI GPT Image 1'], // P08: Pro (A) vs OpenAI (B)
-  ['Google Gemini 3.1 Flash Image Preview (Nano Banana 2)', 'Google Gemini 3 Pro Image Preview (Nano Banana Pro)'], // P09: Flash (A) vs Pro (B)
-  ['Google Gemini 3.1 Flash Image Preview (Nano Banana 2)', 'OpenAI GPT Image 1'], // P10: Flash (A) vs OpenAI (B)
+// 3 unique pairs between the 3 benchmark models
+const MODEL_PAIRS: [string, string][] = [
+  ['OpenAI GPT Image 1', 'Google Gemini 3.1 Flash Image Preview (Nano Banana 2)'], // Pair 0
+  ['OpenAI GPT Image 1', 'Google Gemini 3 Pro Image Preview (Nano Banana Pro)'], // Pair 1
+  ['Google Gemini 3.1 Flash Image Preview (Nano Banana 2)', 'Google Gemini 3 Pro Image Preview (Nano Banana Pro)'], // Pair 2
 ];
 
 export function ArenaView({ participant, onEvaluationFinished, onResetParticipant }: ArenaViewProps) {
@@ -56,13 +45,27 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
 
   const currentPrompt: PromptItem = PROMPTS_DATA[currentPromptIndex];
 
+  // Compute a deterministic seed from the evaluator's identifier (email or name)
+  const evaluatorSeed = useMemo(() => {
+    const str = participant?.email || participant?.name || 'evaluator';
+    return str.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  }, [participant?.email, participant?.name]);
+
   // Resolve the 2 blinded models (Model A vs Model B) for the current scenario
+  // Evaluator offset ensures all 3 pairs (and all 30 images) are evaluated across the evaluator pool
   const currentImages = useMemo(() => {
     const promptRawImages = staticManifest.filter((m: any) => m.prompt_id === currentPrompt.id);
-    const pair = PAIRWISE_SCHEDULE[currentPromptIndex % PAIRWISE_SCHEDULE.length];
 
-    const imgA = promptRawImages.find((img: any) => img.model_name === pair[0]);
-    const imgB = promptRawImages.find((img: any) => img.model_name === pair[1]);
+    // Offset pair index by evaluator seed so different evaluators see different pairs for the same prompt
+    const pairIdx = (currentPromptIndex + evaluatorSeed) % MODEL_PAIRS.length;
+    const pair = MODEL_PAIRS[pairIdx];
+
+    // Counterbalance left/right (A vs B) placement to eliminate position bias
+    const shouldFlip = (evaluatorSeed + currentPromptIndex + currentPrompt.id.charCodeAt(1)) % 2 === 1;
+    const orderedModels = shouldFlip ? [pair[1], pair[0]] : pair;
+
+    const imgA = promptRawImages.find((img: any) => img.model_name === orderedModels[0]);
+    const imgB = promptRawImages.find((img: any) => img.model_name === orderedModels[1]);
 
     const labels: ('A' | 'B')[] = ['A', 'B'];
     const resolved = [imgA, imgB].filter(Boolean);
@@ -72,7 +75,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
       modelRealName: img!.model_name,
       imageUrl: img!.image_url,
     }));
-  }, [currentPromptIndex, currentPrompt.id]);
+  }, [currentPromptIndex, currentPrompt.id, evaluatorSeed]);
 
   // Reset state when advancing to a new prompt
   useEffect(() => {
