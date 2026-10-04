@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background (optional) -->
+  <rect width="512" height="512" rx="112" fill="#F7F8F5"/>
+  <!-- Geometric J Mark -->
+  <!-- Top-Right Vertical Stem (Dark Forest Green) -->
+  <rect x="280" y="88" width="136" height="224" rx="68" fill="#0F2E24"/>
+  <!-- Bottom-Left Vertical Curve (Dark Forest Green) -->
+  <rect x="96" y="200" width="136" height="224" rx="68" fill="#0F2E24"/>
+  <!-- Bottom-Right Terminal Dot (Sage Green Accent) -->
+  <circle cx="348" cy="356" r="68" fill="#4E8F6F"/>
+</svg>
