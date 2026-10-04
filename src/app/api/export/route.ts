@@ -53,13 +53,13 @@ export async function GET(req: Request) {
       return new NextResponse(csvRows.join('\n'), {
         headers: {
           'Content-Type': 'text/csv',
-          'Content-Disposition': 'attachment; filename="drishti_health_eval_ratings_anonymized.csv"',
+          'Content-Disposition': 'attachment; filename="janeval_ratings_anonymized.csv"',
         },
       });
     }
 
     return NextResponse.json({
-      project: 'Drishti-Health Human Evaluation Ratings (Anonymized)',
+      project: 'JANEVAL Human Evaluation Ratings (Anonymized)',
       total_votes: anonymizedRatings.length,
       pii_policy: 'Strictly Anonymized — Zero Emails or Personal Identifiable Information Expose',
       ratings: anonymizedRatings,
@@ -97,13 +97,13 @@ export async function GET(req: Request) {
     return new NextResponse(csvRows.join('\n'), {
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': 'attachment; filename="drishti_health_eval_benchmark_dataset.csv"',
+        'Content-Disposition': 'attachment; filename="janeval_benchmark_dataset.csv"',
       },
     });
   }
 
   return NextResponse.json({
-    project: 'Drishti-Health Evaluation Benchmark',
+    project: 'JANEVAL Benchmark v1.0',
     evaluator: 'Josh Talks AI Product Challenge',
     dataset_version: '1.0.0',
     total_images: exportData.length,
