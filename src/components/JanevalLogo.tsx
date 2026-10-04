@@ -71,7 +71,7 @@ export function JanevalLogo({
             JANEVAL
           </span>
           <span className="font-mono text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#DDEBE3]/70 text-[#0F2E24] border border-[#C6DDD1] tracking-wider uppercase">
-            v1.0
+            v1.1
           </span>
         </div>
 

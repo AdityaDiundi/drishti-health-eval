@@ -172,17 +172,21 @@ export default function Home() {
         onClose={() => setShowConsentModal(false)}
       />
 
-      {/* Footer */}
-      <footer className="border-t border-[#E3E7E2] bg-white py-6 text-center text-xs text-[#69716B]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="font-medium text-[#171A18]">
-            JANEVAL v1.0 • Frontier Vision AI Benchmark for Indian Public-Health Representation
-          </span>
-          <div className="flex items-center space-x-4 text-[#69716B]">
-            <button onClick={() => setActiveTab('arena')} className="hover:text-[#0F2E24] cursor-pointer">Arena</button>
-            <button onClick={() => setActiveTab('leaderboard')} className="hover:text-[#0F2E24] cursor-pointer">Rankings</button>
-            <button onClick={() => setActiveTab('gallery')} className="hover:text-[#0F2E24] cursor-pointer">Gallery</button>
-            <button onClick={() => setActiveTab('methodology')} className="hover:text-[#0F2E24] cursor-pointer">Methodology</button>
+      {/* Section 7: Minimal Research Footer */}
+      <footer className="border-t border-[#E3E7E2] bg-white py-6 text-xs text-[#69716B]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-2">
+            <span className="font-extrabold text-[#0F2E24] tracking-tight text-sm font-sans">JANEVAL</span>
+            <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#DDEBE3] text-[#0F2E24] border border-[#C6DDD1]">
+              v1.1
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-5 text-xs text-[#69716B]">
+            <button onClick={() => setActiveTab('arena')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Arena</button>
+            <button onClick={() => setActiveTab('leaderboard')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Rankings</button>
+            <button onClick={() => setActiveTab('gallery')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Gallery</button>
+            <button onClick={() => setActiveTab('methodology')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Methodology</button>
+            <a href="/api/export?format=csv" download="janeval_benchmark_dataset.csv" className="hover:text-[#0F2E24] transition-colors">Download Dataset</a>
           </div>
         </div>
       </footer>
