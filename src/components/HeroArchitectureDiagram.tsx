@@ -4,305 +4,371 @@ import React from 'react';
 
 export function HeroArchitectureDiagram() {
   const scenarios = [
-    { id: 'P01', y: 44, active: false },
-    { id: 'P02', y: 64, active: false },
-    { id: 'P03', y: 84, active: false },
-    { id: 'P04', y: 104, active: true },
-    { id: 'P05', y: 124, active: false },
-    { id: 'P06', y: 144, active: false },
-    { id: 'P07', y: 164, active: false },
-    { id: 'P08', y: 184, active: false },
-    { id: 'P09', y: 204, active: false },
-    { id: 'P10', y: 224, active: false },
+    { id: 'P01', y: 64, active: false },
+    { id: 'P02', y: 84, active: false },
+    { id: 'P03', y: 104, active: false },
+    { id: 'P04', y: 124, active: true },
+    { id: 'P05', y: 144, active: false },
+    { id: 'P06', y: 164, active: false },
+    { id: 'P07', y: 184, active: false },
+    { id: 'P08', y: 204, active: false },
+    { id: 'P09', y: 224, active: false },
+    { id: 'P10', y: 244, active: false },
   ];
 
   return (
-    <div className="w-full flex items-center justify-center select-none">
+    <div className="w-full flex items-center justify-center select-none py-2">
       <svg
-        viewBox="0 0 520 250"
+        viewBox="0 0 680 300"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto max-w-[500px]"
+        className="w-full h-auto max-w-[680px]"
       >
-        <defs>
-          {/* Extremely quiet, sparse dot pattern directly on the #F7F8F5 background */}
-          <pattern id="quiet-dot-pattern" width="18" height="18" patternUnits="userSpaceOnUse">
-            <circle cx="9" cy="9" r="0.55" fill="#94A3B8" opacity="0.3" />
-          </pattern>
-        </defs>
-
-        {/* Quiet Background Dot Grid */}
-        <rect width="520" height="250" fill="url(#quiet-dot-pattern)" />
-
         {/* ==============================================================
-            STAGE 1: 10 SCENARIOS
+            STAGE 1: 10 SCENARIOS (LEFT)
             ============================================================== */}
+        {/* Section Header with rule */}
         <text
-          x="12"
-          y="20"
-          className="font-mono text-[8.5px] font-bold fill-[#8A948E] tracking-widest uppercase"
+          x="20"
+          y="36"
+          className="font-mono text-[10px] font-bold fill-[#171A18] tracking-widest uppercase"
         >
           10 SCENARIOS
         </text>
+        <line x1="108" y1="33" x2="204" y2="33" stroke="#D5E0D7" strokeWidth="0.85" />
 
-        {/* Scenario Labels, Dots, and Subtle Flow Curves */}
+        {/* P01 - P10 rows */}
         {scenarios.map((s) => (
           <g key={s.id}>
-            {/* Scenario ID Text */}
+            {/* Scenario Label */}
             <text
-              x="12"
-              y={s.y + 3}
+              x="20"
+              y={s.y + 3.5}
               className={`font-mono text-[9px] ${
-                s.active ? 'font-bold fill-[#0F2E24]' : 'font-medium fill-[#8A948E]'
+                s.active ? 'font-bold fill-[#0F2E24]' : 'font-medium fill-[#69716B]'
               }`}
             >
               {s.id}
             </text>
 
-            {/* Scenario Status Dot */}
+            {/* Scenario Circle Dot */}
             <circle
-              cx="42"
+              cx="62"
               cy={s.y}
-              r={s.active ? 3.2 : 2.4}
-              fill={s.active ? '#C85A32' : '#A2B4A8'}
+              r={s.active ? 3.6 : 2.8}
+              fill={s.active ? '#C85A32' : '#88A795'}
+              opacity={s.active ? 1 : 0.85}
             />
 
-            {/* Flow Curves towards Blind Comparison */}
-            {s.active ? (
-              // Active P04 Highlighted Path
-              <path
-                d={`M 46 ${s.y} L 118 ${s.y}`}
-                stroke="#C85A32"
-                strokeWidth="1.2"
-                strokeLinecap="round"
-                opacity="0.9"
-              />
-            ) : (
-              // Subtle flow curves converging gracefully into comparison box
-              <path
-                d={`M 46 ${s.y} C 86 ${s.y}, 108 76, 144 76`}
-                stroke="#D2DDD6"
-                strokeWidth="0.75"
-                fill="none"
-                opacity="0.6"
-              />
-            )}
+            {/* Solid Horizontal Guideline */}
+            <line
+              x1="70"
+              y1={s.y}
+              x2="162"
+              y2={s.y}
+              stroke={s.active ? '#C85A32' : '#C6DDD1'}
+              strokeWidth={s.active ? 1.4 : 0.75}
+              opacity={s.active ? 0.95 : 0.65}
+            />
+
+            {/* Dotted Flow Curve Converging to Center Funnel Node at (238, 128) */}
+            <path
+              d={`M 162 ${s.y} C 196 ${s.y}, 216 128, 238 128`}
+              stroke={s.active ? '#C85A32' : '#88A795'}
+              strokeWidth={s.active ? 1.2 : 0.75}
+              strokeDasharray={s.active ? '2 2' : '1.5 2'}
+              fill="none"
+              opacity={s.active ? 0.9 : 0.55}
+            />
           </g>
         ))}
 
+        {/* Funnel Input Node (Black Dot) */}
+        <circle cx="238" cy="128" r="2.5" fill="#0F2E24" />
+        <line
+          x1="238"
+          y1="128"
+          x2="256"
+          y2="128"
+          stroke="#0F2E24"
+          strokeWidth="0.85"
+          strokeDasharray="1.5 2"
+        />
+
         {/* ==============================================================
-            STAGE 2: BLIND COMPARISON
+            STAGE 2: BLIND COMPARISON (CENTER)
             ============================================================== */}
+        {/* Subtle Dashed Frame */}
+        <path
+          d="M 242 45 L 242 33 L 254 33 M 360 33 L 372 33 L 372 45"
+          stroke="#D5E0D7"
+          strokeWidth="0.75"
+          strokeDasharray="2 2"
+          fill="none"
+        />
+        <line
+          x1="242"
+          y1="45"
+          x2="242"
+          y2="225"
+          stroke="#D5E0D7"
+          strokeWidth="0.75"
+          strokeDasharray="2 3"
+        />
+        <line
+          x1="372"
+          y1="45"
+          x2="372"
+          y2="225"
+          stroke="#D5E0D7"
+          strokeWidth="0.75"
+          strokeDasharray="2 3"
+        />
+
+        {/* Section Header */}
         <text
-          x="215"
-          y="20"
+          x="307"
+          y="36"
           textAnchor="middle"
-          className="font-mono text-[8.5px] font-bold fill-[#8A948E] tracking-widest uppercase"
+          className="font-mono text-[10px] font-bold fill-[#171A18] tracking-widest uppercase"
         >
           BLIND COMPARISON
         </text>
 
-        {/* Quiet Dashed Comparison Boundary */}
-        <rect
-          x="152"
-          y="30"
-          width="126"
-          height="205"
-          rx="10"
-          fill="none"
-          stroke="#CBD5E1"
-          strokeWidth="0.75"
-          strokeDasharray="3 3"
-          opacity="0.8"
-        />
-
-        {/* Model A Card */}
-        <g transform="translate(166, 60)">
+        {/* Card A */}
+        <g transform="translate(256, 108)">
           <rect
-            width="32"
-            height="32"
-            rx="7"
+            width="38"
+            height="38"
+            rx="8"
             fill="#FFFFFF"
-            stroke="#D5DDD7"
-            strokeWidth="0.75"
+            stroke="#7D9F8E"
+            strokeWidth="1.1"
           />
           <text
-            x="16"
-            y="20"
+            x="19"
+            y="24"
             textAnchor="middle"
-            className="font-sans font-bold text-xs fill-[#0F2E24]"
+            className="font-sans font-bold text-sm fill-[#0F2E24]"
           >
             A
           </text>
-          {/* Anchor Dot */}
-          <circle cx="16" cy="32" r="1.2" fill="#0F2E24" opacity="0.6" />
+          {/* Card Anchor Dot */}
+          <circle cx="19" cy="38" r="1.6" fill="#0F2E24" />
         </g>
 
         {/* Comparison Slash */}
         <text
-          x="215"
-          y="80"
+          x="307"
+          y="133"
           textAnchor="middle"
-          className="font-mono text-xs fill-[#94A3B8]"
+          className="font-mono text-sm fill-[#69716B]"
         >
           /
         </text>
 
-        {/* Model B Card */}
-        <g transform="translate(232, 60)">
+        {/* Card B */}
+        <g transform="translate(320, 108)">
           <rect
-            width="32"
-            height="32"
-            rx="7"
+            width="38"
+            height="38"
+            rx="8"
             fill="#FFFFFF"
-            stroke="#D5DDD7"
-            strokeWidth="0.75"
+            stroke="#7D9F8E"
+            strokeWidth="1.1"
           />
           <text
-            x="16"
-            y="20"
+            x="19"
+            y="24"
             textAnchor="middle"
-            className="font-sans font-bold text-xs fill-[#0F2E24]"
+            className="font-sans font-bold text-sm fill-[#0F2E24]"
           >
             B
           </text>
-          {/* Anchor Dot */}
-          <circle cx="16" cy="32" r="1.2" fill="#0F2E24" opacity="0.6" />
+          {/* Card Anchor Dot */}
+          <circle cx="19" cy="38" r="1.6" fill="#0F2E24" />
         </g>
 
-        {/* Convergence Lines below Cards to Human Evaluation */}
+        {/* Flow Lines below Cards to Human Evaluation */}
         <path
-          d="M 182 94 C 182 110, 215 110, 215 122"
-          stroke="#CBD5E1"
-          strokeWidth="0.75"
+          d="M 275 146 C 275 166, 307 166, 307 176"
+          stroke="#7D9F8E"
+          strokeWidth="0.85"
           fill="none"
-          opacity="0.7"
         />
         <path
-          d="M 248 94 C 248 110, 215 110, 215 122"
-          stroke="#CBD5E1"
-          strokeWidth="0.75"
+          d="M 339 146 C 339 166, 307 166, 307 176"
+          stroke="#7D9F8E"
+          strokeWidth="0.85"
           fill="none"
-          opacity="0.7"
         />
 
-        {/* Human Evaluation Node (Quiet 3 connected nodes icon) */}
-        <g transform="translate(215, 134)">
-          <line x1="0" y1="-6" x2="-5" y2="4" stroke="#0F2E24" strokeWidth="1" opacity="0.7" />
-          <line x1="0" y1="-6" x2="5" y2="4" stroke="#0F2E24" strokeWidth="1" opacity="0.7" />
-          <line x1="-5" y1="4" x2="5" y2="4" stroke="#0F2E24" strokeWidth="1" opacity="0.7" />
-          <circle cx="0" cy="-6" r="1.8" fill="#0F2E24" />
-          <circle cx="-5" cy="4" r="1.8" fill="#0F2E24" />
-          <circle cx="5" cy="4" r="1.8" fill="#0F2E24" />
-        </g>
+        {/* Convergence Black Node */}
+        <circle cx="307" cy="176" r="2.2" fill="#0F2E24" />
 
-        {/* Label: HUMAN EVALUATION */}
+        {/* HUMAN EVALUATION Text */}
         <text
-          x="215"
-          y="152"
+          x="307"
+          y="193"
           textAnchor="middle"
-          className="font-mono text-[7.5px] font-bold fill-[#4A5550] tracking-wider uppercase"
+          className="font-mono text-[8.5px] font-bold fill-[#171A18] tracking-widest uppercase"
         >
           HUMAN
         </text>
         <text
-          x="215"
-          y="161.5"
+          x="307"
+          y="203"
           textAnchor="middle"
-          className="font-mono text-[7.5px] font-bold fill-[#4A5550] tracking-wider uppercase"
+          className="font-mono text-[8.5px] font-bold fill-[#171A18] tracking-widest uppercase"
         >
           EVALUATION
         </text>
 
-        {/* Line leading down to Pairwise Elo */}
-        <line x1="215" y1="168" x2="215" y2="188" stroke="#CBD5E1" strokeWidth="0.75" opacity="0.7" />
+        {/* Downward Arrow to Pairwise Elo */}
+        <line x1="307" y1="210" x2="307" y2="231" stroke="#7D9F8E" strokeWidth="1" />
+        <polyline
+          points="304,228 307,232 310,228"
+          stroke="#7D9F8E"
+          strokeWidth="1"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
 
-        {/* PAIRWISE ELO Badge */}
-        <g transform="translate(168, 188)">
+        {/* Bottom Horizontal Guidelines with dots */}
+        <line x1="20" y1="255" x2="246" y2="255" stroke="#D5E0D7" strokeWidth="0.7" strokeDasharray="1.5 3" />
+        <circle cx="20" cy="255" r="1.2" fill="#94A3B8" />
+        <circle cx="246" cy="255" r="1.5" fill="#0F2E24" />
+
+        <line x1="368" y1="255" x2="650" y2="255" stroke="#D5E0D7" strokeWidth="0.7" strokeDasharray="1.5 3" />
+        <circle cx="368" cy="255" r="1.5" fill="#0F2E24" />
+        <circle cx="650" cy="255" r="1.2" fill="#94A3B8" />
+
+        {/* PAIRWISE ELO Pill */}
+        <g transform="translate(251, 241)">
           <rect
-            width="94"
-            height="23"
-            rx="6"
-            fill="#EEF3EF"
-            stroke="#D5DDD7"
-            strokeWidth="0.75"
+            width="112"
+            height="28"
+            rx="8"
+            fill="#DEEAE2"
+            stroke="#D1DDD5"
+            strokeWidth="0.8"
           />
-          {/* Mini Bar Chart Glyph */}
-          <g transform="translate(13, 7)">
-            <rect x="0" y="5" width="1.5" height="4" rx="0.5" fill="#0F2E24" opacity="0.8" />
-            <rect x="3.5" y="2.5" width="1.5" height="6.5" rx="0.5" fill="#0F2E24" opacity="0.8" />
-            <rect x="7" y="0" width="1.5" height="9" rx="0.5" fill="#0F2E24" opacity="0.8" />
+          {/* Mini Bar Chart Icon */}
+          <g transform="translate(14, 8)">
+            <rect x="0" y="6" width="2" height="5" rx="0.5" fill="#0F2E24" />
+            <rect x="4" y="3" width="2" height="8" rx="0.5" fill="#0F2E24" />
+            <rect x="8" y="0" width="2" height="11" rx="0.5" fill="#0F2E24" />
           </g>
+          {/* Vertical Separator */}
+          <line x1="33" y1="7" x2="33" y2="21" stroke="#BAC9C0" strokeWidth="0.85" />
+          {/* Label */}
           <text
-            x="52"
-            y="14.5"
+            x="70"
+            y="17.5"
             textAnchor="middle"
-            className="font-mono text-[7.5px] font-bold fill-[#0F2E24] tracking-wider uppercase"
+            className="font-mono text-[9px] font-extrabold fill-[#0F2E24] tracking-wider uppercase"
           >
             PAIRWISE ELO
           </text>
         </g>
 
         {/* ==============================================================
-            STAGE 3: 3 EVALUATION AXES
+            STAGE 3: VERIFY (3 DIMENSIONS) (RIGHT)
             ============================================================== */}
+        {/* Section Header with rule */}
+        <line x1="420" y1="33" x2="456" y2="33" stroke="#D5E0D7" strokeWidth="0.85" />
         <text
-          x="424"
-          y="20"
-          textAnchor="middle"
-          className="font-mono text-[8.5px] font-bold fill-[#8A948E] tracking-widest uppercase"
+          x="466"
+          y="36"
+          className="font-mono text-[10px] font-bold fill-[#171A18] tracking-widest uppercase"
         >
-          3 EVALUATION AXES
+          VERIFY (3 DIMENSIONS)
         </text>
 
-        {/* Branch 1: Cultural Fidelity */}
-        <path
-          d="M 278 76 C 320 76, 338 52, 372 52"
-          stroke="#D2DDD6"
-          strokeWidth="0.75"
-          fill="none"
-          opacity="0.7"
+        {/* Connector from Card B to Fan-out Node at (374, 128) */}
+        <line
+          x1="358"
+          y1="128"
+          x2="374"
+          y2="128"
+          stroke="#0F2E24"
+          strokeWidth="0.85"
+          strokeDasharray="1.5 2"
         />
-        <circle cx="378" cy="52" r="2.8" fill="#4E8F6F" />
+        <circle cx="374" cy="128" r="2.5" fill="#0F2E24" />
+
+        {/* Dimension 1: 01 CULTURAL FIDELITY */}
+        <path
+          d="M 374 128 C 400 128, 424 78, 460 78"
+          stroke="#88A795"
+          strokeWidth="0.75"
+          strokeDasharray="1.5 2"
+          fill="none"
+          opacity="0.65"
+        />
+        <circle cx="466" cy="78" r="3.5" fill="#4E8F6F" />
         <text
-          x="390"
-          y="55"
-          className="font-mono text-[8.5px] font-bold fill-[#333E37] tracking-wider uppercase"
+          x="482"
+          y="81.5"
+          className="font-mono text-[9.5px] font-bold fill-[#4E8F6F]"
+        >
+          01
+        </text>
+        <text
+          x="504"
+          y="81.5"
+          className="font-mono text-[9.5px] font-bold fill-[#0F2E24] tracking-wider uppercase"
         >
           CULTURAL FIDELITY
         </text>
 
-        {/* Branch 2: Medical Accuracy */}
+        {/* Dimension 2: 02 MEDICAL ACCURACY */}
         <path
-          d="M 278 76 C 320 76, 338 94, 372 94"
-          stroke="#D2DDD6"
+          d="M 374 128 L 460 128"
+          stroke="#88A795"
           strokeWidth="0.75"
+          strokeDasharray="1.5 2"
           fill="none"
-          opacity="0.7"
+          opacity="0.65"
         />
-        <circle cx="378" cy="94" r="2.8" fill="#88A795" />
+        <circle cx="466" cy="128" r="3.5" fill="#88A795" />
         <text
-          x="390"
-          y="97"
-          className="font-mono text-[8.5px] font-bold fill-[#333E37] tracking-wider uppercase"
+          x="482"
+          y="131.5"
+          className="font-mono text-[9.5px] font-bold fill-[#88A795]"
+        >
+          02
+        </text>
+        <text
+          x="504"
+          y="131.5"
+          className="font-mono text-[9.5px] font-bold fill-[#0F2E24] tracking-wider uppercase"
         >
           MEDICAL ACCURACY
         </text>
 
-        {/* Branch 3: Indic Typography */}
+        {/* Dimension 3: 03 INDIC TYPOGRAPHY */}
         <path
-          d="M 278 76 C 320 76, 338 136, 372 136"
+          d="M 374 128 C 400 128, 424 182, 460 182"
           stroke="#C85A32"
           strokeWidth="0.85"
-          strokeDasharray="2 2"
+          strokeDasharray="1.5 2"
           fill="none"
           opacity="0.8"
         />
-        <circle cx="378" cy="136" r="2.8" fill="#C85A32" />
+        <circle cx="466" cy="182" r="3.5" fill="#C85A32" />
         <text
-          x="390"
-          y="139"
-          className="font-mono text-[8.5px] font-bold fill-[#333E37] tracking-wider uppercase"
+          x="482"
+          y="185.5"
+          className="font-mono text-[9.5px] font-bold fill-[#C85A32]"
+        >
+          03
+        </text>
+        <text
+          x="504"
+          y="185.5"
+          className="font-mono text-[9.5px] font-bold fill-[#0F2E24] tracking-wider uppercase"
         >
           INDIC TYPOGRAPHY
         </text>
