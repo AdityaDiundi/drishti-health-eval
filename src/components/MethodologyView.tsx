@@ -72,12 +72,13 @@ export function MethodologyView() {
                 <span>Step 1: Blind Pairwise Decision (A vs. B)</span>
               </div>
               <p className="text-xs text-[#69716B] leading-relaxed">
-                For each scenario, the evaluator inspects strictly two blinded models (labeled <code>Model A</code> and <code>Model B</code>). All model identities and provenance metadata are stripped. The evaluator chooses:
+                For each scenario, the evaluator inspects strictly two blinded models (labeled <code>Model A</code> and <code>Model B</code>). All model identities and provenance metadata are stripped. The evaluator chooses from four discrete outcomes:
               </p>
               <ul className="text-xs text-[#171A18] font-mono space-y-0.5 pl-2">
                 <li>• [1] Model A is superior</li>
                 <li>• [2] Model B is superior</li>
-                <li>• [T] Models are equivalent (Tie)</li>
+                <li>• [T] Both are Good / Equivalent (Tie)</li>
+                <li>• [B] Both are Bad / Neither Compliant</li>
               </ul>
             </div>
 
@@ -97,8 +98,13 @@ export function MethodologyView() {
             </div>
           </div>
 
-          <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-lg p-3.5 text-xs text-[#69716B] leading-relaxed">
-            <strong className="text-[#171A18]">Position Bias Elimination:</strong> Matchups rotate systematically across the 3 unique model pairs across all 10 scenarios. Left-right placement (Model A vs. Model B) is counterbalanced so no single model is perpetually positioned on the left or right.
+          <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-lg p-3.5 text-xs text-[#69716B] leading-relaxed space-y-2">
+            <div>
+              <strong className="text-[#171A18]">Position Bias Elimination:</strong> Matchups rotate systematically across the 3 unique model pairs across all 10 scenarios. Left-right placement (Model A vs. Model B) is counterbalanced so no single model is perpetually positioned on the left or right.
+            </div>
+            <div>
+              <strong className="text-[#171A18]">Tie Disambiguation Protocol:</strong> Standard pairwise benchmarks suffer from tie ambiguity where failed generations receive 0.5 points each, artificially inflating unviable models. JANEVAL disambiguates &ldquo;Both Good&rdquo; (valid equivalency) from &ldquo;Both Bad&rdquo; (neither meets the public health brief, awarding 0 win points and defaulting rubric scoring to 1 pt hazard/non-compliance).
+            </div>
           </div>
         </section>
 
