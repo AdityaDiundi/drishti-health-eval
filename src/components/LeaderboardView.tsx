@@ -479,34 +479,35 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                     </div>
 
                     {/* Mobile / Tablet View (< lg screens) */}
-                    <div className="lg:hidden space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2.5">
-                          <span className="font-mono text-xs font-bold text-[#0F2E24] bg-[#F7F8F5] border border-[#E3E7E2] px-2 py-0.5 rounded">
+                    <div className="lg:hidden space-y-2.5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center space-x-2.5 min-w-0">
+                          <span className="font-mono text-xs font-bold text-[#0F2E24] bg-[#F7F8F5] border border-[#E3E7E2] px-2 py-0.5 rounded shrink-0">
                             {rankStr}
                           </span>
-                          <div>
-                            <div className="font-bold text-sm text-[#171A18]">
-                              {item.name}
+                          <div className="min-w-0">
+                            <div className="font-bold text-sm text-[#171A18] truncate">
+                              <span className="sm:hidden">{item.shortName}</span>
+                              <span className="hidden sm:inline">{item.name}</span>
                             </div>
-                            <div className="text-[10px] font-mono text-[#69716B]">
+                            <div className="text-[10px] font-mono text-[#69716B] truncate">
                               {item.company} · {item.codename}
                             </div>
                           </div>
                         </div>
 
-                        <div className="text-right">
-                          <div className="font-mono text-sm font-bold text-[#0F2E24]">
-                            {totalRatings > 0 ? item.eloRating : '1200'} ELO
+                        <div className="text-right shrink-0">
+                          <div className="font-mono text-sm font-bold text-[#0F2E24] whitespace-nowrap">
+                            {totalRatings > 0 ? `${item.eloRating} ELO` : '1200 ELO'}
                           </div>
-                          <div className="text-[10px] font-mono text-[#69716B]">
+                          <div className="text-[10px] font-mono text-[#69716B] whitespace-nowrap">
                             {totalRatings > 0 ? `${item.winRate}% win rate` : 'Baseline'}
                           </div>
                         </div>
                       </div>
 
-                      {/* Mobile Scores Grid */}
-                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#E3E7E2] text-center">
+                      {/* Mobile Scores Grid - No duplicate top border */}
+                      <div className="grid grid-cols-3 gap-2 pt-1 text-center">
                         <div className="bg-[#FAFBF9] p-1.5 rounded border border-[#E3E7E2]">
                           <div className="text-[9px] uppercase font-bold text-[#69716B]">Cultural</div>
                           <div className="font-mono text-xs font-bold text-[#0F2E24]">

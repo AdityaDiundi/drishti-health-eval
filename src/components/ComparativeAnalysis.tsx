@@ -205,24 +205,24 @@ export function ComparativeAnalysis({
          ─────────────────────────────────────────────────────────── */}
       <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         {/* Live Telemetry Metadata */}
-        <div className="flex items-center flex-wrap gap-2 text-[11px] font-mono">
+        <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-[11px] font-mono">
           <span className="inline-flex items-center space-x-1.5 text-emerald-700 font-bold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>LIVE</span>
           </span>
           <span className="text-[#A4AEA7]">·</span>
-          <span className="text-[#69716B]">UPDATED 04 OCT 2026 IST</span>
-          <span className="text-[#A4AEA7]">·</span>
           <span className="text-[#0F2E24] font-bold">{totalRatings.toLocaleString()} VOTES</span>
           <span className="text-[#A4AEA7]">·</span>
-          <span className="text-[#69716B]">{leaderboard.length} MODELS</span>
-          <span className="text-[#A4AEA7]">·</span>
           <span className="text-[#69716B]">{totalParticipants} EVALUATORS</span>
+          <span className="text-[#A4AEA7] hidden sm:inline">·</span>
+          <span className="text-[#69716B] hidden sm:inline">{leaderboard.length} MODELS</span>
+          <span className="text-[#A4AEA7] hidden md:inline">·</span>
+          <span className="text-[#69716B] hidden md:inline">UPDATED 04 OCT 2026</span>
         </div>
 
         {/* Action Pills */}
         <div className="flex items-center space-x-2">
-          <button className="px-3.5 py-1.5 rounded-lg bg-[#0F2E24] text-white text-xs font-semibold shadow-xs flex items-center space-x-1.5 cursor-pointer">
+          <button className="px-3 py-1.5 rounded-lg bg-[#0F2E24] text-white text-xs font-semibold shadow-xs flex items-center space-x-1.5 cursor-pointer">
             <BarChart3 className="w-3.5 h-3.5" />
             <span>Compare</span>
           </button>
@@ -250,29 +250,30 @@ export function ComparativeAnalysis({
          ─────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-11 gap-3 items-center">
         {/* Model A Selector Card */}
-        <div className="md:col-span-5 bg-white border border-[#E3E7E2] rounded-xl p-3.5 shadow-2xs hover:border-[#4E8F6F] transition-colors relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-lg border border-[#E3E7E2] bg-[#FAFBF9] flex items-center justify-center shrink-0">
+        <div className="md:col-span-5 bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-3.5 shadow-2xs hover:border-[#4E8F6F] transition-colors relative">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-[#E3E7E2] bg-[#FAFBF9] flex items-center justify-center shrink-0">
                 {renderModelLogo(modelA)}
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center space-x-1.5">
-                  <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#0F2E24] text-white">
+                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-[#0F2E24] text-white shrink-0">
                     A
                   </span>
-                  <span className="font-bold text-sm text-[#0F2E24]">
-                    {modelA?.name}
+                  <span className="font-bold text-xs sm:text-sm text-[#0F2E24] truncate">
+                    <span className="sm:hidden">{modelA?.shortName}</span>
+                    <span className="hidden sm:inline">{modelA?.name}</span>
                   </span>
                 </div>
-                <div className="text-[11px] font-mono text-[#69716B] mt-0.5">
-                  {modelA?.company} · {modelA?.codename}
+                <div className="text-[10px] sm:text-[11px] font-mono text-[#69716B] mt-0.5 truncate">
+                  {modelA?.company}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 shrink-0">
-              <div className="font-mono text-xs font-bold px-2 py-1 rounded bg-[#F7F8F5] text-[#0F2E24] border border-[#E3E7E2]">
+            <div className="flex items-center space-x-1.5 shrink-0">
+              <div className="font-mono text-[11px] sm:text-xs font-bold px-2 py-0.5 sm:py-1 rounded bg-[#F7F8F5] text-[#0F2E24] border border-[#E3E7E2] whitespace-nowrap">
                 ELO {modelA?.eloRating}
               </div>
             </div>
@@ -294,40 +295,41 @@ export function ComparativeAnalysis({
         </div>
 
         {/* Center Swap Button */}
-        <div className="md:col-span-1 flex justify-center">
+        <div className="md:col-span-1 flex justify-center py-0.5">
           <button
             onClick={handleSwap}
             title="Swap Model A and Model B"
-            className="w-9 h-9 rounded-full bg-white border border-[#E3E7E2] hover:border-[#0F2E24] hover:bg-[#F7F8F5] shadow-xs flex items-center justify-center text-[#0F2E24] transition-all cursor-pointer group"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white border border-[#E3E7E2] hover:border-[#0F2E24] hover:bg-[#F7F8F5] shadow-xs flex items-center justify-center text-[#0F2E24] transition-all cursor-pointer group"
           >
-            <ArrowUpDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
+            <ArrowUpDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:rotate-180 transition-transform duration-300" />
           </button>
         </div>
 
         {/* Model B Selector Card */}
-        <div className="md:col-span-5 bg-white border border-[#E3E7E2] rounded-xl p-3.5 shadow-2xs hover:border-[#4E8F6F] transition-colors relative">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-lg border border-[#E3E7E2] bg-[#FAFBF9] flex items-center justify-center shrink-0">
+        <div className="md:col-span-5 bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-3.5 shadow-2xs hover:border-[#4E8F6F] transition-colors relative">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg border border-[#E3E7E2] bg-[#FAFBF9] flex items-center justify-center shrink-0">
                 {renderModelLogo(modelB)}
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center space-x-1.5">
-                  <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-[#C05621] text-white">
+                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-[#C05621] text-white shrink-0">
                     B
                   </span>
-                  <span className="font-bold text-sm text-[#0F2E24]">
-                    {modelB?.name}
+                  <span className="font-bold text-xs sm:text-sm text-[#0F2E24] truncate">
+                    <span className="sm:hidden">{modelB?.shortName}</span>
+                    <span className="hidden sm:inline">{modelB?.name}</span>
                   </span>
                 </div>
-                <div className="text-[11px] font-mono text-[#69716B] mt-0.5">
-                  {modelB?.company} · {modelB?.codename}
+                <div className="text-[10px] sm:text-[11px] font-mono text-[#69716B] mt-0.5 truncate">
+                  {modelB?.company}
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center space-x-2 shrink-0">
-              <div className="font-mono text-xs font-bold px-2 py-1 rounded bg-[#F7F8F5] text-[#0F2E24] border border-[#E3E7E2]">
+            <div className="flex items-center space-x-1.5 shrink-0">
+              <div className="font-mono text-[11px] sm:text-xs font-bold px-2 py-0.5 sm:py-1 rounded bg-[#F7F8F5] text-[#0F2E24] border border-[#E3E7E2] whitespace-nowrap">
                 ELO {modelB?.eloRating}
               </div>
             </div>
@@ -350,167 +352,187 @@ export function ComparativeAnalysis({
       </div>
 
       {/* ───────────────────────────────────────────────────────────
-          3. 4 KEY METRIC CARDS (Exact Match to Reference 1)
+          3. 4 KEY METRIC CARDS (Zero-Overflow Responsive Layout)
          ─────────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Card 1: Bradley-Terry Elo */}
-        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-4 shadow-2xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
                 BRADLEY-TERRY ELO
               </span>
             </div>
-            <div className="text-[10px] font-mono text-[#A4AEA7] mt-0.5">
+            <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
               ±{ciA} / ±{ciB} · ↑ better
             </div>
           </div>
 
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F2E24]">
-              {modelA?.eloRating}
-            </span>
-            <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              eloDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
-            }`}>
-              {eloDiff >= 0 ? `↗ +${eloDiff}` : `↘ ${eloDiff}`}
-            </span>
-            <span className="font-mono text-sm sm:text-base font-bold text-[#69716B]">
-              {modelB?.eloRating}
-            </span>
-          </div>
+          <div className="mt-2.5 space-y-1.5">
+            <div className="flex items-baseline justify-between gap-1">
+              <div className="flex items-baseline space-x-1 min-w-0">
+                <span className="font-mono text-base sm:text-2xl font-bold text-[#0F2E24] truncate">
+                  {modelA?.eloRating}
+                </span>
+                <span className="text-[10px] font-mono text-[#A4AEA7]">vs</span>
+                <span className="font-mono text-xs sm:text-base font-semibold text-[#69716B] truncate">
+                  {modelB?.eloRating}
+                </span>
+              </div>
+              <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0 ${
+                eloDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {eloDiff >= 0 ? `+${eloDiff}` : `${eloDiff}`}
+              </span>
+            </div>
 
-          {/* Dual bar representation */}
-          <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] mt-2.5 flex">
-            <div
-              className="bg-[#0F2E24] h-full"
-              style={{ width: `${Math.max(10, Math.min(90, (modelA?.eloRating / (modelA?.eloRating + modelB?.eloRating)) * 100))}%` }}
-            ></div>
-            <div
-              className="bg-[#C05621] h-full flex-1"
-            ></div>
+            {/* Dual bar representation */}
+            <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] flex">
+              <div
+                className="bg-[#0F2E24] h-full"
+                style={{ width: `${Math.max(10, Math.min(90, (modelA?.eloRating / (modelA?.eloRating + modelB?.eloRating)) * 100))}%` }}
+              ></div>
+              <div
+                className="bg-[#C05621] h-full flex-1"
+              ></div>
+            </div>
           </div>
         </div>
 
         {/* Card 2: Win Rate */}
-        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-4 shadow-2xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
                 WIN RATE
               </span>
             </div>
-            <div className="text-[10px] font-mono text-[#A4AEA7] mt-0.5">
-              share of battles won · ↑ better
+            <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
+              battle share · ↑ better
             </div>
           </div>
 
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F2E24]">
-              {modelA?.winRate}%
-            </span>
-            <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              winRateDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
-            }`}>
-              {winRateDiff >= 0 ? `↗ +${winRateDiff}pp` : `↘ ${winRateDiff}pp`}
-            </span>
-            <span className="font-mono text-sm sm:text-base font-bold text-[#69716B]">
-              {modelB?.winRate}%
-            </span>
-          </div>
+          <div className="mt-2.5 space-y-1.5">
+            <div className="flex items-baseline justify-between gap-1">
+              <div className="flex items-baseline space-x-1 min-w-0">
+                <span className="font-mono text-base sm:text-2xl font-bold text-[#0F2E24] truncate">
+                  {modelA?.winRate}%
+                </span>
+                <span className="text-[10px] font-mono text-[#A4AEA7]">vs</span>
+                <span className="font-mono text-xs sm:text-base font-semibold text-[#69716B] truncate">
+                  {modelB?.winRate}%
+                </span>
+              </div>
+              <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0 ${
+                winRateDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {winRateDiff >= 0 ? `+${winRateDiff}pp` : `${winRateDiff}pp`}
+              </span>
+            </div>
 
-          <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] mt-2.5 flex">
-            <div
-              className="bg-[#0F2E24] h-full"
-              style={{ width: `${Math.max(10, Math.min(90, (modelA?.winRate / ((modelA?.winRate || 1) + (modelB?.winRate || 1))) * 100))}%` }}
-            ></div>
-            <div
-              className="bg-[#C05621] h-full flex-1"
-            ></div>
+            <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] flex">
+              <div
+                className="bg-[#0F2E24] h-full"
+                style={{ width: `${Math.max(10, Math.min(90, (modelA?.winRate / ((modelA?.winRate || 1) + (modelB?.winRate || 1))) * 100))}%` }}
+              ></div>
+              <div
+                className="bg-[#C05621] h-full flex-1"
+              ></div>
+            </div>
           </div>
         </div>
 
         {/* Card 3: Head-to-Head */}
-        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-4 shadow-2xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
                 HEAD-TO-HEAD
               </span>
             </div>
-            <div className="text-[10px] font-mono text-[#A4AEA7] mt-0.5">
-              {h2hTotal} direct round victories
+            <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
+              {h2hTotal} direct victories
             </div>
           </div>
 
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F2E24]">
-              {h2hWinsA}
-            </span>
-            <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              h2hDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
-            }`}>
-              {h2hDiff >= 0 ? `↗ +${h2hDiff}` : `↘ ${h2hDiff}`}
-            </span>
-            <span className="font-mono text-sm sm:text-base font-bold text-[#69716B]">
-              {h2hWinsB}
-            </span>
-          </div>
+          <div className="mt-2.5 space-y-1.5">
+            <div className="flex items-baseline justify-between gap-1">
+              <div className="flex items-baseline space-x-1 min-w-0">
+                <span className="font-mono text-base sm:text-2xl font-bold text-[#0F2E24] truncate">
+                  {h2hWinsA}
+                </span>
+                <span className="text-[10px] font-mono text-[#A4AEA7]">vs</span>
+                <span className="font-mono text-xs sm:text-base font-semibold text-[#69716B] truncate">
+                  {h2hWinsB}
+                </span>
+              </div>
+              <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0 ${
+                h2hDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {h2hDiff >= 0 ? `+${h2hDiff}` : `${h2hDiff}`}
+              </span>
+            </div>
 
-          <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] mt-2.5 flex">
-            <div
-              className="bg-[#0F2E24] h-full"
-              style={{ width: `${Math.max(10, Math.min(90, (h2hWinsA / Math.max(1, h2hTotal)) * 100))}%` }}
-            ></div>
-            <div
-              className="bg-[#C05621] h-full flex-1"
-            ></div>
+            <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] flex">
+              <div
+                className="bg-[#0F2E24] h-full"
+                style={{ width: `${Math.max(10, Math.min(90, (h2hWinsA / Math.max(1, h2hTotal)) * 100))}%` }}
+              ></div>
+              <div
+                className="bg-[#C05621] h-full flex-1"
+              ></div>
+            </div>
           </div>
         </div>
 
         {/* Card 4: Votes */}
-        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between">
+        <div className="bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-4 shadow-2xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider">
+              <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
                 TOTAL VOTES
               </span>
             </div>
-            <div className="text-[10px] font-mono text-[#A4AEA7] mt-0.5">
-              verified blind rounds · ↑ better
+            <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
+              verified rounds · ↑ better
             </div>
           </div>
 
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="font-mono text-xl sm:text-2xl font-bold text-[#0F2E24]">
-              {modelA?.wins}
-            </span>
-            <span className={`font-mono text-[10px] font-bold px-1.5 py-0.5 rounded ${
-              votesDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
-            }`}>
-              {votesDiff >= 0 ? `↗ +${votesDiff}` : `↘ ${votesDiff}`}
-            </span>
-            <span className="font-mono text-sm sm:text-base font-bold text-[#69716B]">
-              {modelB?.wins}
-            </span>
-          </div>
+          <div className="mt-2.5 space-y-1.5">
+            <div className="flex items-baseline justify-between gap-1">
+              <div className="flex items-baseline space-x-1 min-w-0">
+                <span className="font-mono text-base sm:text-2xl font-bold text-[#0F2E24] truncate">
+                  {modelA?.wins}
+                </span>
+                <span className="text-[10px] font-mono text-[#A4AEA7]">vs</span>
+                <span className="font-mono text-xs sm:text-base font-semibold text-[#69716B] truncate">
+                  {modelB?.wins}
+                </span>
+              </div>
+              <span className={`font-mono text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded whitespace-nowrap shrink-0 ${
+                votesDiff >= 0 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-rose-50 text-rose-800 border border-rose-200'
+              }`}>
+                {votesDiff >= 0 ? `+${votesDiff}` : `${votesDiff}`}
+              </span>
+            </div>
 
-          <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] mt-2.5 flex">
-            <div
-              className="bg-[#0F2E24] h-full"
-              style={{ width: `${Math.max(10, Math.min(90, ((modelA?.wins || 1) / ((modelA?.wins || 1) + (modelB?.wins || 1))) * 100))}%` }}
-            ></div>
-            <div
-              className="bg-[#C05621] h-full flex-1"
-            ></div>
+            <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] flex">
+              <div
+                className="bg-[#0F2E24] h-full"
+                style={{ width: `${Math.max(10, Math.min(90, ((modelA?.wins || 1) / ((modelA?.wins || 1) + (modelB?.wins || 1))) * 100))}%` }}
+              ></div>
+              <div
+                className="bg-[#C05621] h-full flex-1"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ───────────────────────────────────────────────────────────
-          4. GRAPH 1: ELO WITH 95% CONFIDENCE INTERVAL (Reference 1)
+          4. GRAPH 1: ELO WITH 95% CONFIDENCE INTERVAL (Non-wrapping CI labels)
          ─────────────────────────────────────────────────────────── */}
-      <div className="bg-white border border-[#E3E7E2] rounded-xl p-4 sm:p-5 shadow-2xs space-y-4">
+      <div className="bg-white border border-[#E3E7E2] rounded-xl p-3.5 sm:p-5 shadow-2xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <div className="font-mono text-[10px] uppercase font-bold text-[#0F2E24] tracking-wider">
@@ -526,16 +548,16 @@ export function ComparativeAnalysis({
         </div>
 
         {/* CI Visual Tracks */}
-        <div className="space-y-4 pt-2">
+        <div className="space-y-3.5 pt-1">
           {/* Model A Track */}
           <div>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-medium text-[#171A18] flex items-center space-x-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#0F2E24]"></span>
-                <span className="font-bold">Model A:</span>
-                <span>{modelA?.name}</span>
+            <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
+              <span className="font-semibold text-[#171A18] flex items-center space-x-1.5 min-w-0">
+                <span className="w-2 h-2 rounded-full bg-[#0F2E24] shrink-0"></span>
+                <span className="text-[#69716B] shrink-0">Model A:</span>
+                <span className="truncate">{modelA?.shortName}</span>
               </span>
-              <span className="font-mono font-bold text-[#0F2E24]">
+              <span className="font-mono font-bold text-[#0F2E24] shrink-0 whitespace-nowrap">
                 {modelA?.eloRating} ± {ciA}
               </span>
             </div>
@@ -561,13 +583,13 @@ export function ComparativeAnalysis({
 
           {/* Model B Track */}
           <div>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-medium text-[#171A18] flex items-center space-x-1.5">
-                <span className="w-2 h-2 rounded-full bg-[#C05621]"></span>
-                <span className="font-bold">Model B:</span>
-                <span>{modelB?.name}</span>
+            <div className="flex items-center justify-between text-xs mb-1.5 gap-2">
+              <span className="font-semibold text-[#171A18] flex items-center space-x-1.5 min-w-0">
+                <span className="w-2 h-2 rounded-full bg-[#C05621] shrink-0"></span>
+                <span className="text-[#69716B] shrink-0">Model B:</span>
+                <span className="truncate">{modelB?.shortName}</span>
               </span>
-              <span className="font-mono font-bold text-[#C05621]">
+              <span className="font-mono font-bold text-[#C05621] shrink-0 whitespace-nowrap">
                 {modelB?.eloRating} ± {ciB}
               </span>
             </div>
@@ -592,7 +614,7 @@ export function ComparativeAnalysis({
           </div>
 
           {/* Scale Axis Markers */}
-          <div className="flex justify-between font-mono text-[10px] text-[#A4AEA7] pt-1 border-t border-[#E3E7E2]">
+          <div className="flex justify-between font-mono text-[9.5px] sm:text-[10px] text-[#A4AEA7] pt-1 border-t border-[#E3E7E2]">
             <span>{minElo}</span>
             <span>{Math.round(minElo + eloRange * 0.25)}</span>
             <span>{Math.round(minElo + eloRange * 0.5)}</span>
