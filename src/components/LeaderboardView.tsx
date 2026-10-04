@@ -23,6 +23,7 @@ import {
   ZoomIn,
 } from 'lucide-react';
 import { ComparativeAnalysis } from './ComparativeAnalysis';
+import { HeroArchitectureDiagram } from './HeroArchitectureDiagram';
 
 interface LeaderboardItem {
   modelId: string;
@@ -160,38 +161,33 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       {/* ───────────────────────────────────────────────────────────
           SECTION 1 — HERO (Editorial Split Composition — No Image Box)
          ─────────────────────────────────────────────────────────── */}
-      <section className="space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          {/* Left Column: Heading, Subtitle, Actions, Compact Metadata */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-[10px] font-bold px-2 py-0.5 rounded bg-[#0F2E24] text-white tracking-wider uppercase">
-                JANEVAL v1.1
-              </span>
-              <span className="text-[#A4AEA7] font-mono text-[10px] hidden sm:inline">•</span>
-              <span className="font-mono text-[11px] text-[#4E8F6F] font-semibold tracking-tight uppercase">
+      <section className="space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+          {/* Left Column: Heading, Subtitle, Actions */}
+          <div className="lg:col-span-5 space-y-5">
+            <div className="flex items-center gap-3">
+              <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-widest text-[#69716B] uppercase">
                 FRONTIER VISION AI BENCHMARK
               </span>
+              <div className="h-px bg-[#CBD5E1] w-12 sm:w-16"></div>
             </div>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F2E24] tracking-tight leading-[1.12]">
-              Benchmarking how AI sees India.
+            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-serif font-bold text-[#0F2E24] tracking-tight leading-[1.08]">
+              Benchmarking<br />
+              how AI sees<br />
+              India<span className="text-[#C85A32] inline-block font-sans ml-0.5">.</span>
             </h1>
 
-            <p className="text-base sm:text-lg font-medium text-[#171A18] leading-snug">
-              A double-blind human evaluation benchmark for frontier image-generation models, testing how faithfully they represent rural Indian public-health contexts.
+            <p className="text-sm sm:text-base text-[#69716B] leading-relaxed max-w-lg">
+              A double-blind human evaluation benchmark for frontier image-generation models, testing how faithfully they represent Indian public-health contexts.
             </p>
 
-            <p className="text-xs sm:text-sm text-[#69716B] leading-relaxed max-w-2xl">
-              10 standardized frontline scenarios testing ASHA worker uniform fidelity, WHO cold-chain vaccine carriers, and Devanagari health register orthography across double-blind human evaluations.
-            </p>
-
-            {/* Streamlined CTAs */}
+            {/* CTAs */}
             <div className="flex flex-wrap items-center gap-3 pt-1">
               {onStartEvaluation && (
                 <button
                   onClick={onStartEvaluation}
-                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+                  className="inline-flex items-center space-x-2 px-6 py-3 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
                 >
                   <span>Enter the Arena</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -200,80 +196,70 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
               <button
                 onClick={scrollToRankings}
-                className="px-5 py-2.5 rounded-lg bg-white hover:bg-[#FAFBF9] text-[#171A18] border border-[#E3E7E2] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                className="px-6 py-3 rounded-lg bg-white/70 hover:bg-white text-[#171A18] border border-[#CBD5E1] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
               >
-                View Rankings ↓
+                View Rankings
               </button>
-            </div>
-
-            {/* Compact Factual Metadata Under CTA */}
-            <div className="pt-2 flex flex-wrap items-center gap-4 text-[11px] font-mono font-bold text-[#69716B] uppercase tracking-wider">
-              <div className="flex items-center space-x-1.5">
-                <FileText className="w-3.5 h-3.5 text-[#4E8F6F]" />
-                <span>10 SCENARIOS</span>
-              </div>
-              <span className="text-[#C6DDD1]">•</span>
-              <div className="flex items-center space-x-1.5">
-                <Layers className="w-3.5 h-3.5 text-[#4E8F6F]" />
-                <span>3 MODELS</span>
-              </div>
-              <span className="text-[#C6DDD1]">•</span>
-              <div className="flex items-center space-x-1.5">
-                <SlidersHorizontal className="w-3.5 h-3.5 text-[#4E8F6F]" />
-                <span>3 EVALUATION AXES</span>
-              </div>
-              <span className="text-[#C6DDD1]">•</span>
-              <div className="flex items-center space-x-1.5">
-                <Scale className="w-3.5 h-3.5 text-[#4E8F6F]" />
-                <span>PAIRWISE ELO</span>
-              </div>
             </div>
           </div>
 
-          {/* Right Column: Grounded Study Protocol Specification (Non-competing, research-grade) */}
-          <div className="lg:col-span-5">
-            <div className="bg-white border border-[#E3E7E2] rounded-xl p-5 shadow-2xs space-y-3.5">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E3E7E2]">
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-[#4E8F6F]"></span>
-                  <span className="font-mono text-xs font-bold text-[#0F2E24] uppercase tracking-wider">
-                    Study Protocol
-                  </span>
-                </div>
-                <span className="font-mono text-[10px] text-[#0F2E24] bg-[#DDEBE3] px-2 py-0.5 rounded border border-[#C6DDD1] font-semibold">
-                  v1.1 Pairwise
-                </span>
+          {/* Right Column: Hero Architecture Schematic Diagram */}
+          <div className="lg:col-span-7">
+            <HeroArchitectureDiagram />
+          </div>
+        </div>
+
+        {/* Full-Width Horizontal Metric Bar */}
+        <div className="border-t border-[#E3E7E2] pt-6 sm:pt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0">
+            {/* Metric 1 */}
+            <div className="md:pr-8 md:border-r md:border-[#E3E7E2]">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+                10
               </div>
+              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
+                SCENARIOS
+              </div>
+            </div>
 
-              <div className="space-y-2.5 text-xs">
-                <div className="flex items-start justify-between gap-3">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Study Design</span>
-                  <span className="font-medium text-[#171A18] text-right">Double-blind pairwise comparison (A vs. B)</span>
+            {/* Metric 2 */}
+            <div className="md:px-8 md:border-r md:border-[#E3E7E2]">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+                3
+              </div>
+              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
+                MODELS
+              </div>
+            </div>
+
+            {/* Metric 3 */}
+            <div className="md:px-8 md:border-r md:border-[#E3E7E2]">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+                3
+              </div>
+              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
+                EVALUATION AXES
+              </div>
+            </div>
+
+            {/* Metric 4: Pairwise Elo */}
+            <div className="col-span-2 md:col-span-1 md:pl-8 flex items-center space-x-3.5">
+              <div className="shrink-0 text-[#0F2E24]">
+                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+                  <circle cx="12" cy="5" r="2.5" />
+                  <circle cx="6" cy="18" r="2.5" />
+                  <circle cx="18" cy="18" r="2.5" />
+                  <line x1="12" y1="7.5" x2="6" y2="15.5" />
+                  <line x1="12" y1="7.5" x2="18" y2="15.5" />
+                  <line x1="8.5" y1="18" x2="15.5" y2="18" />
+                </svg>
+              </div>
+              <div>
+                <div className="text-xs font-mono font-bold text-[#0F2E24] uppercase tracking-wider mb-0.5">
+                  PAIRWISE ELO
                 </div>
-
-                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Battery Size</span>
-                  <span className="font-medium text-[#171A18] text-right">10 standardized MoHFW scenarios</span>
-                </div>
-
-                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Models Tested</span>
-                  <span className="font-medium text-[#171A18] text-right">3 frontier foundation models (30 images)</span>
-                </div>
-
-                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Evaluation Axes</span>
-                  <span className="font-medium text-[#171A18] text-right">Cultural (40%) • Medical (40%) • Typo (20%)</span>
-                </div>
-
-                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Scoring Engine</span>
-                  <span className="font-mono font-medium text-[#0F2E24] text-right">Bradley-Terry Elo (K=32, Base 1200)</span>
-                </div>
-
-                <div className="flex items-start justify-between gap-3 pt-2 border-t border-[#E3E7E2]/60">
-                  <span className="font-mono text-[11px] text-[#69716B] uppercase shrink-0">Data Integrity</span>
-                  <span className="font-medium text-emerald-800 text-right">10/10 completion required for commit</span>
+                <div className="text-xs text-[#69716B]">
+                  Double-blind human evaluation
                 </div>
               </div>
             </div>

@@ -58,11 +58,12 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             </nav>
 
             {/* Right: Actions */}
-            <div className="hidden sm:flex items-center space-x-3">
+            <div className="hidden sm:flex items-center space-x-4">
+              <div className="h-6 w-px bg-[#E3E7E2]"></div>
               <a
                 href="/api/export?format=csv"
                 download="janeval_benchmark_dataset.csv"
-                className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[#0F2E24] bg-white hover:bg-[#FAFBF9] border border-[#E3E7E2] shadow-2xs transition-colors"
+                className="inline-flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-semibold text-[#0F2E24] bg-white hover:bg-[#FAFBF9] border border-[#CBD5E1] shadow-2xs transition-colors"
                 title="Download public benchmark scenarios & images (anonymized, zero personal data)"
               >
                 <Download className="w-3.5 h-3.5 text-[#4E8F6F]" />
