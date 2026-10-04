@@ -161,10 +161,10 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       {/* ───────────────────────────────────────────────────────────
           SECTION 1 — HERO (Editorial Split Composition — No Image Box)
          ─────────────────────────────────────────────────────────── */}
-      <section className="space-y-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+      <section className="space-y-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Heading, Subtitle, Actions */}
-          <div className="lg:col-span-5 space-y-5">
+          <div className="lg:col-span-6 space-y-6">
             <div className="flex items-center gap-3">
               <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-widest text-[#69716B] uppercase">
                 FRONTIER VISION AI BENCHMARK
@@ -172,13 +172,13 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               <div className="h-px bg-[#CBD5E1] w-12 sm:w-16"></div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-serif font-bold text-[#0F2E24] tracking-tight leading-[1.08]">
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-serif font-bold text-[#0F2E24] tracking-tight leading-[1.08]">
               Benchmarking<br />
               how AI sees<br />
-              India<span className="text-[#C85A32] inline-block font-sans ml-0.5">.</span>
+              India<span className="text-[#C85A32]">.</span>
             </h1>
 
-            <p className="text-sm sm:text-base text-[#69716B] leading-relaxed max-w-lg">
+            <p className="text-base sm:text-lg text-[#69716B] leading-relaxed max-w-xl font-normal">
               A double-blind human evaluation benchmark for frontier image-generation models, testing how faithfully they represent Indian public-health contexts.
             </p>
 
@@ -196,7 +196,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
               <button
                 onClick={scrollToRankings}
-                className="px-6 py-3 rounded-lg bg-white/70 hover:bg-white text-[#171A18] border border-[#CBD5E1] font-semibold text-xs shadow-2xs transition-colors cursor-pointer"
+                className="px-6 py-3 rounded-lg bg-transparent hover:bg-white/50 text-[#171A18] border border-[#CBD5E1] font-semibold text-xs transition-colors cursor-pointer"
               >
                 View Rankings
               </button>
@@ -204,17 +204,17 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
           </div>
 
           {/* Right Column: Hero Architecture Schematic Diagram */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-6 flex items-center justify-center lg:justify-end">
             <HeroArchitectureDiagram />
           </div>
         </div>
 
-        {/* Full-Width Horizontal Metric Bar */}
-        <div className="border-t border-[#E3E7E2] pt-6 sm:pt-8">
+        {/* Full-Width Horizontal Metric Bar — Structurally Identical Across All 4 Columns */}
+        <div className="border-t border-[#E3E7E2] pt-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0">
-            {/* Metric 1 */}
-            <div className="md:pr-8 md:border-r md:border-[#E3E7E2]">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+            {/* Metric 1: SCENARIOS */}
+            <div className="md:pr-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
                 10
               </div>
               <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
@@ -222,9 +222,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               </div>
             </div>
 
-            {/* Metric 2 */}
-            <div className="md:px-8 md:border-r md:border-[#E3E7E2]">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+            {/* Metric 2: MODELS */}
+            <div className="md:px-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
                 3
               </div>
               <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
@@ -232,9 +232,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               </div>
             </div>
 
-            {/* Metric 3 */}
-            <div className="md:px-8 md:border-r md:border-[#E3E7E2]">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-1.5">
+            {/* Metric 3: EVALUATION AXES */}
+            <div className="md:px-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
+              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
                 3
               </div>
               <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
@@ -242,25 +242,13 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               </div>
             </div>
 
-            {/* Metric 4: Pairwise Elo */}
-            <div className="col-span-2 md:col-span-1 md:pl-8 flex items-center space-x-3.5">
-              <div className="shrink-0 text-[#0F2E24]">
-                <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
-                  <circle cx="12" cy="5" r="2.5" />
-                  <circle cx="6" cy="18" r="2.5" />
-                  <circle cx="18" cy="18" r="2.5" />
-                  <line x1="12" y1="7.5" x2="6" y2="15.5" />
-                  <line x1="12" y1="7.5" x2="18" y2="15.5" />
-                  <line x1="8.5" y1="18" x2="15.5" y2="18" />
-                </svg>
+            {/* Metric 4: PAIRWISE ELO */}
+            <div className="col-span-2 md:col-span-1 md:pl-8 flex flex-col justify-end">
+              <div className="text-xl sm:text-2xl font-bold font-mono text-[#0F2E24] tracking-tight leading-none mb-2 flex items-center gap-1.5 h-8 sm:h-9">
+                <span>PAIRWISE ELO</span>
               </div>
-              <div>
-                <div className="text-xs font-mono font-bold text-[#0F2E24] uppercase tracking-wider mb-0.5">
-                  PAIRWISE ELO
-                </div>
-                <div className="text-xs text-[#69716B]">
-                  Double-blind human evaluation
-                </div>
+              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
+                DOUBLE-BLIND HUMAN EVALUATION
               </div>
             </div>
           </div>
