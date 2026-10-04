@@ -208,51 +208,6 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             <HeroArchitectureDiagram />
           </div>
         </div>
-
-        {/* Full-Width Horizontal Metric Bar — Structurally Identical Across All 4 Columns */}
-        <div className="border-t border-[#E3E7E2] pt-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0">
-            {/* Metric 1: SCENARIOS */}
-            <div className="md:pr-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
-                10
-              </div>
-              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
-                SCENARIOS
-              </div>
-            </div>
-
-            {/* Metric 2: MODELS */}
-            <div className="md:px-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
-                3
-              </div>
-              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
-                MODELS
-              </div>
-            </div>
-
-            {/* Metric 3: EVALUATION AXES */}
-            <div className="md:px-8 md:border-r md:border-[#E3E7E2] flex flex-col justify-end">
-              <div className="text-3xl sm:text-4xl font-extrabold text-[#0F2E24] tracking-tight leading-none mb-2">
-                3
-              </div>
-              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
-                EVALUATION AXES
-              </div>
-            </div>
-
-            {/* Metric 4: PAIRWISE ELO */}
-            <div className="col-span-2 md:col-span-1 md:pl-8 flex flex-col justify-end">
-              <div className="text-xl sm:text-2xl font-bold font-mono text-[#0F2E24] tracking-tight leading-none mb-2 flex items-center gap-1.5 h-8 sm:h-9">
-                <span>PAIRWISE ELO</span>
-              </div>
-              <div className="text-[10px] font-mono tracking-wider text-[#69716B] uppercase font-bold">
-                DOUBLE-BLIND HUMAN EVALUATION
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
 
       {/* ───────────────────────────────────────────────────────────
