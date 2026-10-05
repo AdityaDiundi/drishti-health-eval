@@ -1,10 +1,22 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 export function HeroArchitectureDiagram() {
   const [activeScenario, setActiveScenario] = useState<string>('P04');
   const [mobileViewMode, setMobileViewMode] = useState<'fit' | 'pan'>('fit');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const handleToggleMode = (mode: 'fit' | 'pan') => {
+    setMobileViewMode(mode);
+    if (mode === 'pan') {
+      setTimeout(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollLeft = 0;
+        }
+      }, 50);
+    }
+  };
 
   const scenarios = [
     { id: 'P01', label: 'ASHA Counseling', category: 'Attire & Community', y: 120 },
@@ -36,7 +48,7 @@ export function HeroArchitectureDiagram() {
         <div className="flex items-center bg-[#F0F4F1] p-0.5 rounded-md border border-[#E3E7E2] text-[10px] font-mono">
           <button
             type="button"
-            onClick={() => setMobileViewMode('fit')}
+            onClick={() => handleToggleMode('fit')}
             className={`px-2.5 py-1 rounded transition-all cursor-pointer ${
               mobileViewMode === 'fit'
                 ? 'bg-white font-bold text-[#0F2E24] shadow-2xs'
@@ -47,7 +59,7 @@ export function HeroArchitectureDiagram() {
           </button>
           <button
             type="button"
-            onClick={() => setMobileViewMode('pan')}
+            onClick={() => handleToggleMode('pan')}
             className={`px-2.5 py-1 rounded transition-all cursor-pointer flex items-center gap-1 ${
               mobileViewMode === 'pan'
                 ? 'bg-white font-bold text-[#0F2E24] shadow-2xs'
@@ -60,24 +72,31 @@ export function HeroArchitectureDiagram() {
         </div>
       </div>
 
-      {/* SVG Canvas Container (Responsive: fits viewport or smoothly scrolls on mobile) */}
+      {/* SVG Canvas Container (Responsive: fits viewport or smoothly scrolls on mobile from left = 0) */}
       <div
-        className={`w-full flex justify-center ${
+        ref={scrollContainerRef}
+        className={`w-full ${
           mobileViewMode === 'pan'
-            ? 'overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin scrollbar-thumb-[#CBD5E1]'
-            : 'overflow-hidden'
+            ? 'overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin scrollbar-thumb-[#CBD5E1] block'
+            : 'overflow-hidden flex justify-center'
         }`}
       >
         <div
-          className={`w-full flex items-center justify-center lg:justify-end ${
-            mobileViewMode === 'pan' ? 'min-w-[720px]' : 'min-w-0'
+          className={`${
+            mobileViewMode === 'pan'
+              ? 'min-w-[780px] w-max'
+              : 'w-full flex items-center justify-center lg:justify-end min-w-0'
           }`}
         >
           <svg
             viewBox="16 55 860 345"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-auto max-w-[820px] lg:max-w-none drop-shadow-2xs touch-manipulation"
+            className={`${
+              mobileViewMode === 'pan'
+                ? 'w-[780px] h-auto drop-shadow-2xs touch-manipulation'
+                : 'w-full h-auto max-w-[820px] lg:max-w-none drop-shadow-2xs touch-manipulation'
+            }`}
           >
             <defs>
               {/* Dot Grid pattern from 01_dot_grid.svg */}
