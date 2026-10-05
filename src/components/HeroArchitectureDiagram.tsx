@@ -23,12 +23,12 @@ export function HeroArchitectureDiagram() {
   const convergeY = 204;
 
   return (
-    <div className="w-full flex items-center justify-center select-none py-1">
+    <div className="w-full flex items-center justify-center lg:justify-end select-none py-1">
       <svg
-        viewBox="0 0 940 450"
+        viewBox="16 55 860 345"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-auto max-w-[680px]"
+        className="w-full h-auto max-w-[820px] lg:max-w-none drop-shadow-2xs"
       >
         <defs>
           {/* Dot Grid pattern from 01_dot_grid.svg */}
@@ -38,7 +38,7 @@ export function HeroArchitectureDiagram() {
         </defs>
 
         {/* Ambient Dot Grid Canvas */}
-        <rect width="940" height="450" fill="url(#janeval-hero-grid)" />
+        <rect x="16" y="55" width="860" height="345" fill="url(#janeval-hero-grid)" />
 
         {/* ==============================================================
             STAGE 1: 10 SCENARIOS (LEFT)

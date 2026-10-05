@@ -164,7 +164,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
       <section className="space-y-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Heading, Subtitle, Actions */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
               <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-widest text-[#69716B] uppercase">
                 FRONTIER VISION AI BENCHMARK
@@ -172,13 +172,13 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               <div className="h-px bg-[#CBD5E1] w-12 sm:w-16"></div>
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-serif font-bold text-[#0F2E24] tracking-tight leading-[1.08]">
+            <h1 className="text-4xl sm:text-5xl lg:text-[54px] font-serif font-bold text-[#0F2E24] tracking-tight leading-[1.08]">
               Benchmarking<br />
               how AI sees<br />
               India<span className="text-[#C85A32]">.</span>
             </h1>
 
-            <p className="text-base sm:text-lg text-[#69716B] leading-relaxed max-w-xl font-normal">
+            <p className="text-base sm:text-lg text-[#69716B] leading-relaxed max-w-lg font-normal">
               A double-blind human evaluation benchmark for frontier image-generation models, testing how faithfully they represent Indian public-health contexts.
             </p>
 
@@ -203,8 +203,8 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             </div>
           </div>
 
-          {/* Right Column: Hero Architecture Schematic Diagram */}
-          <div className="lg:col-span-6 flex items-center justify-center lg:justify-end">
+          {/* Right Column: Hero Architecture Schematic Diagram (Enlarged) */}
+          <div className="lg:col-span-7 flex items-center justify-center lg:justify-end w-full">
             <HeroArchitectureDiagram />
           </div>
         </div>
