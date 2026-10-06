@@ -24,6 +24,7 @@ export interface ChatAssistantProps {
   onOpenChange: (open: boolean) => void;
   presetPrompt?: string | null;
   onClearPresetPrompt?: () => void;
+  onNavigateTab?: (tab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology') => void;
 }
 
 interface MessageItem {
@@ -87,6 +88,7 @@ export function ChatAssistant({
   onOpenChange,
   presetPrompt,
   onClearPresetPrompt,
+  onNavigateTab,
 }: ChatAssistantProps) {
   const [messages, setMessages] = useState<MessageItem[]>([INITIAL_GREETING]);
   const [input, setInput] = useState('');
@@ -250,14 +252,79 @@ export function ChatAssistant({
   };
 
   const handleScrollToAnchor = (targetAnchor: string) => {
-    const el = document.getElementById(targetAnchor);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Temporary highlight pulse
-      el.classList.add('ring-2', 'ring-[#0F2E24]', 'ring-offset-2');
+    // 1. Identify which tab this anchor belongs to
+    let targetTab: 'leaderboard' | 'evidence' | 'gallery' | 'methodology' | null = null;
+    const lower = targetAnchor.toLowerCase();
+
+    if (
+      lower.includes('methodology') ||
+      lower.includes('bradley') ||
+      lower.includes('math') ||
+      lower.startsWith('section-')
+    ) {
+      targetTab = 'methodology';
+    } else if (
+      lower.startsWith('model-') ||
+      lower.includes('openai') ||
+      lower.includes('gemini') ||
+      lower === 'rankings-table' ||
+      lower === 'compare-section'
+    ) {
+      targetTab = 'leaderboard';
+    } else if (
+      lower.startsWith('scenario-') ||
+      lower.startsWith('prompt-') ||
+      lower === 'scenarios'
+    ) {
+      if (activeTab !== 'leaderboard' && activeTab !== 'evidence') {
+        targetTab = 'leaderboard';
+      }
+    }
+
+    const performScroll = () => {
+      let el = document.getElementById(targetAnchor);
+
+      // Robust fallback resolution
+      if (!el) {
+        if (lower.includes('bradley') || lower.includes('math') || lower.includes('methodology')) {
+          el = document.getElementById('bradley-terry-math') || document.getElementById('methodology-math');
+        } else if (lower.includes('openai')) {
+          el = document.getElementById('model-openai_gpt_image_1');
+        } else if (lower.includes('flash')) {
+          el = document.getElementById('model-gemini_3_1_flash_lite');
+        } else if (lower.includes('pro')) {
+          el = document.getElementById('model-gemini_3_pro');
+        } else if (lower.includes('p0') || lower.includes('p1')) {
+          const match = targetAnchor.match(/P[0-1][0-9]/i);
+          if (match) {
+            el = document.getElementById(`scenario-${match[0].toUpperCase()}`);
+          }
+        }
+      }
+
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Prominent highlight pulse
+        el.classList.add('ring-4', 'ring-[#0F2E24]/30', 'ring-offset-4', 'bg-emerald-50/40', 'transition-all');
+        setTimeout(() => {
+          el?.classList.remove('ring-4', 'ring-[#0F2E24]/30', 'ring-offset-4', 'bg-emerald-50/40');
+        }, 3500);
+      }
+    };
+
+    // On mobile screens (<1024px), close the assistant sheet so the target section is fully visible
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      onOpenChange(false);
+    }
+
+    // If target element is on another tab, switch tab first, then scroll
+    if (targetTab && targetTab !== activeTab && onNavigateTab) {
+      onNavigateTab(targetTab);
       setTimeout(() => {
-        el.classList.remove('ring-2', 'ring-[#0F2E24]', 'ring-offset-2');
-      }, 2500);
+        performScroll();
+      }, 150);
+    } else {
+      performScroll();
     }
   };
 
@@ -390,14 +457,15 @@ export function ChatAssistant({
 
                   {/* "Show on page" link (if targetAnchor provided) */}
                   {m.targetAnchor && (
-                    <div className="mt-2 pt-1 border-t border-[#E3E7E2]">
+                    <div className="mt-2.5 pt-2 border-t border-[#E3E7E2]">
                       <button
                         type="button"
                         onClick={() => handleScrollToAnchor(m.targetAnchor!)}
-                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F2E24] hover:text-[#4E8F6F] underline transition-colors cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#DDEBE3] hover:bg-[#cbe0d4] text-[#0F2E24] text-[11px] font-semibold transition-all cursor-pointer border border-[#C6DDD1] shadow-2xs active:scale-95 group"
+                        title={`Navigate to ${m.targetLabel || 'section on page'}`}
                       >
                         <span>{m.targetLabel || 'Show on page'}</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-3 h-3 text-[#0F2E24] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                       </button>
                     </div>
                   )}

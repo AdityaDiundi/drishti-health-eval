@@ -286,7 +286,10 @@ export function MethodologyView() {
           </div>
 
           {/* 5.3 Bradley-Terry MLE & Hunter MM Algorithm */}
-          <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-5 space-y-4 shadow-2xs">
+          <div
+            id="bradley-terry-math"
+            className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-5 space-y-4 shadow-2xs scroll-mt-24 transition-all duration-300"
+          >
             <div className="flex items-center justify-between border-b border-[#E3E7E2] pb-3">
               <span className="font-mono text-xs font-bold text-[#0F2E24] uppercase tracking-wider">
                 5.3 Bradley-Terry MLE &amp; Hunter (2004) MM Algorithm

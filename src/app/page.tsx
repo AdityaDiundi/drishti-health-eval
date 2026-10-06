@@ -235,6 +235,7 @@ export default function Home() {
           onOpenChange={setIsAssistantOpen}
           presetPrompt={assistantPresetPrompt}
           onClearPresetPrompt={() => setAssistantPresetPrompt(null)}
+          onNavigateTab={setActiveTab}
         />
       )}
     </div>
