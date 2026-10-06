@@ -64,6 +64,17 @@ export function GalleryView() {
         </div>
       </div>
 
+      {/* Reviewer Audit Notice Banner */}
+      <div className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-[#69716B] shadow-2xs">
+        <Info className="w-4 h-4 text-[#0F2E24] shrink-0 mt-0.5" />
+        <div className="space-y-0.5">
+          <span className="font-semibold text-[#0F2E24]">Methodology &amp; Evaluation Integrity Notice:</span>
+          <p className="leading-relaxed">
+            In live research benchmarking, this entire image matrix is air-gapped from human raters to eliminate cognitive anchoring, style-fingerprinting, and evaluator contamination in the Arena. It is made transparently accessible here specifically for assignment review, prompt adherence auditing, and model output inspection.
+          </p>
+        </div>
+      </div>
+
       {/* Prompts Matrix */}
       <div className="space-y-10">
         {filteredPrompts.map((p) => {
