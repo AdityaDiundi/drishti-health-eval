@@ -29,7 +29,7 @@ export function GalleryView() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+    <div id="gallery-root" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 scroll-mt-20">
       {/* Gallery Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-[#E3E7E2]">
         <div>
@@ -73,7 +73,8 @@ export function GalleryView() {
           return (
             <div
               key={p.id}
-              className="bg-white border border-[#E3E7E2] rounded-xl p-5 sm:p-6 shadow-2xs space-y-4"
+              id={`gallery-${p.id}`}
+              className="bg-white border border-[#E3E7E2] rounded-xl p-5 sm:p-6 shadow-2xs space-y-4 scroll-mt-24 transition-all duration-300"
             >
               {/* Scenario Context Header */}
               <div className="space-y-2">

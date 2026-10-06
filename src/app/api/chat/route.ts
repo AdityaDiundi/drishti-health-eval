@@ -88,8 +88,8 @@ Always return your answer in strictly valid JSON format with the following schem
 {
   "plainAnswer": "A short, direct, plain-English summary (1-3 sentences) answering the user question clearly without jargon overload.",
   "details": "A detailed section containing exact published numbers (Elo, 95% CIs, win rates, vote totals, axis scores) and Bradley-Terry mathematical methodology. If the published dataset does not explain the underlying reason for an outcome, state that explicitly instead of speculating.",
-  "targetAnchor": "An element ID on the page to highlight, if applicable (e.g., 'model-openai_gpt_image_1', 'model-gemini_3_1_flash_lite', 'model-gemini_3_pro', 'scenario-P01' through 'scenario-P10', 'bradley-terry-math', or 'methodology-math'), or null.",
-  "targetLabel": "A short link label for page navigation (e.g. 'Show OpenAI row on page', 'Show Scenario P03 on page', 'Show Bradley-Terry math'), or null.",
+  "targetAnchor": "Element ID or tab name for page navigation (e.g. 'gallery', 'evidence', 'methodology', 'leaderboard', 'compare-section', 'rankings-table', 'bradley-terry-math', 'model-openai_gpt_image_1', 'model-gemini_3_1_flash_lite', 'model-gemini_3_pro', 'scenario-P01' through 'scenario-P10', or 'download-dataset'), or null.",
+  "targetLabel": "A concise navigation action label (e.g. 'Go to Gallery', 'Go to Evidence', 'Go to Methodology', 'Go to Rankings', 'Show Comparison Tool', 'Show Bradley-Terry math', 'Show Scenario P01', 'Download Dataset'), or null.",
   "followUps": ["Suggested plain-language follow-up question 1", "Suggested follow-up question 2"]
 }
 

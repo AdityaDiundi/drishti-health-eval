@@ -39,40 +39,96 @@ interface MessageItem {
   feedbackGiven?: 'up' | 'down' | 'report' | null;
 }
 
-// Plain questions first, followed by technical
+// Plain questions first, followed by technical & navigation chips
 const SECTION_CHIPS: Record<string, string[]> = {
   leaderboard: [
     'What is this benchmark?',
-    'How do I read the rankings?',
-    'Can I trust 120 votes?',
-    'Why is GPT Image 1 ranked #1?',
-    'What does "Gap could be chance" mean?',
-    'What does the ± mean?',
+    'Show me the Gallery',
+    'Compare models',
     'Explain the Bradley-Terry math',
+    'Why is GPT Image 1 ranked #1?',
+    'What does the ± mean?',
+    'Download dataset',
   ],
   evidence: [
-    'What is this benchmark?',
-    'How do I read the rankings?',
+    'Show me the Gallery',
+    'Take me to Rankings',
     'Which scenario had the highest win rate?',
     'Why did models struggle on P03?',
-    'How was medical equipment evaluated?',
     'Explain the 3 evaluation axes',
+    'Explain the Bradley-Terry math',
   ],
   gallery: [
-    'What is this benchmark?',
+    'Take me to Rankings',
+    'Show me Evidence',
     'How were the 10 scenarios designed?',
-    'How do I compare models visually?',
     'Can I see all models side by side?',
+    'Explain the Bradley-Terry math',
   ],
   methodology: [
-    'What is this benchmark?',
-    'Can I trust 120 votes?',
     'Explain the Bradley-Terry math',
+    'Show me the Gallery',
+    'Take me to Rankings',
     'What is Hunter\'s MM algorithm?',
     'How were the 12 raters calibrated?',
-    'What does the ± mean?',
+    'Can I trust 120 votes?',
   ],
 };
+
+function detectNavigationTarget(text: string): { anchor: string; isExplicit: boolean } | null {
+  const t = text.trim().toLowerCase();
+  const hasNavPrefix = /^(show(\s+me)?|take\s+me\s+to|go\s+to|open|view|navigate\s+to|switch\s+to|bring\s+me\s+to|jump\s+to|see)\b/i.test(t);
+
+  if (t.includes('gallery')) {
+    return { anchor: 'gallery', isExplicit: hasNavPrefix || t === 'gallery' };
+  }
+  if (t.includes('rankings') || t.includes('leaderboard') || t.includes('standings') || t.includes('ranking')) {
+    return { anchor: 'leaderboard', isExplicit: hasNavPrefix || t === 'rankings' || t === 'leaderboard' };
+  }
+  if (t.includes('evidence') || t.includes('pairwise battle')) {
+    return { anchor: 'evidence', isExplicit: hasNavPrefix || t === 'evidence' };
+  }
+  if (t.includes('methodology') || t.includes('protocol') || t.includes('specification')) {
+    return { anchor: 'methodology', isExplicit: hasNavPrefix || t === 'methodology' };
+  }
+  if (t.includes('compare') || t.includes('comparison') || t.includes('head to head')) {
+    return { anchor: 'compare-section', isExplicit: hasNavPrefix || t.startsWith('compare') };
+  }
+  if (t.includes('bradley') || t.includes('hunter') || (t.includes('math') && !t.includes('why'))) {
+    return { anchor: 'bradley-terry-math', isExplicit: hasNavPrefix };
+  }
+  if (t.includes('download') && (t.includes('dataset') || t.includes('csv') || t.includes('data'))) {
+    return { anchor: 'download-dataset', isExplicit: hasNavPrefix };
+  }
+  if (t.includes('arena') || t.includes('blind test') || t.includes('evaluate')) {
+    return { anchor: 'arena', isExplicit: hasNavPrefix };
+  }
+
+  const matchP = t.match(/p[0-1][0-9]/i);
+  if (matchP) {
+    return { anchor: `scenario-${matchP[0].toUpperCase()}`, isExplicit: hasNavPrefix };
+  }
+
+  return null;
+}
+
+function getTargetLabel(anchor: string): string {
+  const l = anchor.toLowerCase();
+  if (l === 'gallery' || l.includes('gallery')) return 'Go to Gallery';
+  if (l === 'evidence' || l.includes('evidence')) return 'Go to Evidence';
+  if (l === 'methodology' || l.includes('methodology')) return 'Go to Methodology';
+  if (l === 'leaderboard' || l.includes('rankings') || l.includes('table')) return 'Go to Rankings';
+  if (l === 'arena') return 'Go to Arena';
+  if (l === 'compare-section' || l.includes('compare')) return 'Show Comparison Tool';
+  if (l.includes('bradley') || l.includes('math')) return 'Show Bradley-Terry math';
+  if (l.includes('openai')) return 'Show OpenAI row';
+  if (l.includes('flash')) return 'Show Gemini Flash row';
+  if (l.includes('pro')) return 'Show Gemini Pro row';
+  if (l.includes('download')) return 'Download Dataset';
+  const match = anchor.match(/p[0-1][0-9]/i);
+  if (match) return `Show Scenario ${match[0].toUpperCase()}`;
+  return 'Show on page';
+}
 
 const INITIAL_GREETING: MessageItem = {
   id: 'greeting',
@@ -203,18 +259,36 @@ export function ChatAssistant({
         throw new Error(data.error || 'Failed to get an answer.');
       }
 
+      let anchorToNavigate = data.targetAnchor;
+      let labelToUse = data.targetLabel;
+      const detected = detectNavigationTarget(text);
+
+      if (!anchorToNavigate && detected) {
+        anchorToNavigate = detected.anchor;
+      }
+      if (anchorToNavigate && !labelToUse) {
+        labelToUse = getTargetLabel(anchorToNavigate);
+      }
+
       const assistantMsg: MessageItem = {
         id: `a-${Date.now()}`,
         sender: 'assistant',
         plainAnswer: data.plainAnswer || data.reply || '',
         details: data.details || undefined,
-        targetAnchor: data.targetAnchor || null,
-        targetLabel: data.targetLabel || null,
+        targetAnchor: anchorToNavigate || null,
+        targetLabel: labelToUse || null,
         followUps: Array.isArray(data.followUps) ? data.followUps : [],
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
+
+      // If user had an explicit navigation intent ("show me...", "go to...", "take me to...", etc.), auto-navigate immediately
+      if (anchorToNavigate && (detected?.isExplicit || /^(show(\s+me)?|take\s+me\s+to|go\s+to|open|view|navigate\s+to|switch\s+to|see)\b/i.test(text))) {
+        setTimeout(() => {
+          handleScrollToAnchor(anchorToNavigate);
+        }, 120);
+      }
     } catch (err: any) {
       setErrorMessage(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -252,11 +326,30 @@ export function ChatAssistant({
   };
 
   const handleScrollToAnchor = (targetAnchor: string) => {
-    // 1. Identify which tab this anchor belongs to
-    let targetTab: 'leaderboard' | 'evidence' | 'gallery' | 'methodology' | null = null;
+    let targetTab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology' | null = null;
     const lower = targetAnchor.toLowerCase();
 
+    // Special: dataset download action
+    if (lower === 'download-dataset' || lower.includes('download')) {
+      const downloadLink = document.querySelector('a[download]') as HTMLAnchorElement;
+      if (downloadLink) {
+        downloadLink.click();
+      } else {
+        window.location.href = '/api/export?format=csv';
+      }
+      return;
+    }
+
     if (
+      lower === 'gallery' ||
+      lower === 'tab-gallery' ||
+      lower.startsWith('gallery-') ||
+      lower.includes('gallery')
+    ) {
+      targetTab = 'gallery';
+    } else if (
+      lower === 'methodology' ||
+      lower === 'tab-methodology' ||
       lower.includes('methodology') ||
       lower.includes('bradley') ||
       lower.includes('math') ||
@@ -264,11 +357,24 @@ export function ChatAssistant({
     ) {
       targetTab = 'methodology';
     } else if (
+      lower === 'evidence' ||
+      lower === 'tab-evidence'
+    ) {
+      targetTab = 'evidence';
+    } else if (
+      lower === 'arena' ||
+      lower === 'tab-arena'
+    ) {
+      targetTab = 'arena';
+    } else if (
+      lower === 'leaderboard' ||
+      lower === 'tab-leaderboard' ||
       lower.startsWith('model-') ||
       lower.includes('openai') ||
       lower.includes('gemini') ||
       lower === 'rankings-table' ||
-      lower === 'compare-section'
+      lower === 'compare-section' ||
+      lower.includes('compare')
     ) {
       targetTab = 'leaderboard';
     } else if (
@@ -282,22 +388,38 @@ export function ChatAssistant({
     }
 
     const performScroll = () => {
-      let el = document.getElementById(targetAnchor);
+      let el: HTMLElement | null = null;
+
+      if (lower === 'gallery' || lower === 'tab-gallery') {
+        el = document.getElementById('gallery-root');
+      } else if (lower === 'leaderboard' || lower === 'tab-leaderboard') {
+        el = document.getElementById('leaderboard-root') || document.getElementById('rankings-table');
+      } else if (lower === 'evidence' || lower === 'tab-evidence') {
+        el = document.getElementById('evidence-root') || document.getElementById('scenarios');
+      } else if (lower === 'methodology' || lower === 'tab-methodology') {
+        el = document.getElementById('methodology-root');
+      } else if (lower === 'compare-section' || lower.includes('compare')) {
+        el = document.getElementById('compare-section');
+      } else {
+        el = document.getElementById(targetAnchor);
+      }
 
       // Robust fallback resolution
       if (!el) {
         if (lower.includes('bradley') || lower.includes('math') || lower.includes('methodology')) {
-          el = document.getElementById('bradley-terry-math') || document.getElementById('methodology-math');
+          el = document.getElementById('bradley-terry-math') || document.getElementById('methodology-math') || document.getElementById('methodology-root');
         } else if (lower.includes('openai')) {
           el = document.getElementById('model-openai_gpt_image_1');
         } else if (lower.includes('flash')) {
           el = document.getElementById('model-gemini_3_1_flash_lite');
         } else if (lower.includes('pro')) {
           el = document.getElementById('model-gemini_3_pro');
+        } else if (lower.includes('gallery')) {
+          el = document.getElementById('gallery-root');
         } else if (lower.includes('p0') || lower.includes('p1')) {
           const match = targetAnchor.match(/P[0-1][0-9]/i);
           if (match) {
-            el = document.getElementById(`scenario-${match[0].toUpperCase()}`);
+            el = document.getElementById(`scenario-${match[0].toUpperCase()}`) || document.getElementById(`gallery-${match[0].toUpperCase()}`);
           }
         }
       }
@@ -309,6 +431,8 @@ export function ChatAssistant({
         setTimeout(() => {
           el?.classList.remove('ring-4', 'ring-[#0F2E24]/30', 'ring-offset-4', 'bg-emerald-50/40');
         }, 3500);
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     };
 

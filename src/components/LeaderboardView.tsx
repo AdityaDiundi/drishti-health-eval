@@ -167,7 +167,7 @@ export function LeaderboardView({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12">
+    <div id="leaderboard-root" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12 scroll-mt-20">
       {/* ───────────────────────────────────────────────────────────
           SECTION 1 — HERO (Editorial Split Composition — No Image Box)
          ─────────────────────────────────────────────────────────── */}

@@ -5,7 +5,7 @@ import { Download, Scale, CheckCircle2, Shield, Users, Type, FileText } from 'lu
 
 export function MethodologyView() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-[#171A18] font-sans">
+    <div id="methodology-root" className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-[#171A18] font-sans scroll-mt-20">
       {/* Publication Masthead */}
       <header className="mb-10 pb-8 border-b border-[#E3E7E2]">
         <div className="flex items-center space-x-2 text-[10px] font-mono uppercase font-bold text-[#69716B] tracking-wider mb-2">
