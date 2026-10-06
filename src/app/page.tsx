@@ -8,6 +8,7 @@ import { LeaderboardView } from '@/components/LeaderboardView';
 import { GalleryView } from '@/components/GalleryView';
 import { MethodologyView } from '@/components/MethodologyView';
 import { EvidenceView } from '@/components/EvidenceView';
+import { ChatAssistant } from '@/components/ChatAssistant';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
@@ -206,6 +207,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Floating JANEVAL AI Assistant Copilot */}
+      <ChatAssistant />
     </div>
   );
 }
