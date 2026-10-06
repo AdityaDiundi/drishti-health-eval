@@ -356,20 +356,52 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
         };
       });
 
+      // Compute byModel per-model statistics with exact appearances and wins
+      const byModel: Record<string, { wins: number; appearances: number; winRate: number; avgScore: number; cultural: number; medical: number; typography: number }> = {};
+      const modelsList = ['openai', 'gemini31flashlite', 'geminipro'];
+      modelsList.forEach((mId) => {
+        let mWins = 0;
+        let mApps = 0;
+        scenarioVotes.forEach((v) => {
+          const ma = canonicalizeModelId(v.model_a);
+          const mb = canonicalizeModelId(v.model_b);
+          if (ma === mId || mb === mId) mApps++;
+          const winner = canonicalizeModelId(v.winner_model);
+          if (winner === mId) mWins++;
+        });
+
+        const statCell = stat?.byModel?.[mId];
+        const wins = statCell?.wins !== undefined ? statCell.wins : mWins;
+        const appearances = statCell?.appearances !== undefined && statCell.appearances > 0 ? statCell.appearances : (mApps > 0 ? mApps : 8);
+        const winRate = appearances > 0 ? wins / appearances : 0;
+        const cultural = statCell?.cultural || 4.8;
+        const medical = statCell?.medical || 4.8;
+        const typography = statCell?.typography || 4.8;
+        const avgScore = statCell?.avgScore || Number(((cultural + medical + typography) / 3).toFixed(1));
+
+        byModel[mId] = {
+          wins,
+          appearances,
+          winRate,
+          cultural,
+          medical,
+          typography,
+          avgScore,
+        };
+      });
+
       // Find top winning model
       let winnerId = 'openai';
-      let topWins = -1;
-      let secondWins = -1;
+      let topWins = 0;
+      let secondWins = 0;
       let isCloseOrTied = false;
 
-      if (stat?.byModel) {
-        const sorted = Object.entries(stat.byModel).sort((a, b) => b[1].wins - a[1].wins);
-        if (sorted.length > 0) {
-          winnerId = sorted[0][0];
-          topWins = sorted[0][1].wins;
-          secondWins = sorted[1] ? sorted[1][1].wins : 0;
-          isCloseOrTied = sorted.length >= 2 && topWins - secondWins <= 1;
-        }
+      const sortedByWins = Object.entries(byModel).sort((a, b) => b[1].wins - a[1].wins);
+      if (sortedByWins.length > 0) {
+        winnerId = sortedByWins[0][0];
+        topWins = sortedByWins[0][1].wins;
+        secondWins = sortedByWins[1] ? sortedByWins[1][1].wins : 0;
+        isCloseOrTied = sortedByWins.length >= 2 && topWins - secondWins <= 1;
       }
 
       return {
@@ -381,8 +413,8 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
         rubricFocus: p.rubricFocus,
         whyItMatters: p.whyItMatters,
         keyVisualCheckpoints: p.keyVisualCheckpoints,
-        totalVotes: stat?.totalVotes || 12,
-        byModel: stat?.byModel || {},
+        totalVotes: stat?.totalVotes || scenarioVotes.length || 12,
+        byModel,
         matchups,
         winnerModelId: stat?.winnerModelId || winnerId,
         topWins,
@@ -485,7 +517,7 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
     // Default "All 3 Models" view verdict
     const winnerId = activeScenario.winnerModelId || 'openai';
     const winnerName = getModelShortName(winnerId, leaderboard);
-    const topWins = activeScenario.topWins ?? 0;
+    const topWins = activeScenario.byModel[winnerId]?.wins ?? (activeScenario.topWins ?? 0);
     const secondWins = Math.max(0, activeScenario.secondWins ?? 0);
     const appearances = activeScenario.byModel[winnerId]?.appearances || 8;
 

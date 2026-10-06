@@ -20,6 +20,8 @@ export interface LeaderboardItem {
   company: string;
   codename: string;
   wins: number;
+  gamesPlayed?: number;
+  ties?: number;
   winRate: number;
   eloRating: number;
   avgCultural: number;
@@ -43,6 +45,8 @@ export interface ScenarioStatItem {
       medical: number;
       typography: number;
       count: number;
+      appearances?: number;
+      winRate?: number;
     }
   >;
 }
@@ -52,7 +56,22 @@ interface ComparativeAnalysisProps {
   totalRatings: number;
   totalParticipants: number;
   scenarioStats?: ScenarioStatItem[];
-  pairwiseBattles?: Record<string, Record<string, { winsA: number; winsB: number; total: number }>>;
+  pairwiseBattles?: Record<
+    string,
+    Record<
+      string,
+      {
+        winsA: number;
+        winsB: number;
+        ties?: number;
+        total: number;
+        n?: number;
+        otherPairings?: number;
+        pctA?: number;
+        pctB?: number;
+      }
+    >
+  >;
   confidenceIntervals?: Record<string, number>;
   onStartEvaluation?: () => void;
   onNavigateTab?: (tab: 'arena' | 'leaderboard' | 'gallery' | 'methodology') => void;
@@ -100,7 +119,9 @@ export function ComparativeAnalysis({
   const directBattles = pairwiseBattles[modelA?.modelId]?.[modelB?.modelId];
   const h2hWinsA = directBattles ? directBattles.winsA : (modelA?.wins || 0);
   const h2hWinsB = directBattles ? directBattles.winsB : (modelB?.wins || 0);
-  const h2hTotal = h2hWinsA + h2hWinsB;
+  const h2hTies = directBattles?.ties || 0;
+  const h2hN = directBattles?.n || directBattles?.total || (h2hWinsA + h2hWinsB + h2hTies);
+  const h2hOtherPairings = directBattles?.otherPairings !== undefined ? directBattles.otherPairings : Math.max(0, totalRatings - h2hN);
 
   // Comparison deltas
   const eloDiff = (modelA?.eloRating || 1200) - (modelB?.eloRating || 1200);
@@ -408,7 +429,7 @@ export function ComparativeAnalysis({
               </span>
             </div>
             <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
-              battle share · ↑ better
+              {modelA?.wins || 0} of {modelA?.gamesPlayed || 80} vs {modelB?.wins || 0} of {modelB?.gamesPlayed || 80} votes
             </div>
           </div>
 
@@ -447,11 +468,11 @@ export function ComparativeAnalysis({
           <div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
-                HEAD-TO-HEAD
+                HEAD-TO-HEAD BATTLE
               </span>
             </div>
             <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
-              {h2hTotal} direct victories
+              {h2hN} direct pairwise votes{h2hTies > 0 ? ` · ${h2hTies} ties` : ''}
             </div>
           </div>
 
@@ -476,7 +497,7 @@ export function ComparativeAnalysis({
             <div className="w-full h-1.5 bg-[#FAFBF9] rounded-full overflow-hidden border border-[#E3E7E2] flex">
               <div
                 className="bg-[#0F2E24] h-full"
-                style={{ width: `${Math.max(10, Math.min(90, (h2hWinsA / Math.max(1, h2hTotal)) * 100))}%` }}
+                style={{ width: `${Math.max(10, Math.min(90, (h2hWinsA / Math.max(1, h2hWinsA + h2hWinsB)) * 100))}%` }}
               ></div>
               <div
                 className="bg-[#C05621] h-full flex-1"
@@ -485,16 +506,16 @@ export function ComparativeAnalysis({
           </div>
         </div>
 
-        {/* Card 4: Votes */}
+        {/* Card 4: Total Wins */}
         <div className="bg-white border border-[#E3E7E2] rounded-xl p-3 sm:p-4 shadow-2xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between">
               <span className="font-mono text-[9px] uppercase font-bold text-[#69716B] tracking-wider truncate">
-                TOTAL VOTES
+                TOTAL WINS
               </span>
             </div>
             <div className="text-[9.5px] font-mono text-[#A4AEA7] mt-0.5 truncate">
-              verified rounds · ↑ better
+              across all {totalRatings} votes · ↑ better
             </div>
           </div>
 
@@ -526,6 +547,21 @@ export function ComparativeAnalysis({
               ></div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Explicit Pairwise Head-to-Head Reconciliation Line */}
+      <div className="p-3.5 bg-[#FAFBF9] border border-[#E3E7E2] rounded-xl text-xs font-sans text-[#171A18] flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-2xs">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-[#0F2E24]">
+            {h2hWinsA === h2hWinsB
+              ? `${modelA?.shortName} and ${modelB?.shortName} tied with ${h2hWinsA} wins each in direct head-to-head votes`
+              : `${h2hWinsA > h2hWinsB ? modelA?.shortName : modelB?.shortName} won ${Math.max(h2hWinsA, h2hWinsB)} of ${h2hN} head-to-head votes against ${h2hWinsA > h2hWinsB ? modelB?.shortName : modelA?.shortName}`}
+            {h2hTies > 0 ? ` (${h2hTies} ties)` : ''}.
+          </span>
+        </div>
+        <div className="text-[11px] font-mono text-[#69716B]">
+          {h2hOtherPairings} votes involved other model pairings (total n={totalRatings}).
         </div>
       </div>
 

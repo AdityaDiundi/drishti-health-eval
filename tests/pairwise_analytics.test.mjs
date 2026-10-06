@@ -186,3 +186,33 @@ test('pairwise analytics: verify 3 scenarios matchups pairwise consistency and r
   });
 });
 
+test('pairwise analytics: all 10 scenarios appearances sum to 2 * totalVotes', () => {
+  const scenarioStats = computeScenarioStats(rawVotes);
+  assert.equal(scenarioStats.length, 10, 'Must have 10 scenarios');
+
+  scenarioStats.forEach((sc) => {
+    const totalAppsInScenario = Object.values(sc.byModel).reduce((sum, cell) => sum + cell.appearances, 0);
+    assert.equal(totalAppsInScenario, sc.totalVotes * 2, `${sc.code} total appearances must equal 2 * totalVotes`);
+
+    const decisiveWins = Object.values(sc.byModel).reduce((sum, cell) => sum + cell.wins, 0);
+    const tiesInMatchups = sc.matchups.reduce((sum, m) => sum + m.ties, 0);
+    assert.equal(decisiveWins + tiesInMatchups, sc.totalVotes, `${sc.code} decisive wins + ties must equal totalVotes`);
+  });
+});
+
+test('pairwise analytics: head-to-head otherPairings reconciliation across all pairs', () => {
+  const pairs = [
+    ['openai', 'gemini31flashlite'],
+    ['openai', 'geminipro'],
+    ['gemini31flashlite', 'geminipro'],
+  ];
+
+  pairs.forEach(([pA, pB]) => {
+    const h2h = computeHeadToHead(rawVotes, pA, pB);
+    assert.equal(h2h.n, 40, `Pair ${pA} vs ${pB} must have exactly 40 direct votes`);
+    assert.equal(h2h.otherPairings, 80, `Other pairings must equal 80 (120 - 40)`);
+    assert.equal(h2h.winsA + h2h.winsB + h2h.ties, 40, `winsA + winsB + ties must equal 40`);
+  });
+});
+
+

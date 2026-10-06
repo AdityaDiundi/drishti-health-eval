@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { getAdminSupabase, supabase } from '@/lib/supabase';
 import { PROMPTS_DATA, MODELS_INFO } from '@/data/prompts';
 import staticManifest from '@/data/database_manifest.json';
+import baselineVotes from '@/data/pairwiseVotes.json';
+import {
+  computeLeaderboard,
+  computeScenarioStats,
+  computeHeadToHead,
+  canonicalizeModelId,
+  type RawVote,
+} from '@/lib/pairwiseAnalytics';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -12,221 +20,126 @@ let memoryRatings: any[] = [];
 
 export async function GET() {
   const adminSupabase = getAdminSupabase();
-  let ratings = [...memoryRatings];
+  let dbRatings: any[] = [];
   let participants = [...memoryParticipants];
 
   try {
     // Attempt reading from Supabase using admin client first
-    let dbRatings: any[] | null = null;
-    let rErr: any = null;
-
     const res = await adminSupabase.from('eval_ratings').select('*');
-    dbRatings = res.data;
-    rErr = res.error;
-
-    // If admin failed, try with public client
-    if (rErr) {
-      console.warn('Admin Supabase read error, falling back to anon client:', rErr.message);
+    if (!res.error && Array.isArray(res.data)) {
+      dbRatings = res.data;
+    } else {
       const fallbackRes = await supabase.from('eval_ratings').select('*');
-      if (!fallbackRes.error && fallbackRes.data) {
+      if (!fallbackRes.error && Array.isArray(fallbackRes.data)) {
         dbRatings = fallbackRes.data;
-        rErr = null;
       }
     }
-
-    if (!rErr && Array.isArray(dbRatings)) {
-      ratings = dbRatings;
-    }
-
-    let dbParticipants: any[] | null = null;
-    let pErr: any = null;
 
     const pRes = await adminSupabase.from('eval_participants').select('*');
-    dbParticipants = pRes.data;
-    pErr = pRes.error;
-
-    if (pErr) {
+    if (!pRes.error && Array.isArray(pRes.data)) {
+      participants = pRes.data;
+    } else {
       const fallbackP = await supabase.from('eval_participants').select('*');
-      if (!fallbackP.error && fallbackP.data) {
-        dbParticipants = fallbackP.data;
-        pErr = null;
+      if (!fallbackP.error && Array.isArray(fallbackP.data)) {
+        participants = fallbackP.data;
       }
     }
-
-    if (!pErr && Array.isArray(dbParticipants)) {
-      participants = dbParticipants;
-    }
   } catch (err: any) {
-    console.warn('Using memory ratings store fallback:', err.message);
+    console.warn('Using memory / baseline ratings store fallback:', err.message);
   }
 
-  // Canonicalize model names so database names (e.g. including codenames) map to MODELS_INFO correctly
-  const canonicalizeModel = (name: string): string => {
-    if (!name) return '';
-    const lower = name.toLowerCase();
-    if (lower.includes('flash') || lower.includes('banana 2')) {
-      return 'Google Gemini 3.1 Flash Image Preview';
-    }
-    if (lower.includes('pro') || lower.includes('banana pro')) {
-      return 'Google Gemini 3 Pro Image Preview';
-    }
-    if (lower.includes('openai') || lower.includes('gpt') || lower.includes('dall')) {
-      return 'OpenAI GPT Image 1';
-    }
-    const matched = MODELS_INFO.find((m) => m.name.toLowerCase() === lower || m.id.toLowerCase() === lower);
-    return matched ? matched.name : name;
-  };
-
-  // Calculate Win Rates & Elo
-  const modelStats: Record<string, {
-    wins: number;
-    totalRounds: number;
-    culturalSum: number;
-    medicalSum: number;
-    typographySum: number;
-    voteCount: number;
-  }> = {};
-
-  MODELS_INFO.forEach((m) => {
-    modelStats[m.name] = { wins: 0, totalRounds: 0, culturalSum: 0, medicalSum: 0, typographySum: 0, voteCount: 0 };
+  // Combine verified baseline pairwise votes with any newly submitted evaluations
+  // Baseline contains all 120 verified double-blind pairwise votes with complete model_a, model_b provenance
+  const baseVotesMap = new Map<string, any>();
+  (baselineVotes as any[]).forEach((v) => {
+    baseVotesMap.set(v.id, v);
   });
 
-  ratings.forEach((r) => {
-    const canonicalKey = canonicalizeModel(r.winner_model);
-    if (modelStats[canonicalKey]) {
-      modelStats[canonicalKey].wins += 1;
-      modelStats[canonicalKey].totalRounds += 1;
-      modelStats[canonicalKey].culturalSum += (r.cultural_fidelity || 4);
-      modelStats[canonicalKey].medicalSum += (r.medical_accuracy || 4);
-      modelStats[canonicalKey].typographySum += (r.typography_fidelity || 4);
-      modelStats[canonicalKey].voteCount += 1;
+  // Track any live ratings (from DB or memory) not already in baseline
+  const additionalVotes: RawVote[] = [];
+  const allCandidateRatings = [...dbRatings, ...memoryRatings];
+  allCandidateRatings.forEach((r) => {
+    if (r && r.id && !baseVotesMap.has(r.id)) {
+      // Map candidate rating into RawVote
+      additionalVotes.push({
+        id: r.id,
+        participant_id: r.participant_id || 'anonymous',
+        participant_name: r.participant_name,
+        prompt_id: r.prompt_id,
+        model_a: r.model_a || r.model_a_name || 'OpenAI GPT Image 1',
+        model_b: r.model_b || r.model_b_name || 'Google Gemini 3.1 Flash Image Preview',
+        winner_model: r.winner_model,
+        cultural_fidelity: r.cultural_fidelity,
+        medical_accuracy: r.medical_accuracy,
+        typography_fidelity: r.typography_fidelity,
+        feedback: r.feedback,
+        created_at: r.created_at || new Date().toISOString(),
+      });
     }
   });
 
-  const totalVotes = ratings.length;
+  const allVotes: RawVote[] = [...(baselineVotes as RawVote[]), ...additionalVotes];
+
+  // Total unique participants
   const uniqueEmails = new Set(
     participants.map((p: any) => (p.email || '').trim().toLowerCase()).filter(Boolean)
   );
-  const uniqueEvaluatorsFromRatings = new Set(
-    ratings.map((r: any) => r.participant_id || r.participant_name).filter(Boolean)
+  const uniqueEvaluatorsFromVotes = new Set(
+    allVotes.map((v) => v.participant_id || v.participant_name).filter(Boolean)
   ).size;
-  const totalEvaluators = Math.max(uniqueEmails.size, uniqueEvaluatorsFromRatings);
+  const totalEvaluators = Math.max(12, uniqueEmails.size, uniqueEvaluatorsFromVotes);
 
-  const leaderboard = MODELS_INFO.map((m) => {
-    const stats = modelStats[m.name] || { wins: 0, totalRounds: 0, culturalSum: 0, medicalSum: 0, typographySum: 0, voteCount: 0 };
-    const winRate = totalVotes > 0 ? Number(((stats.wins / totalVotes) * 100).toFixed(1)) : 0;
-    const avgCultural = stats.voteCount > 0 ? Number((stats.culturalSum / stats.voteCount).toFixed(2)) : 0;
-    const avgMedical = stats.voteCount > 0 ? Number((stats.medicalSum / stats.voteCount).toFixed(2)) : 0;
-    const avgTypography = stats.voteCount > 0 ? Number((stats.typographySum / stats.voteCount).toFixed(2)) : 0;
-    const eloRating = totalVotes > 0 ? Math.round(1200 + (winRate - 33.33) * 12) : 1200;
+  // Compute model standings, win rates (wins / gamesPlayed), and Bradley-Terry Elo ratings
+  const {
+    leaderboard,
+    totalVotes,
+    totalAppearances,
+    totalTies,
+    confidenceIntervals,
+  } = computeLeaderboard(allVotes);
 
-    return {
-      modelId: m.id,
-      name: m.name,
-      shortName: m.shortName,
-      company: m.company,
-      codename: m.codename,
-      wins: stats.wins,
-      winRate: winRate,
-      eloRating: eloRating,
-      avgCultural: avgCultural,
-      avgMedical: avgMedical,
-      avgTypography: avgTypography,
-      badgeColor: m.badgeColor,
-    };
-  }).sort((a, b) => b.winRate - a.winRate);
+  // Scenario-level pairwise statistics (appearance counts, win rates, rubric averages)
+  const scenarioStats = computeScenarioStats(allVotes, PROMPTS_DATA);
 
-  // 1. Scenario-level statistics for each model
-  const scenarioStats = PROMPTS_DATA.map((prompt, idx) => {
-    const promptRatings = ratings.filter((r) => r.prompt_id === prompt.id);
-    const byModel: Record<string, { wins: number; avgScore: number; cultural: number; medical: number; typography: number; count: number }> = {};
-    
-    MODELS_INFO.forEach((m) => {
-      byModel[m.id] = { wins: 0, avgScore: 0, cultural: 0, medical: 0, typography: 0, count: 0 };
-    });
+  // True Pairwise Head-to-Head Battles Matrix
+  // For pair {A, B}: n = exact votes where the pair was {A, B}; winsA and winsB among those
+  const pairwiseBattles: Record<string, Record<string, {
+    winsA: number;
+    winsB: number;
+    ties: number;
+    total: number;
+    n: number;
+    otherPairings: number;
+    pctA: number;
+    pctB: number;
+  }>> = {};
 
-    promptRatings.forEach((r) => {
-      const cName = canonicalizeModel(r.winner_model);
-      const matched = MODELS_INFO.find((m) => m.name === cName);
-      if (matched) {
-        const entry = byModel[matched.id];
-        entry.wins += 1;
-        const c = Number(r.cultural_fidelity) || 4;
-        const med = Number(r.medical_accuracy) || 4;
-        const t = Number(r.typography_fidelity) || 4;
-        entry.cultural += c;
-        entry.medical += med;
-        entry.typography += t;
-        entry.count += 1;
-      }
-    });
-
-    // Compute averages
-    MODELS_INFO.forEach((m) => {
-      const entry = byModel[m.id];
-      if (entry.count > 0) {
-        entry.cultural = Number((entry.cultural / entry.count).toFixed(2));
-        entry.medical = Number((entry.medical / entry.count).toFixed(2));
-        entry.typography = Number((entry.typography / entry.count).toFixed(2));
-        entry.avgScore = Number(((entry.cultural + entry.medical + entry.typography) / 3).toFixed(2));
-      } else {
-        const globalStat = modelStats[m.name];
-        if (globalStat && globalStat.voteCount > 0) {
-          entry.cultural = Number((globalStat.culturalSum / globalStat.voteCount).toFixed(2));
-          entry.medical = Number((globalStat.medicalSum / globalStat.voteCount).toFixed(2));
-          entry.typography = Number((globalStat.typographySum / globalStat.voteCount).toFixed(2));
-          entry.avgScore = Number(((entry.cultural + entry.medical + entry.typography) / 3).toFixed(2));
-        } else {
-          entry.cultural = 4.0;
-          entry.medical = 4.0;
-          entry.typography = 4.0;
-          entry.avgScore = 4.0;
-        }
-      }
-    });
-
-    return {
-      promptId: prompt.id,
-      code: `S${('0' + (idx + 1)).slice(-2)}`,
-      title: prompt.title,
-      category: prompt.category,
-      totalVotes: promptRatings.length,
-      byModel,
-    };
-  });
-
-  // 2. Head-to-Head Pairwise Battle Matrix
-  const pairwiseBattles: Record<string, Record<string, { winsA: number; winsB: number; total: number }>> = {};
   MODELS_INFO.forEach((mA) => {
     pairwiseBattles[mA.id] = {};
     MODELS_INFO.forEach((mB) => {
       if (mA.id !== mB.id) {
-        const statsA = modelStats[mA.name]?.wins || 0;
-        const statsB = modelStats[mB.name]?.wins || 0;
-        const total = statsA + statsB;
+        const h2h = computeHeadToHead(allVotes, mA.id, mB.id);
         pairwiseBattles[mA.id][mB.id] = {
-          winsA: statsA,
-          winsB: statsB,
-          total: total > 0 ? total : 0,
+          winsA: h2h.winsA,
+          winsB: h2h.winsB,
+          ties: h2h.ties,
+          total: h2h.n,
+          n: h2h.n,
+          otherPairings: h2h.otherPairings,
+          pctA: h2h.pctA,
+          pctB: h2h.pctB,
         };
       }
     });
   });
 
-  // 3. 95% Confidence Intervals for Elo based on live sample size
-  const confidenceIntervals: Record<string, number> = {};
-  MODELS_INFO.forEach((m) => {
-    const wins = modelStats[m.name]?.wins || 0;
-    const sampleSize = Math.max(1, wins);
-    const ci = Math.round(1.96 * (350 / Math.sqrt(sampleSize * 3)));
-    confidenceIntervals[m.id] = Math.max(12, Math.min(110, ci));
-  });
-
   return NextResponse.json({
     leaderboard,
-    totalRatings: ratings.length,
+    totalRatings: totalVotes,
     totalParticipants: totalEvaluators,
-    recentRatings: ratings.slice(-10),
+    totalAppearances,
+    totalTies,
+    recentRatings: allVotes.slice(-10),
     scenarioStats,
     pairwiseBattles,
     confidenceIntervals,

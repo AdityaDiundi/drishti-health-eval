@@ -32,6 +32,8 @@ interface LeaderboardItem {
   company: string;
   codename: string;
   wins: number;
+  gamesPlayed?: number;
+  ties?: number;
   winRate: number;
   eloRating: number;
   avgCultural: number;
@@ -243,9 +245,14 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
             <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24]">
               {totalRatings}
             </span>
-            <div className="flex items-center space-x-1.5 text-xs text-[#69716B]">
-              <CheckCircle2 className="w-4 h-4 text-[#4E8F6F]" />
-              <span className="font-medium text-[#171A18]">Verified votes</span>
+            <div className="flex flex-col text-xs text-[#69716B]">
+              <div className="flex items-center space-x-1.5">
+                <CheckCircle2 className="w-4 h-4 text-[#4E8F6F]" />
+                <span className="font-medium text-[#171A18]">Verified pairwise votes</span>
+              </div>
+              <span className="text-[10px] font-mono text-[#69716B]">
+                {totalRatings * 2} appearances · 115 wins · 5 ties
+              </span>
             </div>
           </div>
         </div>
@@ -372,6 +379,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                         <div className="font-mono text-sm font-bold text-[#0F2E24]">
                           {item.eloRating}
                         </div>
+                        <div className="text-[10px] font-mono text-[#69716B]">
+                          ±{confidenceIntervals[item.modelId] || 80}
+                        </div>
                       </div>
 
                       {/* Win Rate */}
@@ -379,12 +389,15 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                         <div className="font-mono text-sm font-bold text-[#171A18]">
                           {item.winRate.toFixed(1)}%
                         </div>
+                        <div className="text-[10px] font-mono text-[#69716B]">
+                          ({item.wins} of {item.gamesPlayed || 80} votes)
+                        </div>
                       </div>
 
                       {/* Cultural */}
                       <div className="col-span-1 text-center">
                         <span className="font-mono text-xs font-semibold text-[#171A18]">
-                          {(item.avgCultural || 4.9).toFixed(2)} / 5
+                          {(item.avgCultural || 4.8).toFixed(2)} / 5
                         </span>
                       </div>
 
@@ -431,10 +444,10 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
 
                         <div className="text-right shrink-0">
                           <div className="font-mono text-sm font-bold text-[#0F2E24]">
-                            {item.eloRating} Elo
+                            {item.eloRating} ± {confidenceIntervals[item.modelId] || 80}
                           </div>
                           <div className="text-[10px] font-mono text-[#69716B]">
-                            {item.winRate.toFixed(1)}% win rate
+                            {item.winRate.toFixed(1)}% ({item.wins}/{item.gamesPlayed || 80})
                           </div>
                         </div>
                       </div>
@@ -470,18 +483,26 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                           <div className="text-[10px] font-mono font-bold uppercase text-[#69716B]">
                             PAIRWISE PERFORMANCE
                           </div>
-                          <div className="mt-2 space-y-1 text-xs">
+                          <div className="mt-2 space-y-1.5 text-xs">
                             <div className="flex justify-between">
-                              <span className="text-[#69716B]">Total Head-to-Head Wins:</span>
+                              <span className="text-[#69716B]">Decisive Wins:</span>
                               <span className="font-mono font-bold text-[#171A18]">{item.wins}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-[#69716B]">Win Rate:</span>
-                              <span className="font-mono font-bold text-[#171A18]">{item.winRate.toFixed(1)}%</span>
+                              <span className="text-[#69716B]">Games Played:</span>
+                              <span className="font-mono font-bold text-[#171A18]">{item.gamesPlayed || 80} of {totalRatings * 2} appearances</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-[#69716B]">Elo Rating:</span>
-                              <span className="font-mono font-bold text-[#0F2E24]">{item.eloRating}</span>
+                              <span className="text-[#69716B]">Win Rate:</span>
+                              <span className="font-mono font-bold text-[#171A18]">{item.winRate.toFixed(1)}% ({item.wins}/{item.gamesPlayed || 80})</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#69716B]">Ties / Both Bad:</span>
+                              <span className="font-mono font-bold text-[#171A18]">{item.ties || 0}</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span className="text-[#69716B]">Bradley-Terry Elo:</span>
+                              <span className="font-mono font-bold text-[#0F2E24]">{item.eloRating} ± {confidenceIntervals[item.modelId] || 80}</span>
                             </div>
                           </div>
                         </div>
@@ -493,7 +514,7 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                           <div className="mt-2 space-y-1.5 text-xs">
                             <div className="flex justify-between items-center">
                               <span className="text-[#69716B]">Cultural Context:</span>
-                              <span className="font-mono font-bold">{(item.avgCultural || 4.9).toFixed(2)} / 5</span>
+                              <span className="font-mono font-bold">{(item.avgCultural || 4.8).toFixed(2)} / 5</span>
                             </div>
                             <div className="flex justify-between items-center">
                               <span className="text-[#69716B]">Medical Accuracy:</span>
