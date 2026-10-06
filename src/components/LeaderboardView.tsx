@@ -21,6 +21,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  Sparkles,
 } from 'lucide-react';
 import { ComparativeAnalysis } from './ComparativeAnalysis';
 import { HeroArchitectureDiagram } from './HeroArchitectureDiagram';
@@ -45,6 +46,8 @@ interface LeaderboardItem {
 interface LeaderboardProps {
   onStartEvaluation?: () => void;
   onNavigateTab?: (tab: 'arena' | 'leaderboard' | 'gallery' | 'methodology') => void;
+  onAskAboutModel?: (model: LeaderboardItem) => void;
+  onAskAboutScenario?: (code: string, title: string) => void;
 }
 
 // Actual benchmark images across the 10 scenarios
@@ -93,7 +96,12 @@ const EVIDENCE_SCENARIOS = [
   },
 ];
 
-export function LeaderboardView({ onStartEvaluation, onNavigateTab }: LeaderboardProps) {
+export function LeaderboardView({
+  onStartEvaluation,
+  onNavigateTab,
+  onAskAboutModel,
+  onAskAboutScenario,
+}: LeaderboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
   const [totalRatings, setTotalRatings] = useState(0);
   const [totalParticipants, setTotalParticipants] = useState(0);
@@ -330,7 +338,8 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
               return (
                 <div
                   key={item.modelId}
-                  className={`transition-colors hover:bg-[#FAFBF9] ${
+                  id={`model-${item.modelId}`}
+                  className={`transition-all duration-300 scroll-mt-24 hover:bg-[#FAFBF9] ${
                     isExpanded ? 'bg-[#F7F8F5]' : ''
                   }`}
                 >
@@ -364,8 +373,21 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                             </svg>
                           )}
                         </div>
-                        <div className="font-bold text-sm text-[#171A18] tracking-tight">
-                          {item.name}
+                        <div>
+                          <div className="font-bold text-sm text-[#171A18] tracking-tight">
+                            {item.name}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onAskAboutModel?.(item);
+                            }}
+                            className="inline-flex items-center gap-1 text-[10px] text-[#4E8F6F] hover:text-[#0F2E24] font-medium hover:underline cursor-pointer"
+                          >
+                            <Sparkles className="w-2.5 h-2.5" />
+                            Ask about this
+                          </button>
                         </div>
                       </div>
 
@@ -439,6 +461,17 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                             <div className="text-[10px] font-mono text-[#69716B] truncate">
                               {providerLabel}
                             </div>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onAskAboutModel?.(item);
+                              }}
+                              className="inline-flex items-center gap-1 text-[10px] text-[#4E8F6F] hover:text-[#0F2E24] font-medium hover:underline mt-0.5 cursor-pointer"
+                            >
+                              <Sparkles className="w-2.5 h-2.5" />
+                              Ask about this
+                            </button>
                           </div>
                         </div>
 
@@ -625,8 +658,9 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
           {EVIDENCE_SCENARIOS.map((scenario) => (
             <div
               key={scenario.id}
+              id={`scenario-${scenario.promptId || scenario.id}`}
               onClick={() => setZoomImage({ url: scenario.imageUrl, label: `${scenario.id} • ${scenario.title}` })}
-              className="w-64 sm:w-72 shrink-0 bg-white border border-[#E3E7E2] rounded-xl overflow-hidden shadow-2xs hover:border-[#4E8F6F] hover:shadow-xs transition-all cursor-pointer group"
+              className="w-64 sm:w-72 shrink-0 bg-white border border-[#E3E7E2] rounded-xl overflow-hidden shadow-2xs hover:border-[#4E8F6F] hover:shadow-xs transition-all cursor-pointer group scroll-mt-24"
             >
               <div className="relative aspect-16/10 w-full bg-slate-100 overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -649,6 +683,19 @@ export function LeaderboardView({ onStartEvaluation, onNavigateTab }: Leaderboar
                 <h4 className="font-bold text-xs text-[#171A18] mt-1 group-hover:text-[#0F2E24] transition-colors truncate">
                   {scenario.title}
                 </h4>
+                <div className="mt-2 pt-1 border-t border-[#E3E7E2] flex items-center justify-end">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onAskAboutScenario?.(scenario.promptId, scenario.title);
+                    }}
+                    className="inline-flex items-center gap-1 text-[10px] text-[#4E8F6F] hover:text-[#0F2E24] font-medium hover:underline cursor-pointer"
+                  >
+                    <Sparkles className="w-2.5 h-2.5" />
+                    Ask about this
+                  </button>
+                </div>
               </div>
             </div>
           ))}

@@ -11,6 +11,7 @@ import {
   ZoomOut,
   X,
   RotateCcw,
+  Sparkles,
 } from 'lucide-react';
 import Link from 'next/link';
 import { PROMPTS_DATA } from '@/data/prompts';
@@ -75,6 +76,7 @@ export interface ScenarioStatItem {
 interface EvidenceViewProps {
   onStartEvaluation?: () => void;
   onNavigateTab?: (tab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology') => void;
+  onAskAboutScenario?: (code: string, title: string) => void;
 }
 
 export function getModelShortName(modelId?: string, leaderboard?: LeaderboardItem[]): string {
@@ -240,7 +242,11 @@ function ImageWithFallback({
   );
 }
 
-export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewProps) {
+export function EvidenceView({
+  onStartEvaluation,
+  onNavigateTab,
+  onAskAboutScenario,
+}: EvidenceViewProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardItem[]>([]);
   const [scenarioStats, setScenarioStats] = useState<ScenarioStatItem[]>([]);
   const [rawVotes, setRawVotes] = useState<any[]>([]);
@@ -698,7 +704,11 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
 
         {/* Scenario Stage: Unboxed, Clean & Visual-First */}
         {activeScenario && (
-          <div className="space-y-5">
+          <div
+            id={`scenario-${activeScenario.code}`}
+            className="space-y-5 scroll-mt-24 transition-all duration-300"
+          >
+            <div id={`scenario-${activeScenario.promptId}`} className="sr-only" />
             {/* Stage Header: Category, Title, Prompt & Prev/Next */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pt-1">
               <div className="space-y-1.5 min-w-0 max-w-3xl">
@@ -717,6 +727,16 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                 <p className="text-xs sm:text-sm text-[#5E6963] font-serif italic leading-relaxed pt-0.5">
                   “{activeScenario.prompt}”
                 </p>
+                <div className="pt-1">
+                  <button
+                    type="button"
+                    onClick={() => onAskAboutScenario?.(activeScenario.code, activeScenario.title)}
+                    className="inline-flex items-center gap-1 text-xs text-[#123F32] hover:text-[#4E8F6F] font-semibold hover:underline cursor-pointer"
+                  >
+                    <Sparkles className="w-3 h-3 text-[#4E8F6F]" />
+                    <span>Ask about this scenario</span>
+                  </button>
+                </div>
               </div>
 
               {/* Prev / Next controls */}

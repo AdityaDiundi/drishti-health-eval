@@ -24,7 +24,11 @@ export type AnalyticsEventName =
   | 'rail_link_click'
   | 'rubric_section_toggle'
   | 'matchup_focus'
-  | 'how_add_up_open';
+  | 'how_add_up_open'
+  | 'assistant_open'
+  | 'assistant_chip_click'
+  | 'assistant_answer_feedback'
+  | 'assistant_error';
 
 export interface AnalyticsEventRecord {
   event: AnalyticsEventName;

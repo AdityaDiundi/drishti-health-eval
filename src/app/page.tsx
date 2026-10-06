@@ -16,6 +16,8 @@ export default function Home() {
   const [participant, setParticipant] = useState<{ name: string; email: string; age: number } | null>(null);
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
   const [hasCompletedEvaluation, setHasCompletedEvaluation] = useState<boolean>(false);
+  const [isAssistantOpen, setIsAssistantOpen] = useState<boolean>(false);
+  const [assistantPresetPrompt, setAssistantPresetPrompt] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -84,8 +86,22 @@ export default function Home() {
     handleResetParticipant();
   };
 
+  const handleAskAboutModel = (model: any) => {
+    setAssistantPresetPrompt(`Why is ${model.shortName} ranked with Elo ${model.eloRating}?`);
+    setIsAssistantOpen(true);
+  };
+
+  const handleAskAboutScenario = (code: string, title: string) => {
+    setAssistantPresetPrompt(`How did models perform on scenario ${code} (${title})?`);
+    setIsAssistantOpen(true);
+  };
+
   return (
-    <div className="min-h-screen bg-[#F7F8F5] text-[#171A18] flex flex-col font-sans selection:bg-[#DDEBE3] selection:text-[#0F2E24]">
+    <div
+      className={`min-h-screen bg-[#F7F8F5] text-[#171A18] flex flex-col font-sans selection:bg-[#DDEBE3] selection:text-[#0F2E24] transition-[margin] duration-300 ease-in-out ${
+        isAssistantOpen && activeTab !== 'arena' ? 'lg:mr-[420px]' : ''
+      }`}
+    >
       {/* Header Navigation */}
       <Header
         activeTab={activeTab}
@@ -161,6 +177,8 @@ export default function Home() {
                 setShowConsentModal(true);
               }
             }}
+            onAskAboutModel={handleAskAboutModel}
+            onAskAboutScenario={handleAskAboutScenario}
           />
         )}
         {activeTab === 'evidence' && (
@@ -175,6 +193,7 @@ export default function Home() {
                 setShowConsentModal(true);
               }
             }}
+            onAskAboutScenario={handleAskAboutScenario}
           />
         )}
         {activeTab === 'gallery' && <GalleryView />}
@@ -208,8 +227,16 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Floating JANEVAL AI Assistant Copilot */}
-      <ChatAssistant />
+      {/* JANEVAL Assistant Drawer (hidden on blind Arena page) */}
+      {activeTab !== 'arena' && (
+        <ChatAssistant
+          activeTab={activeTab}
+          isOpen={isAssistantOpen}
+          onOpenChange={setIsAssistantOpen}
+          presetPrompt={assistantPresetPrompt}
+          onClearPresetPrompt={() => setAssistantPresetPrompt(null)}
+        />
+      )}
     </div>
   );
 }

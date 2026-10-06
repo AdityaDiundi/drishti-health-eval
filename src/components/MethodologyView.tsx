@@ -186,7 +186,7 @@ export function MethodologyView() {
         <hr className="border-[#E3E7E2]" />
 
         {/* 5. Mathematical Model: Bradley-Terry MLE & Combinatorial Design */}
-        <section className="space-y-6">
+        <section id="methodology-math" className="space-y-6 scroll-mt-24 transition-all duration-300">
           <div>
             <h2 className="text-xl font-bold text-[#0F2E24] tracking-tight">
               5. Mathematical Formulation &amp; Combinatorial Experimental Design

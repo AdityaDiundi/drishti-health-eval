@@ -1,101 +1,215 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
-  MessageSquare,
+  Sparkles,
   X,
   Send,
-  Sparkles,
   RotateCcw,
-  ShieldCheck,
+  Info,
   ChevronDown,
-  Bot,
-  User,
-  AlertCircle
+  ChevronRight,
+  ExternalLink,
+  ThumbsUp,
+  ThumbsDown,
+  Flag,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
+import { trackEvent } from '@/lib/analytics';
 
-interface ChatMessage {
-  id: string;
-  sender: 'user' | 'assistant';
-  text: string;
-  timestamp: string;
+export interface ChatAssistantProps {
+  activeTab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology';
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  presetPrompt?: string | null;
+  onClearPresetPrompt?: () => void;
 }
 
-const STARTER_PROMPTS = [
-  'Why is GPT Image 1 ranked #1?',
-  'Explain the Bradley-Terry math',
-  'Why does Gemini 3 Pro have "gap could be chance"?',
-  'How did models handle Devanagari Hindi?',
-  'What are the 3 evaluation axes?'
-];
+interface MessageItem {
+  id: string;
+  sender: 'user' | 'assistant';
+  plainAnswer: string;
+  details?: string;
+  targetAnchor?: string | null;
+  targetLabel?: string | null;
+  followUps?: string[];
+  timestamp?: string;
+  feedbackGiven?: 'up' | 'down' | 'report' | null;
+}
 
-export function ChatAssistant() {
-  const [isOpen, setIsOpen] = useState(false);
+// Plain questions first, followed by technical
+const SECTION_CHIPS: Record<string, string[]> = {
+  leaderboard: [
+    'What is this benchmark?',
+    'How do I read the rankings?',
+    'Can I trust 120 votes?',
+    'Why is GPT Image 1 ranked #1?',
+    'What does "Gap could be chance" mean?',
+    'What does the ± mean?',
+    'Explain the Bradley-Terry math',
+  ],
+  evidence: [
+    'What is this benchmark?',
+    'How do I read the rankings?',
+    'Which scenario had the highest win rate?',
+    'Why did models struggle on P03?',
+    'How was medical equipment evaluated?',
+    'Explain the 3 evaluation axes',
+  ],
+  gallery: [
+    'What is this benchmark?',
+    'How were the 10 scenarios designed?',
+    'How do I compare models visually?',
+    'Can I see all models side by side?',
+  ],
+  methodology: [
+    'What is this benchmark?',
+    'Can I trust 120 votes?',
+    'Explain the Bradley-Terry math',
+    'What is Hunter\'s MM algorithm?',
+    'How were the 12 raters calibrated?',
+    'What does the ± mean?',
+  ],
+};
+
+const INITIAL_GREETING: MessageItem = {
+  id: 'greeting',
+  sender: 'assistant',
+  plainAnswer:
+    'I can answer questions about this benchmark\'s results and method. I may make mistakes, so check key numbers in the table.',
+  // No timestamp on greeting per requirement
+};
+
+export function ChatAssistant({
+  activeTab,
+  isOpen,
+  onOpenChange,
+  presetPrompt,
+  onClearPresetPrompt,
+}: ChatAssistantProps) {
+  const [messages, setMessages] = useState<MessageItem[]>([INITIAL_GREETING]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'welcome',
-      sender: 'assistant',
-      text: 'Hello! I am **JANEVAL AI**, grounded in the Drishti-Health v1.1 evaluation data. Ask me anything about the model rankings, Bradley-Terry formulation, Devanagari fidelity, or public healthcare axes.',
-      timestamp: 'Just now'
-    }
-  ]);
+  const [rateLimitCountdown, setRateLimitCountdown] = useState<number | null>(null);
+  const [lastUserPrompt, setLastUserPrompt] = useState<string | null>(null);
+  const [infoTooltipOpen, setInfoTooltipOpen] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const launcherRef = useRef<HTMLButtonElement>(null);
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const scrollToBottom = () => {
+  // Auto-scroll to bottom of conversation
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
-      inputRef.current?.focus();
+      // Accessibility: focus input on open
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      trackEvent('assistant_open', { section: activeTab });
+    } else {
+      // Accessibility: restore focus to launcher on close
+      launcherRef.current?.focus();
     }
-  }, [isOpen, messages]);
+  }, [isOpen, activeTab, scrollToBottom]);
 
-  const handleSend = async (messageToSend?: string) => {
-    const text = (messageToSend ?? input).trim();
-    if (!text || isLoading) return;
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isLoading, scrollToBottom]);
+
+  // Rate limit countdown tick
+  useEffect(() => {
+    if (rateLimitCountdown !== null && rateLimitCountdown > 0) {
+      countdownTimerRef.current = setTimeout(() => {
+        setRateLimitCountdown((prev) => (prev && prev > 1 ? prev - 1 : null));
+      }, 1000);
+    }
+    return () => {
+      if (countdownTimerRef.current) clearTimeout(countdownTimerRef.current);
+    };
+  }, [rateLimitCountdown]);
+
+  // Handle preset prompt injected from "Ask about this" button on ranking rows or scenarios
+  useEffect(() => {
+    if (presetPrompt) {
+      if (!isOpen) {
+        onOpenChange(true);
+      }
+      handleSend(presetPrompt);
+      onClearPresetPrompt?.();
+    }
+  }, [presetPrompt]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Keyboard accessibility: Escape key closes assistant
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) {
+        onOpenChange(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onOpenChange]);
+
+  const handleSend = async (textToSend?: string) => {
+    const text = (textToSend ?? input).trim();
+    if (!text || isLoading || rateLimitCountdown !== null) return;
 
     if (text.length > 350) {
-      setErrorMessage('Questions are capped at 350 characters to prevent abuse.');
+      setErrorMessage('Question exceeds the 350-character limit.');
       return;
     }
 
     setErrorMessage(null);
-    const userMsg: ChatMessage = {
+    setLastUserPrompt(text);
+
+    const userMessage: MessageItem = {
       id: `u-${Date.now()}`,
       sender: 'user',
-      text,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      plainAnswer: text,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
-    setMessages((prev) => [...prev, userMsg]);
-    if (!messageToSend) setInput('');
+    setMessages((prev) => [...prev, userMessage]);
+    if (!textToSend) setInput('');
     setIsLoading(true);
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text })
+        body: JSON.stringify({ message: text }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        if (res.status === 429 && data.retryAfter) {
+          setRateLimitCountdown(Number(data.retryAfter));
+        }
+        trackEvent('assistant_error', {
+          errorType: res.status === 429 ? 'rate_limit' : 'api_error',
+          status: res.status,
+        });
         throw new Error(data.error || 'Failed to get an answer.');
       }
 
-      const assistantMsg: ChatMessage = {
+      const assistantMsg: MessageItem = {
         id: `a-${Date.now()}`,
         sender: 'assistant',
-        text: data.reply,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        plainAnswer: data.plainAnswer || data.reply || '',
+        details: data.details || undefined,
+        targetAnchor: data.targetAnchor || null,
+        targetLabel: data.targetLabel || null,
+        followUps: Array.isArray(data.followUps) ? data.followUps : [],
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       };
 
       setMessages((prev) => [...prev, assistantMsg]);
@@ -106,191 +220,312 @@ export function ChatAssistant() {
     }
   };
 
-  const handleReset = () => {
-    setMessages([
-      {
-        id: 'welcome',
-        sender: 'assistant',
-        text: 'Hello! I am **JANEVAL AI**, grounded in the Drishti-Health v1.1 evaluation data. Ask me anything about the model rankings, Bradley-Terry formulation, Devanagari fidelity, or public healthcare axes.',
-        timestamp: 'Just now'
-      }
-    ]);
-    setInput('');
-    setErrorMessage(null);
+  const handleRetry = () => {
+    if (lastUserPrompt) {
+      handleSend(lastUserPrompt);
+    }
   };
 
-  const renderFormattedText = (text: string) => {
-    // Render bold markdown and linebreaks cleanly
-    const parts = text.split('\n');
-    return parts.map((line, lineIdx) => {
-      const formattedLine = line.split(/(\*\*.*?\*\*)/g).map((chunk, chunkIdx) => {
-        if (chunk.startsWith('**') && chunk.endsWith('**')) {
-          return (
-            <strong key={chunkIdx} className="font-semibold text-[#0F2E24]">
-              {chunk.slice(2, -2)}
-            </strong>
-          );
-        }
-        return chunk;
-      });
+  const handleChipClick = (chipText: string) => {
+    trackEvent('assistant_chip_click', { chip: chipText, section: activeTab });
+    handleSend(chipText);
+  };
 
-      return (
-        <span key={lineIdx} className={lineIdx > 0 ? 'block mt-1.5' : ''}>
-          {formattedLine}
-        </span>
-      );
+  const handleReset = () => {
+    setMessages([INITIAL_GREETING]);
+    setInput('');
+    setErrorMessage(null);
+    setRateLimitCountdown(null);
+  };
+
+  const handleFeedback = (messageId: string, type: 'up' | 'down' | 'report') => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, feedbackGiven: type } : m))
+    );
+    trackEvent('assistant_answer_feedback', {
+      messageId,
+      type,
+      question: lastUserPrompt || '',
     });
   };
 
+  const handleScrollToAnchor = (targetAnchor: string) => {
+    const el = document.getElementById(targetAnchor);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Temporary highlight pulse
+      el.classList.add('ring-2', 'ring-[#0F2E24]', 'ring-offset-2');
+      setTimeout(() => {
+        el.classList.remove('ring-2', 'ring-[#0F2E24]', 'ring-offset-2');
+      }, 2500);
+    }
+  };
+
+  // Do not render anything if on the blind Arena route (requirement 1)
+  if (activeTab === 'arena') {
+    return null;
+  }
+
+  const chips = SECTION_CHIPS[activeTab] || SECTION_CHIPS.leaderboard;
+
   return (
-    <div className="fixed bottom-5 right-5 z-50">
-      {/* Floating Launcher Pill Button */}
+    <>
+      {/* ─── CLOSED STATE: MINIMAL LAUNCHER PILL ─── */}
       {!isOpen && (
-        <button
-          onClick={() => setIsOpen(true)}
-          className="group flex items-center gap-2.5 px-4 py-2.5 bg-[#0F2E24] hover:bg-[#163d30] text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer border border-[#1b4335] active:scale-95"
-          aria-label="Open JANEVAL AI Assistant"
-        >
-          <div className="relative flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-emerald-300 animate-pulse" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-[#0F2E24]" />
-          </div>
-          <span className="text-xs font-semibold tracking-wide">Ask JANEVAL AI</span>
-          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#1f4a3b] text-emerald-200 border border-emerald-800/60 hidden sm:inline-block">
-            Copilot
-          </span>
-        </button>
+        <div className="fixed bottom-6 right-6 z-30">
+          <button
+            ref={launcherRef}
+            onClick={() => onOpenChange(true)}
+            className="group flex items-center gap-2 px-3.5 py-2.5 bg-[#0F2E24] hover:bg-[#163d30] text-white rounded-full shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer border border-[#1b4335] active:scale-95 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#0F2E24] focus:ring-offset-2"
+            aria-label="Open JANEVAL Assistant"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-emerald-300" />
+            <span>Ask JANEVAL</span>
+          </button>
+        </div>
       )}
 
-      {/* Slide-out Drawer / Chat Window */}
+      {/* ─── OPEN STATE: DESKTOP DOCKED DRAWER & MOBILE SHEET ─── */}
       {isOpen && (
-        <div className="w-[calc(100vw-2.5rem)] sm:w-[410px] h-[540px] max-h-[85vh] bg-white rounded-2xl border border-[#E3E7E2] shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200">
+        <section
+          role="dialog"
+          aria-labelledby="assistant-title"
+          aria-modal="true"
+          className="fixed top-0 right-0 bottom-0 w-full lg:w-[420px] bg-white border-l border-[#E3E7E2] z-[60] flex flex-col shadow-2xl animate-in slide-in-from-right duration-250 ease-out"
+        >
           {/* Header */}
-          <div className="px-4 py-3 bg-[#0F2E24] text-white flex items-center justify-between border-b border-[#1b4335]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-emerald-300 border border-white/10">
-                <Sparkles className="w-4 h-4" />
+          <div className="px-4 py-3 bg-[#0F2E24] text-white flex items-center justify-between border-b border-[#1b4335] shrink-0">
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center text-emerald-300">
+                <Sparkles className="w-3.5 h-3.5" />
               </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <h4 className="text-xs font-bold text-white tracking-wide">JANEVAL AI</h4>
-                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium bg-emerald-900/60 text-emerald-300 border border-emerald-700/50">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Guarded
-                  </span>
-                </div>
-                <p className="text-[10px] text-emerald-200/80">Public Health Evaluation Copilot</p>
+              <h2 id="assistant-title" className="text-xs font-bold text-white tracking-wide">
+                JANEVAL Assistant
+              </h2>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-900/70 text-emerald-200 border border-emerald-700/60">
+                Beta
+              </span>
+
+              {/* Info Disclosure Tooltip */}
+              <div className="relative inline-block">
+                <button
+                  type="button"
+                  onClick={() => setInfoTooltipOpen((prev) => !prev)}
+                  onMouseEnter={() => setInfoTooltipOpen(true)}
+                  onMouseLeave={() => setInfoTooltipOpen(false)}
+                  aria-label="Assistant disclosure information"
+                  className="p-1 text-emerald-200/80 hover:text-white rounded focus:outline-none focus:ring-1 focus:ring-emerald-400 cursor-pointer"
+                >
+                  <Info className="w-3.5 h-3.5" />
+                </button>
+                {infoTooltipOpen && (
+                  <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1.5 w-68 p-2.5 bg-[#171A18] text-[#FAFBF9] text-[11px] leading-relaxed rounded-lg shadow-xl border border-white/10 z-50 animate-in fade-in duration-150">
+                    AI assistant. Answers come from JANEVAL&apos;s published data and method and can
+                    contain mistakes. It is a text model, not one of the evaluated image models.
+                  </div>
+                )}
               </div>
             </div>
 
+            {/* Action icons */}
             <div className="flex items-center gap-1">
               <button
                 onClick={handleReset}
                 title="Restart conversation"
-                className="p-1.5 text-emerald-200/80 hover:text-white hover:bg-white/10 rounded-md transition-colors cursor-pointer"
                 aria-label="Restart conversation"
+                className="p-1.5 text-emerald-200/80 hover:text-white hover:bg-white/10 rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/50"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
               </button>
               <button
-                onClick={() => setIsOpen(false)}
-                title="Minimize chat"
-                className="p-1.5 text-emerald-200/80 hover:text-white hover:bg-white/10 rounded-md transition-colors cursor-pointer"
-                aria-label="Close chat"
+                onClick={() => onOpenChange(false)}
+                title="Close assistant"
+                aria-label="Close assistant"
+                className="p-1.5 text-emerald-200/80 hover:text-white hover:bg-white/10 rounded-md transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-white/50"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Subheader: Guardrail Notice */}
-          <div className="px-3.5 py-1.5 bg-[#FAFBF9] border-b border-[#E3E7E2] flex items-center justify-between text-[10px] text-[#69716B]">
-            <div className="flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#4E8F6F]" />
-              <span>Domain-locked: Drishti v1.1 &amp; Bradley-Terry math</span>
-            </div>
-            <span className="font-mono text-[9px] text-[#8C948E]">Rate-limited</span>
-          </div>
-
-          {/* Chat Messages Body */}
-          <div className="flex-1 p-3.5 overflow-y-auto space-y-3 bg-[#F7F8F5]/50">
+          {/* Conversation Body */}
+          <div
+            className="flex-1 p-4 overflow-y-auto space-y-3.5 bg-[#F7F8F5]/60"
+            aria-live="polite"
+            aria-atomic="false"
+          >
             {messages.map((m) => (
               <div
                 key={m.id}
-                className={`flex gap-2 text-xs ${
-                  m.sender === 'user' ? 'justify-end' : 'justify-start'
+                className={`flex flex-col text-xs ${
+                  m.sender === 'user' ? 'items-end' : 'items-start'
                 }`}
               >
-                {m.sender === 'assistant' && (
-                  <div className="w-6 h-6 rounded-md bg-[#0F2E24] text-emerald-200 flex-shrink-0 flex items-center justify-center mt-0.5">
-                    <Bot className="w-3.5 h-3.5" />
-                  </div>
-                )}
-
                 <div
-                  className={`max-w-[85%] rounded-xl px-3 py-2 leading-relaxed shadow-2xs ${
+                  className={`max-w-[90%] rounded-xl px-3.5 py-2.5 leading-relaxed shadow-2xs ${
                     m.sender === 'user'
                       ? 'bg-[#0F2E24] text-white rounded-br-xs'
                       : 'bg-white border border-[#E3E7E2] text-[#171A18] rounded-bl-xs'
                   }`}
                 >
-                  <div className="text-[11px] break-words">
-                    {renderFormattedText(m.text)}
+                  {/* Short plain answer */}
+                  <div className="text-[12px] break-words text-[#171A18] dark:text-[#171A18]">
+                    <span className={m.sender === 'user' ? 'text-white' : 'text-[#171A18]'}>
+                      {m.plainAnswer}
+                    </span>
                   </div>
-                  <span
-                    className={`block text-[9px] mt-1 text-right ${
-                      m.sender === 'user' ? 'text-emerald-200/60' : 'text-[#8C948E]'
-                    }`}
-                  >
-                    {m.timestamp}
-                  </span>
+
+                  {/* Collapsible Details & Method Expander (if present) */}
+                  {m.details && (
+                    <details className="mt-2.5 rounded-lg bg-[#FAFBF9] border border-[#E3E7E2] p-2.5 text-[11px] text-[#4B5563] group">
+                      <summary className="cursor-pointer font-semibold text-[#0F2E24] hover:underline flex items-center gap-1 select-none">
+                        <ChevronRight className="w-3 h-3 group-open:rotate-90 transition-transform shrink-0" />
+                        <span>Details &amp; Methodology</span>
+                      </summary>
+                      <div className="mt-2 pt-2 border-t border-[#E3E7E2] whitespace-pre-wrap leading-relaxed text-[#4B5563]">
+                        {m.details}
+                      </div>
+                    </details>
+                  )}
+
+                  {/* "Show on page" link (if targetAnchor provided) */}
+                  {m.targetAnchor && (
+                    <div className="mt-2 pt-1 border-t border-[#E3E7E2]">
+                      <button
+                        type="button"
+                        onClick={() => handleScrollToAnchor(m.targetAnchor!)}
+                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#0F2E24] hover:text-[#4E8F6F] underline transition-colors cursor-pointer"
+                      >
+                        <span>{m.targetLabel || 'Show on page'}</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Timestamp if present (none on greeting) */}
+                  {m.timestamp && (
+                    <span
+                      className={`block text-[9px] mt-1 text-right ${
+                        m.sender === 'user' ? 'text-emerald-200/70' : 'text-[#69716B]'
+                      }`}
+                    >
+                      {m.timestamp}
+                    </span>
+                  )}
                 </div>
 
-                {m.sender === 'user' && (
-                  <div className="w-6 h-6 rounded-md bg-[#E3E7E2] text-[#0F2E24] flex-shrink-0 flex items-center justify-center mt-0.5">
-                    <User className="w-3.5 h-3.5" />
+                {/* Follow-up question chips */}
+                {m.sender === 'assistant' && m.followUps && m.followUps.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-2 max-w-[90%]">
+                    {m.followUps.map((fu, fuIdx) => (
+                      <button
+                        key={fuIdx}
+                        type="button"
+                        onClick={() => handleChipClick(fu)}
+                        className="text-left text-[10px] px-2 py-1 rounded-md bg-white hover:bg-[#DDEBE3] text-[#0F2E24] border border-[#E3E7E2] hover:border-[#4E8F6F] transition-colors cursor-pointer"
+                      >
+                        {fu}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Thumbs up / down feedback & Report an error */}
+                {m.sender === 'assistant' && m.id !== 'greeting' && (
+                  <div className="flex items-center gap-2 mt-1.5 text-[10px] text-[#69716B] px-1">
+                    {m.feedbackGiven ? (
+                      <span className="text-[10px] text-[#4E8F6F] font-medium">
+                        ✓ Thanks for your feedback
+                      </span>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => handleFeedback(m.id, 'up')}
+                          aria-label="Helpful answer"
+                          title="Helpful"
+                          className="hover:text-[#0F2E24] cursor-pointer p-0.5 rounded transition-colors"
+                        >
+                          <ThumbsUp className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleFeedback(m.id, 'down')}
+                          aria-label="Unhelpful answer"
+                          title="Unhelpful"
+                          className="hover:text-[#0F2E24] cursor-pointer p-0.5 rounded transition-colors"
+                        >
+                          <ThumbsDown className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleFeedback(m.id, 'report')}
+                          className="hover:text-[#C85A32] underline text-[10px] cursor-pointer ml-1"
+                        >
+                          Report an error
+                        </button>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
             ))}
 
-            {/* Loading Indicator */}
+            {/* Loading / Typing indicator */}
             {isLoading && (
-              <div className="flex gap-2 text-xs items-center">
-                <div className="w-6 h-6 rounded-md bg-[#0F2E24] text-emerald-200 flex items-center justify-center">
-                  <Bot className="w-3.5 h-3.5" />
-                </div>
-                <div className="bg-white border border-[#E3E7E2] rounded-xl px-3 py-2 text-[11px] text-[#69716B] flex items-center gap-2 shadow-2xs">
+              <div className="flex items-center gap-2 text-xs">
+                <div className="bg-white border border-[#E3E7E2] rounded-xl px-3.5 py-2.5 text-[11px] text-[#4B5563] flex items-center gap-2 shadow-2xs">
                   <span className="inline-block w-1.5 h-1.5 bg-[#4E8F6F] rounded-full animate-bounce [animation-delay:-0.3s]" />
                   <span className="inline-block w-1.5 h-1.5 bg-[#4E8F6F] rounded-full animate-bounce [animation-delay:-0.15s]" />
                   <span className="inline-block w-1.5 h-1.5 bg-[#4E8F6F] rounded-full animate-bounce" />
-                  <span className="text-[10px] ml-1">Analyzing benchmark data...</span>
+                  <span className="text-[11px] ml-1">Analyzing benchmark dataset...</span>
                 </div>
               </div>
             )}
 
-            {/* Error Message */}
+            {/* Error Message with Retry */}
             {errorMessage && (
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
-                <span className="leading-tight">{errorMessage}</span>
+              <div className="flex items-start gap-2 p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px]">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600 mt-0.5" />
+                <div className="flex-1">
+                  <span>{errorMessage}</span>
+                  {lastUserPrompt && (
+                    <button
+                      type="button"
+                      onClick={handleRetry}
+                      className="ml-2 font-semibold underline hover:text-rose-950 cursor-pointer inline-flex items-center gap-0.5"
+                    >
+                      <RefreshCw className="w-2.5 h-2.5" />
+                      Retry
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
-            {/* Suggested Starter Chips */}
+            {/* Rate limit live countdown banner */}
+            {rateLimitCountdown !== null && (
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px]">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-amber-600" />
+                <span>Rate limit reached. Please wait {rateLimitCountdown}s before sending another question.</span>
+              </div>
+            )}
+
+            {/* Contextual starter chips (ordered plain first, then technical) */}
             {messages.length <= 2 && !isLoading && (
               <div className="pt-2">
-                <p className="text-[10px] font-semibold text-[#69716B] uppercase tracking-wider mb-2">
+                <p className="text-[10px] font-semibold text-[#4B5563] uppercase tracking-wider mb-2">
                   Suggested Questions:
                 </p>
                 <div className="flex flex-wrap gap-1.5">
-                  {STARTER_PROMPTS.map((prompt, idx) => (
+                  {chips.map((chip, idx) => (
                     <button
                       key={idx}
-                      onClick={() => handleSend(prompt)}
-                      className="text-left text-[11px] px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#DDEBE3]/50 text-[#0F2E24] border border-[#E3E7E2] hover:border-[#4E8F6F] transition-all duration-150 cursor-pointer shadow-2xs"
+                      type="button"
+                      onClick={() => handleChipClick(chip)}
+                      className="text-left text-[11px] px-2.5 py-1.5 rounded-lg bg-white hover:bg-[#DDEBE3] text-[#0F2E24] border border-[#E3E7E2] hover:border-[#4E8F6F] transition-all duration-150 cursor-pointer shadow-2xs"
                     >
-                      {prompt}
+                      {chip}
                     </button>
                   ))}
                 </div>
@@ -301,7 +536,7 @@ export function ChatAssistant() {
           </div>
 
           {/* Footer Input Area */}
-          <div className="p-2.5 bg-white border-t border-[#E3E7E2]">
+          <div className="p-3 pb-6 sm:pb-3 bg-white border-t border-[#E3E7E2] shrink-0">
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -309,37 +544,49 @@ export function ChatAssistant() {
               }}
               className="flex items-center gap-1.5"
             >
-              <div className="relative flex-1">
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about models, ratings, or math..."
-                  maxLength={350}
-                  disabled={isLoading}
-                  className="w-full text-xs px-3 py-2 pr-12 rounded-lg bg-[#FAFBF9] border border-[#E3E7E2] focus:outline-none focus:border-[#0F2E24] focus:ring-1 focus:ring-[#0F2E24] placeholder:text-[#8C948E] disabled:opacity-50"
-                />
-                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[9px] font-mono text-[#8C948E]">
-                  {350 - input.length}
-                </span>
-              </div>
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about benchmark results or method..."
+                maxLength={350}
+                disabled={isLoading || rateLimitCountdown !== null}
+                className="flex-1 text-xs px-3 py-2 rounded-lg bg-[#FAFBF9] border border-[#E3E7E2] focus:outline-none focus:border-[#0F2E24] focus:ring-1 focus:ring-[#0F2E24] placeholder:text-[#69716B] disabled:opacity-50 text-[#171A18]"
+                aria-label="Question input"
+              />
               <button
                 type="submit"
-                disabled={!input.trim() || isLoading}
-                className="w-8 h-8 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] disabled:bg-[#E3E7E2] text-white disabled:text-[#8C948E] flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed shadow-2xs flex-shrink-0"
-                aria-label="Send message"
+                disabled={!input.trim() || isLoading || rateLimitCountdown !== null}
+                className="w-8 h-8 rounded-lg bg-[#0F2E24] hover:bg-[#163d30] disabled:bg-[#E3E7E2] text-white disabled:text-[#69716B] flex items-center justify-center transition-colors cursor-pointer disabled:cursor-not-allowed shadow-2xs flex-shrink-0"
+                aria-label="Send question"
               >
                 <Send className="w-3.5 h-3.5" />
               </button>
             </form>
-            <div className="mt-1 flex items-center justify-between text-[9px] text-[#8C948E] px-1">
-              <span>Powered by Gemini 3.5 Flash-Lite</span>
+
+            {/* Character counter shown ONLY near limit (>280 chars) and OUTSIDE field */}
+            {input.length >= 280 && (
+              <div className="mt-1 flex justify-end">
+                <span className="text-[10px] font-mono text-[#C85A32] font-semibold">
+                  {input.length} / 350
+                </span>
+              </div>
+            )}
+
+            {/* Privacy notice */}
+            <p className="text-[10px] text-[#4B5563] text-center mt-1.5 leading-tight">
+              Messages are processed by Google Gemini and not stored for training. Do not enter sensitive info.
+            </p>
+
+            {/* Provider and Limits notice at readable size */}
+            <div className="mt-2 pt-1.5 border-t border-[#E3E7E2] flex items-center justify-between text-[10px] text-[#4B5563] px-0.5">
+              <span>Powered by Google Gemini 3.5 Flash-Lite</span>
               <span>Max 350 chars • 8 req/min</span>
             </div>
           </div>
-        </div>
+        </section>
       )}
-    </div>
+    </>
   );
 }
