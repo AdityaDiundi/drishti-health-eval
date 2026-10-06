@@ -399,11 +399,9 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
   const activeIndex = scenariosList.findIndex((s) => s.code === activeScenario?.code);
 
   const activeMatchupKey = useMemo(() => {
+    if (!focusedPairKey || focusedPairKey === 'all') return null;
     if (!activeScenario?.matchups || activeScenario.matchups.length === 0) return null;
-    if (focusedPairKey && activeScenario.matchups.some((m) => m.pairKey === focusedPairKey)) {
-      return focusedPairKey;
-    }
-    return activeScenario.matchups[0].pairKey;
+    return activeScenario.matchups.find((m) => m.pairKey === focusedPairKey)?.pairKey || null;
   }, [activeScenario, focusedPairKey]);
 
   const focusedPairModels = useMemo<[string, string] | null>(() => {
@@ -413,16 +411,22 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
     return [matchup.modelAId, matchup.modelBId];
   }, [activeMatchupKey, activeScenario]);
 
-  const handleFocusMatchup = (pairKey: string, modelAId: string, modelBId: string) => {
+  const handleToggleMatchup = (pairKey: string, modelAId?: string, modelBId?: string) => {
+    if (pairKey === 'all' || focusedPairKey === pairKey) {
+      setFocusedPairKey(null);
+      return;
+    }
     setFocusedPairKey(pairKey);
-    const rankA = leaderboard.findIndex((m) => m.modelId === modelAId) + 1;
-    const rankB = leaderboard.findIndex((m) => m.modelId === modelBId) + 1;
-    trackEvent('matchup_focus', {
-      scenario_code: activeScenario.code,
-      pair_key: pairKey,
-      rank_a: rankA,
-      rank_b: rankB,
-    });
+    if (modelAId && modelBId) {
+      const rankA = leaderboard.findIndex((m) => m.modelId === modelAId) + 1;
+      const rankB = leaderboard.findIndex((m) => m.modelId === modelBId) + 1;
+      trackEvent('matchup_focus', {
+        scenario_code: activeScenario.code,
+        pair_key: pairKey,
+        rank_a: rankA,
+        rank_b: rankB,
+      });
+    }
   };
 
   const handleToggleHowAddUp = () => {
@@ -437,6 +441,7 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
     if (activeIndex > 0) {
       const prev = scenariosList[activeIndex - 1];
       setSelectedScenarioCode(prev.code);
+      setFocusedPairKey(null);
       trackEvent('heatmap_cell_open', { scenario_code: prev.code, model_rank: 1 });
     }
   };
@@ -445,18 +450,39 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
     if (activeIndex < scenariosList.length - 1) {
       const next = scenariosList[activeIndex + 1];
       setSelectedScenarioCode(next.code);
+      setFocusedPairKey(null);
       trackEvent('heatmap_cell_open', { scenario_code: next.code, model_rank: 1 });
     }
   };
 
   const handleSelectScenario = (code: string) => {
     setSelectedScenarioCode(code);
+    setFocusedPairKey(null);
     trackEvent('heatmap_cell_open', { scenario_code: code, model_rank: 1 });
   };
 
   // Verdict plain sentence for active scenario (Pairwise consistent)
   const scenarioVerdict = useMemo(() => {
     if (!activeScenario) return '';
+
+    // If an active matchup is focused, display head-to-head details
+    if (activeMatchupKey && activeScenario.matchups) {
+      const match = activeScenario.matchups.find((m) => m.pairKey === activeMatchupKey);
+      if (match) {
+        const nameA = getModelShortName(match.modelAId, leaderboard);
+        const nameB = getModelShortName(match.modelBId, leaderboard);
+        if (match.winsA === match.winsB) {
+          return `Pairwise battle: ${nameA} and ${nameB} tied with ${match.winsA} wins each (total ${match.total} votes). Showing these 2 models; the 3rd model is dimmed.`;
+        }
+        const winner = match.winsA > match.winsB ? nameA : nameB;
+        const winnerWins = Math.max(match.winsA, match.winsB);
+        const loser = match.winsA > match.winsB ? nameB : nameA;
+        const loserWins = Math.min(match.winsA, match.winsB);
+        return `Pairwise battle: ${winner} won ${winnerWins} of ${match.total} head-to-head votes against ${loser} (${loserWins} wins). Showing these 2 models; the 3rd model is dimmed.`;
+      }
+    }
+
+    // Default "All 3 Models" view verdict
     const winnerId = activeScenario.winnerModelId || 'openai';
     const winnerName = getModelShortName(winnerId, leaderboard);
     const topWins = activeScenario.topWins ?? 0;
@@ -465,12 +491,12 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
 
     if (activeScenario.isCloseOrTied) {
       if (topWins === secondWins) {
-        return `No clear preference here (evaluators were evenly split between the leading models at ${topWins} votes each). Each vote compared two images, so see the matchups below.`;
+        return `All 3 models shown: Evaluators were evenly split between the leading models at ${topWins} wins each across ${appearances} appearances. Toggle a matchup to isolate pairs.`;
       }
-      return `No clear preference here (${winnerName} won ${topWins} of ${appearances} votes, but the margin was only 1 vote). Each vote compared two images, so see the matchups below.`;
+      return `All 3 models shown: ${winnerName} won ${topWins} of ${appearances} appearances (margin was 1 vote). Toggle a matchup to isolate pairs.`;
     }
-    return `${winnerName} was preferred here. It won ${topWins} of the ${appearances} votes it was in. Each vote compared two images, so see the matchups below.`;
-  }, [activeScenario, leaderboard]);
+    return `All 3 models shown: ${winnerName} was preferred overall (${topWins} of ${appearances} appearances). Toggle a matchup below to isolate head-to-head pairs.`;
+  }, [activeScenario, activeMatchupKey, leaderboard]);
 
   // Fallback models list if leaderboard is loading
   const modelsToDisplay = useMemo(() => {
@@ -690,6 +716,69 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
               </div>
             </div>
 
+            {/* Matchup Comparison Toggle Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[11px] font-mono font-bold uppercase text-[#123F32] tracking-wider shrink-0">
+                  Compare:
+                </span>
+                <div className="inline-flex items-center p-1 bg-[#F1F2EC] rounded-[6px] gap-1 border border-[#D9DED8] overflow-x-auto max-w-full scrollbar-none">
+                  {/* All 3 Models Button */}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleMatchup('all')}
+                    className={`h-7 px-3 text-xs font-sans rounded-[4px] transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                      !activeMatchupKey
+                        ? 'bg-white text-[#123F32] font-semibold shadow-2xs border border-[#D9DED8]'
+                        : 'text-[#5E6963] hover:text-[#17211D]'
+                    }`}
+                  >
+                    <span>All 3 Models</span>
+                    <span className="font-mono text-[10px] text-[#7C8580] bg-[#FAFBF9] px-1 rounded border border-[#E5E9E4]">3</span>
+                  </button>
+
+                  {/* Individual Matchup Buttons */}
+                  {activeScenario.matchups?.map((match) => {
+                    const isMatchSelected = activeMatchupKey === match.pairKey;
+                    const themeA = getModelTheme(match.modelAId);
+                    const themeB = getModelTheme(match.modelBId);
+                    const nameA = getModelShortName(match.modelAId, leaderboard);
+                    const nameB = getModelShortName(match.modelBId, leaderboard);
+
+                    return (
+                      <button
+                        key={match.pairKey}
+                        type="button"
+                        onClick={() => handleToggleMatchup(match.pairKey, match.modelAId, match.modelBId)}
+                        className={`h-7 px-2.5 text-xs font-sans rounded-[4px] transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                          isMatchSelected
+                            ? 'bg-[#123F32] text-white font-medium shadow-xs'
+                            : 'text-[#5E6963] hover:text-[#17211D]'
+                        }`}
+                      >
+                        <span style={{ color: isMatchSelected ? '#FFFFFF' : themeA.dotColor }}>{themeA.shape}</span>
+                        <span>{nameA}</span>
+                        <span className="opacity-60 text-[10px] font-mono">vs</span>
+                        <span>{nameB}</span>
+                        <span style={{ color: isMatchSelected ? '#FFFFFF' : themeB.dotColor }}>{themeB.shape}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {activeMatchupKey && (
+                <button
+                  type="button"
+                  onClick={() => handleToggleMatchup('all')}
+                  className="text-xs text-[#123F32] hover:underline flex items-center gap-1 font-medium cursor-pointer self-start sm:self-auto shrink-0"
+                >
+                  <span>Reset to all 3 models</span>
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
             {/* Verdict Line (Subtle Editorial Banner) */}
             <div className="text-xs sm:text-sm font-sans text-[#17211D] flex items-center justify-between py-2 border-y border-[#E5E9E4]">
               <span className="font-medium text-[#123F32]">{scenarioVerdict}</span>
@@ -726,6 +815,21 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                           {m.shortName}
                         </span>
                       </div>
+
+                      {/* Matchup status badge */}
+                      {activeMatchupKey && (
+                        <div>
+                          {isFocusedModel ? (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#EBF5F0] text-[#123F32] border border-[#B7DBC9]">
+                              In matchup
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#F1F2EC] text-[#7C8580] border border-[#D9DED8]">
+                              Dimmed
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* Image Canvas with Click-to-Zoom Lightbox inspection & Pair Focus Dimming */}
@@ -738,8 +842,8 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                           modelId: m.modelId,
                         })
                       }
-                      className={`relative aspect-[4/3] rounded-[6px] overflow-hidden bg-[#F1F2EC] border border-[#D9DED8] group cursor-zoom-in hover:border-[#123F32] transition-opacity duration-200 ${
-                        isFocusedModel ? 'opacity-100' : 'opacity-35'
+                      className={`relative aspect-[4/3] rounded-[6px] overflow-hidden bg-[#F1F2EC] border border-[#D9DED8] group cursor-zoom-in hover:border-[#123F32] transition-all duration-300 ${
+                        isFocusedModel ? 'opacity-100 ring-1 ring-[#123F32]/10' : 'opacity-35 hover:opacity-70'
                       }`}
                     >
                       <ImageWithFallback
@@ -756,8 +860,9 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                     </div>
 
                     {/* Caption: Model company · Across all its votes: won {w} of {g} */}
-                    <div className="text-[11px] font-sans text-[#5E6963] pt-0.5">
-                      <span>{m.company} · Across all its votes: won <strong className="text-[#17211D]">{wins}</strong> of {appearances}</span>
+                    <div className="text-[11px] font-sans text-[#5E6963] pt-0.5 flex items-center justify-between">
+                      <span>{m.company}</span>
+                      <span className="font-mono">won <strong className="text-[#17211D]">{wins}</strong> of {appearances}</span>
                     </div>
                   </div>
                 );
@@ -773,7 +878,7 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                       Who beat whom in this scenario
                     </h4>
                     <p className="text-[11px] font-sans text-[#7C8580]">
-                      Click a matchup to highlight its two images above.
+                      Click a matchup row below or use the toggle above to isolate head-to-head pairs.
                     </p>
                   </div>
                 </div>
@@ -797,11 +902,11 @@ export function EvidenceView({ onStartEvaluation, onNavigateTab }: EvidenceViewP
                         tabIndex={0}
                         aria-pressed={isFocused}
                         aria-label={`Matchup ${nameA} (${match.winsA} wins) versus ${nameB} (${match.winsB} wins). Total ${match.total} votes.`}
-                        onClick={() => handleFocusMatchup(match.pairKey, match.modelAId, match.modelBId)}
+                        onClick={() => handleToggleMatchup(match.pairKey, match.modelAId, match.modelBId)}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' || e.key === ' ') {
                             e.preventDefault();
-                            handleFocusMatchup(match.pairKey, match.modelAId, match.modelBId);
+                            handleToggleMatchup(match.pairKey, match.modelAId, match.modelBId);
                           }
                         }}
                         className={`w-full p-2.5 rounded-[6px] border text-xs font-sans transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 focus-visible:ring-2 focus-visible:ring-[#123F32] focus-visible:outline-none ${
