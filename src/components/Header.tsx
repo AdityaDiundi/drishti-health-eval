@@ -5,8 +5,8 @@ import { JanevalLogo } from './JanevalLogo';
 import { Download, Menu, X, ArrowUpRight } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'arena' | 'leaderboard' | 'gallery' | 'methodology';
-  setActiveTab: (tab: 'arena' | 'leaderboard' | 'gallery' | 'methodology') => void;
+  activeTab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology';
+  setActiveTab: (tab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology') => void;
   participantName?: string | null;
 }
 
@@ -14,9 +14,10 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showAboutModal, setShowAboutModal] = useState(false);
 
-  const navItems: { id: 'arena' | 'leaderboard' | 'gallery' | 'methodology'; label: string }[] = [
+  const navItems: { id: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology'; label: string }[] = [
     { id: 'arena', label: 'Arena' },
     { id: 'leaderboard', label: 'Rankings' },
+    { id: 'evidence', label: 'Evidence' },
     { id: 'gallery', label: 'Gallery' },
     { id: 'methodology', label: 'Methodology' },
   ];

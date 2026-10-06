@@ -7,10 +7,11 @@ import { ArenaView } from '@/components/ArenaView';
 import { LeaderboardView } from '@/components/LeaderboardView';
 import { GalleryView } from '@/components/GalleryView';
 import { MethodologyView } from '@/components/MethodologyView';
+import { EvidenceView } from '@/components/EvidenceView';
 import { CheckCircle2 } from 'lucide-react';
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'gallery' | 'methodology'>('leaderboard');
+  const [activeTab, setActiveTab] = useState<'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology'>('leaderboard');
   const [participant, setParticipant] = useState<{ name: string; email: string; age: number } | null>(null);
   const [showConsentModal, setShowConsentModal] = useState<boolean>(false);
   const [hasCompletedEvaluation, setHasCompletedEvaluation] = useState<boolean>(false);
@@ -47,7 +48,7 @@ export default function Home() {
         if (!currentPart) {
           setShowConsentModal(true);
         }
-      } else if (tabParam === 'leaderboard' || tabParam === 'gallery' || tabParam === 'methodology') {
+      } else if (tabParam === 'leaderboard' || tabParam === 'evidence' || tabParam === 'gallery' || tabParam === 'methodology') {
         setActiveTab(tabParam as any);
       }
     }
@@ -161,6 +162,20 @@ export default function Home() {
             }}
           />
         )}
+        {activeTab === 'evidence' && (
+          <EvidenceView
+            onNavigateTab={(tab) => setActiveTab(tab)}
+            onStartEvaluation={() => {
+              if (hasCompletedEvaluation) {
+                handleStartAnotherEvaluation();
+              } else if (participant) {
+                setActiveTab('arena');
+              } else {
+                setShowConsentModal(true);
+              }
+            }}
+          />
+        )}
         {activeTab === 'gallery' && <GalleryView />}
         {activeTab === 'methodology' && <MethodologyView />}
       </main>
@@ -184,6 +199,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-5 text-xs text-[#69716B]">
             <button onClick={() => setActiveTab('arena')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Arena</button>
             <button onClick={() => setActiveTab('leaderboard')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Rankings</button>
+            <button onClick={() => setActiveTab('evidence')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Evidence</button>
             <button onClick={() => setActiveTab('gallery')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Gallery</button>
             <button onClick={() => setActiveTab('methodology')} className="hover:text-[#0F2E24] cursor-pointer transition-colors">Methodology</button>
             <a href="/api/export?format=csv" download="janeval_benchmark_dataset.csv" className="hover:text-[#0F2E24] transition-colors">Download Dataset</a>
