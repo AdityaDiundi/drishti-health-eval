@@ -208,7 +208,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
   // Completion screen: Blind identity reveal
   if (isFinished) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-16 text-center">
+      <div className="w-full max-w-3xl mx-auto px-4 py-16 text-center min-w-0 overflow-hidden">
         <div className="w-16 h-16 bg-[#DDEBE3] border border-[#C6DDD1] rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#0F2E24] shadow-sm">
           <CheckCircle2 className="w-8 h-8" />
         </div>
@@ -284,7 +284,7 @@ export function ArenaView({ participant, onEvaluationFinished, onResetParticipan
   const selectedWinnerImage = currentImages.find((img) => img.blindLabel === winnerChoice);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 min-w-0 overflow-hidden">
       {/* Top Progress & Header Bar */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-semibold text-gray-600 gap-2 mb-2">

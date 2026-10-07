@@ -29,7 +29,7 @@ export function GalleryView() {
   };
 
   return (
-    <div id="gallery-root" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 scroll-mt-20">
+    <div id="gallery-root" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 scroll-mt-20 min-w-0 overflow-hidden">
       {/* Gallery Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-4 border-b border-[#E3E7E2]">
         <div>

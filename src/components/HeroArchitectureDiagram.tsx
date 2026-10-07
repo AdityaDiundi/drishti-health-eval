@@ -38,7 +38,7 @@ export function HeroArchitectureDiagram() {
   const convergeY = 204;
 
   return (
-    <div className="w-full flex flex-col items-center justify-center select-none py-1">
+    <div className="w-full max-w-full overflow-hidden flex flex-col items-center justify-center select-none py-1 min-w-0">
       {/* Mobile-only View Mode Toggle Bar */}
       <div className="flex md:hidden items-center justify-between w-full mb-2 px-1">
         <span className="font-mono text-[10px] text-[#69716B] uppercase tracking-wider flex items-center gap-1.5">
@@ -72,19 +72,19 @@ export function HeroArchitectureDiagram() {
         </div>
       </div>
 
-      {/* SVG Canvas Container (Responsive: fits viewport or smoothly scrolls on mobile from left = 0) */}
+      {/* SVG Canvas Container (Responsive: fits viewport or smoothly scrolls on mobile within its boundary) */}
       <div
         ref={scrollContainerRef}
-        className={`w-full ${
+        className={`w-full max-w-full ${
           mobileViewMode === 'pan'
-            ? 'overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-thin scrollbar-thumb-[#CBD5E1] block'
+            ? 'overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#CBD5E1] block touch-pan-x'
             : 'overflow-hidden flex justify-center'
         }`}
       >
         <div
           className={`${
             mobileViewMode === 'pan'
-              ? 'min-w-[780px] w-max'
+              ? 'min-w-[720px] w-max'
               : 'w-full flex items-center justify-center lg:justify-end min-w-0'
           }`}
         >

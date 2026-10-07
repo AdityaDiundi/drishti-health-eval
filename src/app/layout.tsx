@@ -12,6 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   title: "JANEVAL | Frontier Vision AI Benchmark for Indian Public-Health Representation",
   description: "Independent double-blind human evaluation benchmark evaluating OpenAI GPT Image 1, Google Gemini 3 Pro, and Google Gemini 3.1 Flash on rural Indian public-health representation fidelity.",

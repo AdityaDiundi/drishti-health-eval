@@ -556,7 +556,7 @@ export function EvidenceView({
   }
 
   return (
-    <div id="evidence-root" className="max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 space-y-12 sm:space-y-16 scroll-mt-20">
+    <div id="evidence-root" className="w-full max-w-[1120px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 pb-16 space-y-12 sm:space-y-16 scroll-mt-20 min-w-0 overflow-hidden">
       {/* ───────────────────────────────────────────────────────────
           1. HERO (Ingress to Arena - Unchanged)
          ─────────────────────────────────────────────────────────── */}

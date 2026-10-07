@@ -220,7 +220,7 @@ export function ComparativeAnalysis({
   const eloRange = maxElo - minElo;
 
   return (
-    <div id="compare-section" className="space-y-6 pt-4 border-t border-[#E3E7E2]">
+    <div id="compare-section" className="space-y-6 pt-4 border-t border-[#E3E7E2] w-full max-w-full min-w-0 overflow-hidden">
       {/* ───────────────────────────────────────────────────────────
           1. HEADER BAR (Matching Reference Image 1)
          ─────────────────────────────────────────────────────────── */}
@@ -690,10 +690,10 @@ export function ComparativeAnalysis({
         </div>
 
         {/* SVG Multi-point Line Graph */}
-        <div className="relative w-full pt-2">
-          <div className="w-full h-48 sm:h-56 relative">
+        <div className="relative w-full pt-2 overflow-hidden">
+          <div className="w-full h-48 sm:h-56 relative overflow-hidden">
             <svg
-              className="w-full h-full overflow-visible"
+              className="w-full h-full overflow-hidden"
               viewBox="0 0 1000 200"
               preserveAspectRatio="none"
             >
@@ -824,9 +824,50 @@ export function ComparativeAnalysis({
           );
         })()}
 
-        {/* Complete 10-Scenario Breakdown Table */}
-        <div className="overflow-x-auto border border-[#E3E7E2] rounded-lg">
-          <table className="w-full text-left text-xs">
+        {/* Mobile View: Clean Stacked Scenario Cards (Zero horizontal overflow on small screens) */}
+        <div className="sm:hidden space-y-2.5">
+          {scenarioPoints.map((item) => (
+            <div
+              key={`mobile-${item.code}`}
+              className="bg-[#FAFBF9] border border-[#E3E7E2] rounded-lg p-3 space-y-2"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#DDEBE3] text-[#0F2E24] border border-[#C6DDD1] shrink-0">
+                    {item.code}
+                  </span>
+                  <span className="font-semibold text-xs text-[#171A18] truncate">
+                    {item.title}
+                  </span>
+                </div>
+                <span
+                  className={`px-1.5 py-0.5 rounded text-[9.5px] font-mono font-bold shrink-0 ${
+                    item.diff >= 0
+                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                      : 'bg-rose-50 text-rose-800 border border-rose-200'
+                  }`}
+                >
+                  {item.diff >= 0 ? `A +${item.diff}` : `B +${Math.abs(item.diff)}`}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 text-xs font-mono pt-1 border-t border-[#E3E7E2]/60">
+                <div className="flex items-center justify-between bg-white px-2 py-1 rounded border border-[#E3E7E2]">
+                  <span className="text-[10px] text-[#69716B] truncate mr-1">{modelA?.shortName}:</span>
+                  <span className="font-bold text-[#0F2E24]">{item.scoreA}</span>
+                </div>
+                <div className="flex items-center justify-between bg-white px-2 py-1 rounded border border-[#E3E7E2]">
+                  <span className="text-[10px] text-[#69716B] truncate mr-1">{modelB?.shortName}:</span>
+                  <span className="font-bold text-[#C05621]">{item.scoreB}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop View: Full 5-Column Table */}
+        <div className="hidden sm:block overflow-x-auto border border-[#E3E7E2] rounded-lg w-full max-w-full">
+          <table className="w-full text-left text-xs min-w-[540px]">
             <thead className="bg-[#FAFBF9] border-b border-[#E3E7E2] text-[10px] font-mono uppercase font-bold text-[#69716B]">
               <tr>
                 <th className="py-2.5 px-3">Scenario</th>

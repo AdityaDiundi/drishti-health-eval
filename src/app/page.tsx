@@ -98,7 +98,7 @@ export default function Home() {
 
   return (
     <div
-      className={`min-h-screen bg-[#F7F8F5] text-[#171A18] flex flex-col font-sans selection:bg-[#DDEBE3] selection:text-[#0F2E24] transition-[margin] duration-300 ease-in-out ${
+      className={`min-h-screen bg-[#F7F8F5] text-[#171A18] flex flex-col font-sans selection:bg-[#DDEBE3] selection:text-[#0F2E24] transition-[margin] duration-300 ease-in-out w-full max-w-full overflow-x-hidden min-w-0 ${
         isAssistantOpen && activeTab !== 'arena' ? 'lg:mr-[420px]' : ''
       }`}
     >
@@ -110,7 +110,7 @@ export default function Home() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1">
+      <main className="flex-1 w-full max-w-full min-w-0 overflow-x-hidden">
         {activeTab === 'arena' && (
           hasCompletedEvaluation ? (
             <div className="max-w-xl mx-auto px-4 py-20 text-center animate-in fade-in duration-200">

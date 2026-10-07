@@ -167,14 +167,14 @@ export function LeaderboardView({
   }
 
   return (
-    <div id="leaderboard-root" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12 scroll-mt-20">
+    <div id="leaderboard-root" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-12 scroll-mt-20 min-w-0 overflow-hidden">
       {/* ───────────────────────────────────────────────────────────
           SECTION 1 — HERO (Editorial Split Composition — No Image Box)
          ─────────────────────────────────────────────────────────── */}
-      <section className="space-y-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <section className="space-y-10 min-w-0 max-w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-w-0">
           {/* Left Column: Heading, Subtitle, Actions */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-6 min-w-0">
             <div className="flex items-center gap-3">
               <span className="font-mono text-[10px] sm:text-[11px] font-bold tracking-widest text-[#69716B] uppercase">
                 FRONTIER VISION AI BENCHMARK
@@ -214,7 +214,7 @@ export function LeaderboardView({
           </div>
 
           {/* Right Column: Hero Architecture Schematic Diagram (Enlarged) */}
-          <div className="lg:col-span-7 flex items-center justify-center lg:justify-end w-full">
+          <div className="lg:col-span-7 flex items-center justify-center lg:justify-end w-full min-w-0 max-w-full overflow-hidden">
             <HeroArchitectureDiagram />
           </div>
         </div>
@@ -223,9 +223,9 @@ export function LeaderboardView({
       {/* ───────────────────────────────────────────────────────────
           SECTION 2 — LIVE STUDY STATUS
          ─────────────────────────────────────────────────────────── */}
-      <section className="bg-white border border-[#E3E7E2] rounded-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs">
+      <section className="bg-white border border-[#E3E7E2] rounded-xl p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-2xs min-w-0 max-w-full">
         {/* Left: Live Indicator */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 shrink-0">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
@@ -236,8 +236,8 @@ export function LeaderboardView({
         </div>
 
         {/* Center: Live Dynamic Metrics */}
-        <div className="flex items-center space-x-6 sm:space-x-10">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-8 min-w-0">
+          <div className="flex items-center space-x-3 shrink-0">
             <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24]">
               {totalParticipants}
             </span>
@@ -247,18 +247,18 @@ export function LeaderboardView({
             </div>
           </div>
 
-          <div className="h-8 w-px bg-[#E3E7E2]"></div>
+          <div className="hidden sm:block h-8 w-px bg-[#E3E7E2]"></div>
 
-          <div className="flex items-center space-x-3">
-            <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24]">
+          <div className="flex items-center space-x-3 min-w-0">
+            <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#0F2E24] shrink-0">
               {totalRatings}
             </span>
-            <div className="flex flex-col text-xs text-[#69716B]">
+            <div className="flex flex-col text-xs text-[#69716B] min-w-0">
               <div className="flex items-center space-x-1.5">
-                <CheckCircle2 className="w-4 h-4 text-[#4E8F6F]" />
-                <span className="font-medium text-[#171A18]">Verified pairwise votes</span>
+                <CheckCircle2 className="w-4 h-4 text-[#4E8F6F] shrink-0" />
+                <span className="font-medium text-[#171A18] truncate">Verified pairwise votes</span>
               </div>
-              <span className="text-[10px] font-mono text-[#69716B]">
+              <span className="text-[10px] font-mono text-[#69716B] truncate">
                 {totalRatings * 2} appearances · 115 wins · 5 ties
               </span>
             </div>
@@ -651,10 +651,11 @@ export function LeaderboardView({
         </div>
 
         {/* Horizontal Rail */}
-        <div
-          ref={evidenceRailRef}
-          className="flex space-x-4 overflow-x-auto pb-4 pt-1 scroll-smooth no-scrollbar"
-        >
+        <div className="w-full min-w-0 max-w-full overflow-hidden">
+          <div
+            ref={evidenceRailRef}
+            className="flex space-x-4 overflow-x-auto pb-4 pt-1 scroll-smooth no-scrollbar touch-pan-x"
+          >
           {EVIDENCE_SCENARIOS.map((scenario) => (
             <div
               key={scenario.id}
@@ -699,6 +700,7 @@ export function LeaderboardView({
               </div>
             </div>
           ))}
+          </div>
         </div>
       </section>
 

@@ -24,8 +24,8 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-[#F7F8F5]/90 backdrop-blur-md border-b border-[#E3E7E2] transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 bg-[#F7F8F5]/90 backdrop-blur-md border-b border-[#E3E7E2] transition-colors w-full max-w-full min-w-0">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left: JANEVAL Brand Logo */}
             <div className="shrink-0">
