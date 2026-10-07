@@ -139,14 +139,20 @@ export function LeaderboardView({
   const scrollToCompare = () => {
     const el = document.getElementById('compare-section');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      const top = el.getBoundingClientRect().top + window.scrollY - 75;
+      window.scrollTo({ top: Math.max(0, top), left: 0, behavior: 'smooth' });
+      document.documentElement.scrollLeft = 0;
+      document.body.scrollLeft = 0;
     }
   };
 
   const scrollToRankings = () => {
     const el = document.getElementById('rankings-table');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      const top = el.getBoundingClientRect().top + window.scrollY - 75;
+      window.scrollTo({ top: Math.max(0, top), left: 0, behavior: 'smooth' });
+      document.documentElement.scrollLeft = 0;
+      document.body.scrollLeft = 0;
     }
   };
 

@@ -425,31 +425,60 @@ export function ChatAssistant({
       }
 
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Prominent highlight pulse
-        el.classList.add('ring-4', 'ring-[#0F2E24]/30', 'ring-offset-4', 'bg-emerald-50/40', 'transition-all');
+        // Calculate vertical document coordinate — NEVER use scrollIntoView which causes horizontal page blowout
+        const rect = el.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const targetY = rect.top + scrollTop - 75; // 75px offset for fixed sticky header
+
+        // Lock horizontal scroll strictly to 0
+        window.scrollTo({
+          top: Math.max(0, targetY),
+          left: 0,
+          behavior: 'smooth',
+        });
+        document.documentElement.scrollLeft = 0;
+        document.body.scrollLeft = 0;
+
+        // If the element is inside a horizontal rail (e.g. Evidence rail), scroll the rail container horizontally, NEVER the window
+        const rail = el.closest('.overflow-x-auto') as HTMLElement | null;
+        if (rail && rail !== document.documentElement && rail !== document.body) {
+          rail.scrollTo({
+            left: Math.max(0, el.offsetLeft - 24),
+            behavior: 'smooth',
+          });
+        }
+
+        // Highlight with INSET ring so it NEVER protrudes outside the element boundary
+        el.classList.add('ring-2', 'ring-inset', 'ring-[#0F2E24]', 'bg-emerald-50/50', 'transition-all');
         setTimeout(() => {
-          el?.classList.remove('ring-4', 'ring-[#0F2E24]/30', 'ring-offset-4', 'bg-emerald-50/40');
-        }, 3500);
+          el?.classList.remove('ring-2', 'ring-inset', 'ring-[#0F2E24]', 'bg-emerald-50/50');
+          // Re-enforce zero horizontal scroll after animation
+          document.documentElement.scrollLeft = 0;
+          document.body.scrollLeft = 0;
+        }, 3000);
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        document.documentElement.scrollLeft = 0;
+        document.body.scrollLeft = 0;
       }
     };
 
     // On mobile screens (<1024px), close the assistant sheet so the target section is fully visible
-    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+    if (isMobile) {
       onOpenChange(false);
     }
 
-    // If target element is on another tab, switch tab first, then scroll
+    // Delay scroll to allow drawer closing animation or tab transition to complete cleanly
+    const delay = targetTab && targetTab !== activeTab ? 200 : isMobile ? 260 : 50;
+
     if (targetTab && targetTab !== activeTab && onNavigateTab) {
       onNavigateTab(targetTab);
-      setTimeout(() => {
-        performScroll();
-      }, 150);
-    } else {
-      performScroll();
     }
+
+    setTimeout(() => {
+      performScroll();
+    }, delay);
   };
 
   // Do not render anything if on the blind Arena route (requirement 1)
