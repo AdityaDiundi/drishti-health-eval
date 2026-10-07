@@ -59,7 +59,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             </nav>
 
             {/* Right: Actions */}
-            <div className="hidden sm:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4">
               <div className="h-6 w-px bg-[#E3E7E2]"></div>
               <a
                 href="/api/export?format=csv"
@@ -73,7 +73,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex sm:hidden items-center space-x-2">
+            <div className="flex md:hidden items-center space-x-2">
               <a
                 href="/api/export?format=csv"
                 download="janeval_benchmark_dataset.csv"
@@ -95,7 +95,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="sm:hidden border-b border-[#E3E7E2] bg-white px-4 py-3 space-y-1 shadow-xs">
+          <div className="md:hidden border-b border-[#E3E7E2] bg-white px-4 py-3 space-y-1 shadow-xs">
             {navItems.map((item) => (
               <button
                 key={item.id}
@@ -121,6 +121,17 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             >
               About JANEVAL
             </button>
+            <div className="pt-2 border-t border-[#E3E7E2]">
+              <a
+                href="/api/export?format=csv"
+                download="janeval_benchmark_dataset.csv"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium text-[#0F2E24] bg-[#FAFBF9] border border-[#E3E7E2]"
+              >
+                <Download className="w-3.5 h-3.5 text-[#4E8F6F]" />
+                <span>Download Dataset (CSV)</span>
+              </a>
+            </div>
           </div>
         )}
       </header>

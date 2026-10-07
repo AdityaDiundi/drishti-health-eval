@@ -184,7 +184,7 @@ export function GalleryView() {
           onClick={() => setZoomImage(null)}
         >
           <div
-            className="relative max-w-4xl max-h-[92vh] bg-white rounded-xl border border-[#E3E7E2] shadow-2xl p-4 overflow-hidden flex flex-col"
+            className="relative w-full max-w-4xl max-h-[92vh] bg-white rounded-xl border border-[#E3E7E2] shadow-2xl p-4 overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}

@@ -279,7 +279,7 @@ export function ComparativeAnalysis({
               </div>
               <div className="min-w-0">
                 <div className="flex items-center space-x-1.5">
-                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-[#0F2E24] text-white shrink-0">
+                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-[#0F2E24] text-white shrink-0">
                     A
                   </span>
                   <span className="font-bold text-xs sm:text-sm text-[#0F2E24] truncate">
@@ -335,7 +335,7 @@ export function ComparativeAnalysis({
               </div>
               <div className="min-w-0">
                 <div className="flex items-center space-x-1.5">
-                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-[#C05621] text-white shrink-0">
+                  <span className="font-mono text-[9.5px] font-bold px-1.5 py-0.5 rounded bg-[#C05621] text-white shrink-0">
                     B
                   </span>
                   <span className="font-bold text-xs sm:text-sm text-[#0F2E24] truncate">
