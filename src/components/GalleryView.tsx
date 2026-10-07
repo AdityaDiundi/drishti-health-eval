@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { PROMPTS_DATA } from '@/data/prompts';
 import staticManifest from '@/data/database_manifest.json';
-import { ZoomIn, ExternalLink, X, Info } from 'lucide-react';
+import { ZoomIn, ExternalLink, X, Info, ChevronDown } from 'lucide-react';
 
 export function GalleryView() {
   const [selectedPromptId, setSelectedPromptId] = useState<string>('all');
@@ -45,13 +45,16 @@ export function GalleryView() {
         </div>
 
         {/* Filter Controls */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2">
-            <label className="text-xs text-[#69716B] font-medium">Scenario:</label>
+        <div className="w-full sm:w-auto flex items-center gap-2 min-w-0">
+          <label htmlFor="gallery-scenario-select" className="text-xs text-[#69716B] font-medium shrink-0">
+            Scenario:
+          </label>
+          <div className="relative flex-1 sm:w-80 min-w-0">
             <select
+              id="gallery-scenario-select"
               value={selectedPromptId}
               onChange={(e) => setSelectedPromptId(e.target.value)}
-              className="bg-white border border-[#E3E7E2] text-xs text-[#171A18] rounded-lg px-3 py-1.5 focus:outline-hidden focus:border-[#0F2E24] shadow-2xs font-medium cursor-pointer"
+              className="w-full bg-white border border-[#E3E7E2] text-xs text-[#171A18] rounded-lg pl-3 pr-8 py-2 focus:outline-hidden focus:border-[#0F2E24] shadow-2xs font-medium cursor-pointer truncate appearance-none"
             >
               <option value="all">All 10 Scenarios (30 Images)</option>
               {PROMPTS_DATA.map((p) => (
@@ -60,6 +63,9 @@ export function GalleryView() {
                 </option>
               ))}
             </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-[#69716B]">
+              <ChevronDown className="w-3.5 h-3.5" />
+            </div>
           </div>
         </div>
       </div>

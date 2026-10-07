@@ -652,8 +652,35 @@ export function EvidenceView({
           </p>
         </div>
 
-        {/* Sleek Horizontal Scenario Selector with Scroll Cue */}
-        <div className="space-y-1.5">
+        {/* Mobile Dropdown for Scenario Selector */}
+        <div className="sm:hidden space-y-1.5">
+          <label htmlFor="evidence-mobile-scenario-select" className="block text-[11px] font-mono uppercase tracking-wider text-[#5E6963]">
+            Select Scenario ({scenariosList.length})
+          </label>
+          <div className="relative w-full">
+            <select
+              id="evidence-mobile-scenario-select"
+              value={activeScenario?.code || ''}
+              onChange={(e) => handleSelectScenario(e.target.value)}
+              className="w-full h-11 pl-3 pr-10 rounded-lg bg-white border border-[#D9DED8] text-xs font-sans text-[#17211D] font-medium appearance-none truncate shadow-2xs focus:outline-hidden focus:ring-1 focus:ring-[#123F32] focus:border-[#123F32]"
+            >
+              {scenariosList.map((scen) => {
+                const winnerName = getModelShortName(scen.winnerModelId || 'openai', leaderboard);
+                return (
+                  <option key={scen.code} value={scen.code}>
+                    {scen.code}: {scen.title.split(' - ')[0]} ({scen.isCloseOrTied ? 'Tie' : `Lead: ${winnerName}`})
+                  </option>
+                );
+              })}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#7C8580]">
+              <ChevronDown className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Horizontal Scenario Selector with Scroll Cue */}
+        <div className="hidden sm:block space-y-1.5">
           <div className="flex items-center justify-between text-[11px] font-sans text-[#7C8580]">
             <span className="font-mono uppercase tracking-wider text-[10px] text-[#5E6963]">10 Scenarios</span>
             <span className="flex items-center gap-1 text-[#7C8580]">
@@ -770,11 +797,47 @@ export function EvidenceView({
 
             {/* Matchup Comparison Toggle Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pt-1">
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
                 <span className="text-[11px] font-mono font-bold uppercase text-[#123F32] tracking-wider shrink-0">
                   Compare:
                 </span>
-                <div className="inline-flex items-center p-1 bg-[#F1F2EC] rounded-[6px] gap-1 border border-[#D9DED8] overflow-x-auto max-w-full scrollbar-none">
+
+                {/* Mobile Dropdown for Matchup Comparison */}
+                <div className="sm:hidden relative w-full">
+                  <select
+                    id="evidence-mobile-matchup-select"
+                    value={activeMatchupKey || 'all'}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === 'all') {
+                        handleToggleMatchup('all');
+                      } else {
+                        const match = activeScenario.matchups?.find((m) => m.pairKey === val);
+                        if (match) {
+                          handleToggleMatchup(match.pairKey, match.modelAId, match.modelBId);
+                        }
+                      }
+                    }}
+                    className="w-full h-10 pl-3 pr-10 rounded-lg bg-[#F1F2EC] border border-[#D9DED8] text-xs font-sans text-[#17211D] font-medium appearance-none truncate shadow-2xs focus:outline-hidden focus:ring-1 focus:ring-[#123F32]"
+                  >
+                    <option value="all">All 3 Models (Side-by-Side)</option>
+                    {activeScenario.matchups?.map((match) => {
+                      const nameA = getModelShortName(match.modelAId, leaderboard);
+                      const nameB = getModelShortName(match.modelBId, leaderboard);
+                      return (
+                        <option key={match.pairKey} value={match.pairKey}>
+                          Pairwise: {nameA} vs {nameB}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-[#7C8580]">
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </div>
+
+                {/* Desktop Matchup Pills */}
+                <div className="hidden sm:inline-flex items-center p-1 bg-[#F1F2EC] rounded-[6px] gap-1 border border-[#D9DED8] overflow-x-auto max-w-full scrollbar-none">
                   {/* All 3 Models Button */}
                   <button
                     type="button"
