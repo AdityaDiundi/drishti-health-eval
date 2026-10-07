@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { JanevalLogo } from './JanevalLogo';
-import { Download, Menu, X, ArrowUpRight } from 'lucide-react';
+import { Download, Menu, X, ArrowUpRight, Video, ExternalLink } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: 'arena' | 'leaderboard' | 'evidence' | 'gallery' | 'methodology';
@@ -59,7 +59,18 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             </nav>
 
             {/* Right: Actions */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-3">
+              <a
+                href="https://youtu.be/t2rf1MK2XFs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-[#0F2E24] bg-[#FAFBF9] hover:bg-[#DDEBE3]/50 border border-[#CBD5E1] shadow-2xs transition-colors"
+                title="Watch Compulsory 2-Minute Video Submission on YouTube"
+              >
+                <Video className="w-3.5 h-3.5 text-[#C05621]" />
+                <span>Walkthrough (2 min)</span>
+                <ExternalLink className="w-3 h-3 text-[#69716B]" />
+              </a>
               <div className="h-6 w-px bg-[#E3E7E2]"></div>
               <a
                 href="/api/export?format=csv"
@@ -74,6 +85,15 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
 
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center space-x-2">
+              <a
+                href="https://youtu.be/t2rf1MK2XFs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-[#0F2E24] bg-white border border-[#E3E7E2]"
+                title="Watch Video Walkthrough"
+              >
+                <Video className="w-4 h-4 text-[#C05621]" />
+              </a>
               <a
                 href="/api/export?format=csv"
                 download="janeval_benchmark_dataset.csv"
@@ -121,7 +141,20 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
             >
               About JANEVAL
             </button>
-            <div className="pt-2 border-t border-[#E3E7E2]">
+            <div className="pt-2 border-t border-[#E3E7E2] space-y-1.5">
+              <a
+                href="https://youtu.be/t2rf1MK2XFs"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between px-3 py-2 rounded-md text-xs font-medium text-[#0F2E24] bg-[#FAFBF9] border border-[#E3E7E2]"
+              >
+                <span className="flex items-center gap-2">
+                  <Video className="w-3.5 h-3.5 text-[#C05621]" />
+                  <span>Video Walkthrough (YouTube)</span>
+                </span>
+                <ExternalLink className="w-3 h-3 text-[#69716B]" />
+              </a>
               <a
                 href="/api/export?format=csv"
                 download="janeval_benchmark_dataset.csv"
@@ -156,7 +189,7 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
                 Frontier Vision AI Benchmark for Indian Public-Health Representation
               </p>
               <p>
-                <strong>JANEVAL v1.0</strong> evaluates frontier vision and image-generation foundation models (OpenAI GPT Image 1, Google Gemini 3 Pro, Google Gemini 3.1 Flash) on their capacity to represent frontline rural Indian public-health realities authentically and faithfully.
+                <strong>JANEVAL v1.1</strong> evaluates frontier vision foundation models (OpenAI GPT Image 1, Google Gemini 3 Pro, Google Gemini 3.1 Flash) on their capacity to represent frontline rural Indian public-health realities authentically and faithfully.
               </p>
               <div className="bg-[#F7F8F5] border border-[#E3E7E2] p-3 rounded-lg space-y-1.5 font-mono text-[11px]">
                 <div className="text-[#69716B]">PRINCIPLES:</div>
@@ -164,8 +197,23 @@ export function Header({ activeTab, setActiveTab, participantName }: HeaderProps
                 <div>• Double-blind pairwise human evaluation (Elo)</div>
                 <div>• Zero demographic profiling, fully anonymized voting</div>
               </div>
+              <div className="p-3 bg-[#FAFBF9] border border-[#CBD5E1] rounded-lg flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <div className="font-semibold text-[#0F2E24]">Video Walkthrough (YouTube)</div>
+                  <div className="text-[11px] text-[#69716B]">2-minute presentation of the benchmark & findings</div>
+                </div>
+                <a
+                  href="https://youtu.be/t2rf1MK2XFs"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-md bg-[#0F2E24] text-white text-xs font-semibold hover:bg-[#163d30] flex items-center gap-1"
+                >
+                  <span>Watch</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
               <p className="text-[#69716B]">
-                Developed for rigorous public-health AI benchmarking. All scenarios, images, and anonymized ratings are open and reproducible.
+                Developed for the Josh Talks AI Product Task (July 2026). All scenarios, images, and anonymized ratings are open and reproducible.
               </p>
             </div>
             <div className="mt-6 flex justify-end">

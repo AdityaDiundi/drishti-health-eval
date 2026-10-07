@@ -1,7 +1,8 @@
 # JANEVAL (Drishti-Health): Frontier Vision AI Benchmark for Bharat
 > **Author:** Aditya Diundi  
 > **Submission:** Josh Talks AI Product Task (July 2026) — Question 1 (Solo Technical Submission)  
-> **Live Benchmark Web App:** [janeval.vercel.app](https://janeval.vercel.app)
+> **Live Benchmark Web App:** [janeval.vercel.app](https://janeval.vercel.app)  
+> **Compulsory Video Walkthrough:** [youtu.be/t2rf1MK2XFs](https://youtu.be/t2rf1MK2XFs)
 
 ---
 
