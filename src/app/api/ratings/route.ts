@@ -23,29 +23,31 @@ export async function GET() {
   let dbRatings: any[] = [];
   let participants = [...memoryParticipants];
 
-  try {
-    // Attempt reading from Supabase using admin client first
-    const res = await adminSupabase.from('eval_ratings').select('*');
-    if (!res.error && Array.isArray(res.data)) {
-      dbRatings = res.data;
-    } else {
-      const fallbackRes = await supabase.from('eval_ratings').select('*');
-      if (!fallbackRes.error && Array.isArray(fallbackRes.data)) {
-        dbRatings = fallbackRes.data;
+  if (adminSupabase) {
+    try {
+      // Attempt reading from Supabase using admin client first
+      const res = await adminSupabase.from('eval_ratings').select('*');
+      if (!res.error && Array.isArray(res.data)) {
+        dbRatings = res.data;
+      } else {
+        const fallbackRes = await supabase.from('eval_ratings').select('*');
+        if (!fallbackRes.error && Array.isArray(fallbackRes.data)) {
+          dbRatings = fallbackRes.data;
+        }
       }
-    }
 
-    const pRes = await adminSupabase.from('eval_participants').select('*');
-    if (!pRes.error && Array.isArray(pRes.data)) {
-      participants = pRes.data;
-    } else {
-      const fallbackP = await supabase.from('eval_participants').select('*');
-      if (!fallbackP.error && Array.isArray(fallbackP.data)) {
-        participants = fallbackP.data;
+      const pRes = await adminSupabase.from('eval_participants').select('*');
+      if (!pRes.error && Array.isArray(pRes.data)) {
+        participants = pRes.data;
+      } else {
+        const fallbackP = await supabase.from('eval_participants').select('*');
+        if (!fallbackP.error && Array.isArray(fallbackP.data)) {
+          participants = fallbackP.data;
+        }
       }
+    } catch (err: any) {
+      console.warn('Using memory / baseline ratings store fallback:', err.message);
     }
-  } catch (err: any) {
-    console.warn('Using memory / baseline ratings store fallback:', err.message);
   }
 
   // Combine verified baseline pairwise votes with any newly submitted evaluations
@@ -174,18 +176,20 @@ export async function POST(req: Request) {
     const adminSupabase = getAdminSupabase();
     let participantId = `p-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`;
     
-    try {
-      const { data: existingUser } = await adminSupabase
-        .from('eval_participants')
-        .select('id')
-        .eq('email', cleanEmail)
-        .maybeSingle();
+    if (adminSupabase) {
+      try {
+        const { data: existingUser } = await adminSupabase
+          .from('eval_participants')
+          .select('id')
+          .eq('email', cleanEmail)
+          .maybeSingle();
 
-      if (existingUser?.id) {
-        participantId = existingUser.id;
+        if (existingUser?.id) {
+          participantId = existingUser.id;
+        }
+      } catch (e) {
+        // Continue with generated ID if lookup fails
       }
-    } catch (e) {
-      // Continue with generated ID if lookup fails
     }
 
     const newParticipant = {
@@ -228,37 +232,39 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Save to Supabase (primary store)
+    // Save to Supabase (primary store) if configured
     let dbSuccess = false;
-    try {
-      let { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
-      if (pErr) {
-        console.warn('Admin Supabase participant write error, trying anon client:', pErr.message);
-        const fb = await supabase.from('eval_participants').upsert([newParticipant]);
-        pErr = fb.error;
-      }
-      if (pErr) console.error('Supabase participant write error:', pErr.message);
-
-      // Data Sanity: Clear prior ratings if this participant previously completed to prevent vote duplication
+    if (adminSupabase) {
       try {
-        await adminSupabase.from('eval_ratings').delete().eq('participant_id', participantId);
-      } catch (delErr) {
-        // Continue if delete fails or is empty
-      }
-      
-      let { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
-      if (rErr) {
-        console.warn('Admin Supabase ratings write error, trying anon client:', rErr.message);
-        const fb = await supabase.from('eval_ratings').insert(formattedRatings);
-        rErr = fb.error;
-      }
-      if (rErr) console.error('Supabase ratings write error:', rErr.message);
+        let { error: pErr } = await adminSupabase.from('eval_participants').upsert([newParticipant]);
+        if (pErr) {
+          console.warn('Admin Supabase participant write error, trying anon client:', pErr.message);
+          const fb = await supabase.from('eval_participants').upsert([newParticipant]);
+          pErr = fb.error;
+        }
+        if (pErr) console.error('Supabase participant write error:', pErr.message);
 
-      if (!pErr && !rErr) {
-        dbSuccess = true;
+        // Data Sanity: Clear prior ratings if this participant previously completed to prevent vote duplication
+        try {
+          await adminSupabase.from('eval_ratings').delete().eq('participant_id', participantId);
+        } catch (delErr) {
+          // Continue if delete fails or is empty
+        }
+        
+        let { error: rErr } = await adminSupabase.from('eval_ratings').insert(formattedRatings);
+        if (rErr) {
+          console.warn('Admin Supabase ratings write error, trying anon client:', rErr.message);
+          const fb = await supabase.from('eval_ratings').insert(formattedRatings);
+          rErr = fb.error;
+        }
+        if (rErr) console.error('Supabase ratings write error:', rErr.message);
+
+        if (!pErr && !rErr) {
+          dbSuccess = true;
+        }
+      } catch (e: any) {
+        console.warn('Failed to commit to Supabase, falling back to memory store:', e.message);
       }
-    } catch (dbErr: any) {
-      console.warn('Supabase DB connection notice:', dbErr.message);
     }
 
     // Only fallback to in-memory store if database was unreachable

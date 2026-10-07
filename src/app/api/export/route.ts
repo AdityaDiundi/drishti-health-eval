@@ -14,12 +14,13 @@ export async function GET(req: Request) {
   if (type === 'ratings' || type === 'evaluations') {
     const admin = getAdminSupabase();
     let ratingsData: any[] = [];
-    try {
-      const res = await admin.from('eval_ratings').select('id, participant_id, prompt_id, winner_model, cultural_fidelity, medical_accuracy, typography_fidelity, feedback, created_at');
-      if (res.data) ratingsData = res.data;
-    } catch (e) {
-      const fb = await supabase.from('eval_ratings').select('id, participant_id, prompt_id, winner_model, cultural_fidelity, medical_accuracy, typography_fidelity, feedback, created_at');
-      if (fb.data) ratingsData = fb.data;
+    if (admin) {
+      try {
+        const res = await admin.from('eval_ratings').select('id, participant_id, prompt_id, winner_model, cultural_fidelity, medical_accuracy, typography_fidelity, feedback, created_at');
+        if (res.data) ratingsData = res.data;
+      } catch (e) {
+        // Continue to fallback
+      }
     }
 
     // Strict PII Anonymization: Hash participant IDs into "Evaluator #01", "Evaluator #02"

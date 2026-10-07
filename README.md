@@ -1,17 +1,18 @@
-# Drishti-Health: Indian Grassroots Healthcare Visual AI Benchmark
-> Independent human evaluation platform measuring cultural fidelity, domain equipment accuracy, and Devanagari Hindi typography across foundation vision models for Bharat.  
-> Inspired by Josh Talks AI's **"Voice of India"** philosophy (*"Owning the yardstick for AI in India"*).
+# JANEVAL (Drishti-Health): Frontier Vision AI Benchmark for Bharat
+> **Author:** Aditya Diundi  
+> **Submission:** Josh Talks AI Product Task (July 2026) — Question 1 (Solo Technical Submission)  
+> **Live Benchmark Web App:** [janeval.vercel.app](https://janeval.vercel.app)
 
 ---
 
 ## 🌟 Overview & Strategic Context
 
-In collaboration with AI4Bharat (IIT Madras), Josh Talks AI built **Voice of India** to benchmark speech models on authentic Indian accents, ambient noise, and vernacular code-switching.
+This project is an **independent, solo assignment submission** designed and built from scratch by **Aditya Diundi** for the **Josh Talks AI Product Task (July 2026)**.
 
-**Drishti-Health** applies this same standard to **Text-to-Image Foundation Models**:
-* Standard benchmarks (ImageNet, Artificial Analysis) evaluate Western aesthetics and studio portraits.
-* In Indian grassroots healthcare (ASHA workers, Anganwadi nutrition monitoring, Primary Health Centres, immunization cold-chains, and Devanagari Hindi IEC wall paintings), models routinely hallucinate Western clinic tropes, distort sacred or vernacular scripts, or erase authentic rural contexts.
-* **Drishti-Health is an independent, blind pairwise human evaluation platform** that tests whether AI models understand authentic grassroots India.
+The evaluation architecture draws philosophical inspiration from the benchmarking ethos of Josh Talks AI's **"Voice of India"** (*"Owning the yardstick for AI in India"*):
+* Standard global vision benchmarks (ImageNet, Artificial Analysis Image Arena) measure Western aesthetics, generic photorealism, and studio portraits.
+* In Indian frontline public healthcare (ASHA worker counseling, Anganwadi Salter-scale growth monitoring, Primary Health Centre infrastructure, UIP cold-chain vaccine carriers, and Devanagari Hindi IEC wall paintings), foundation models routinely hallucinate Western clinic tropes, distort vernacular scripts, or erase authentic grassroots contexts.
+* **JANEVAL (Drishti-Health)** is an independent, double-blind pairwise human evaluation platform with Bradley-Terry MLE scoring, testing whether frontier image generation models faithfully represent Indian grassroots reality.
 
 ---
 
@@ -152,22 +153,24 @@ cd drishti-health-eval
 # 2. Install dependencies
 npm install
 
-# 3. Configure environment variables (.env.local)
-cp .env.example .env.local
-
-# 4. Start local development server
+# 3. Start local development server (runs out-of-the-box with offline bundled data)
 npm run dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to view the live app.
 
+### 🔒 Local Development & Data Isolation
+* **Zero-Config Local Run:** The repository is 100% self-contained. When cloned and run locally without environment variables, the platform automatically serves the bundled dataset of 120 verified evaluator votes (`src/data/pairwiseVotes.json`) and image manifests.
+* **Database Isolation:** Reviewers and developers can safely test the Arena and inspect rankings locally without needing a Supabase account or environment variables. Production database credentials remain securely isolated in production environment variables, protecting production ratings from local mutations.
+
 ---
 
-## ☁️ Vercel Deployment
+## ☁️ Production Deployment (Vercel)
 
 1. Import this repository in [Vercel](https://vercel.com/new).
-2. Add the environment variables:
+2. Configure production environment variables in the Vercel dashboard:
    * `NEXT_PUBLIC_SUPABASE_URL`
    * `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    * `SUPABASE_SERVICE_ROLE_KEY`
+   * `GEMINI_API_KEY` (for JANEVAL Assistant)
 3. Click **Deploy**!
